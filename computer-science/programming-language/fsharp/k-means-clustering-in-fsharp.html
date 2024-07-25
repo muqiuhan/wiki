@@ -1,0 +1,205 @@
+<!DOCTYPE html> <html><head>
+		<title>K-Means clustering in FSharp</title>
+		<base href="../../../">
+		<meta id="root-path" root-path="../../../">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0">
+		<meta charset="UTF-8">
+		<meta name="description" content="韩暮秋的个人维基 - K-Means clustering in FSharp">
+		<meta property="og:title" content="K-Means clustering in FSharp">
+		<meta property="og:description" content="韩暮秋的个人维基 - K-Means clustering in FSharp">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/k-means-clustering-in-fsharp.html">
+		<meta property="og:image" content="undefined">
+		<meta property="og:site_name" content="韩暮秋的个人维基">
+		<meta name="author" content="韩暮秋"><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://muqiuhan.github.io/wiki/lib/rss.xml"><script async="" id="webpage-script" src="lib/scripts/webpage.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script type="module" async="" id="graph-view-script" src="lib/scripts/graph-view.js"></script><script async="" id="graph-wasm-script" src="lib/scripts/graph-wasm.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-render-worker-script" src="lib/scripts/graph-render-worker.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="tinycolor-script" src="lib/scripts/tinycolor.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="pixi-script" src="lib/scripts/pixi.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="minisearch-script" src="lib/scripts/minisearch.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><link rel="icon" href="lib/media/favicon.ico"><script async="" id="graph-data-script" src="lib/scripts/graph-data.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><style>body{--line-width:40em;--line-width-adaptive:40em;--file-line-width:40em;--sidebar-width:min(20em, 80vw);--collapse-arrow-size:11px;--tree-horizontal-spacing:0.6em;--tree-vertical-spacing:0.6em;--sidebar-margin:12px}.sidebar{height:100%;min-width:calc(var(--sidebar-width) + var(--divider-width-hover));max-width:calc(var(--sidebar-width) + var(--divider-width-hover));font-size:14px;z-index:10;position:relative;overflow:hidden;transition:min-width ease-in-out,max-width ease-in-out;transition-duration:.2s;contain:size}.sidebar-left{left:0}.sidebar-right{right:0}.sidebar.is-collapsed{min-width:0;max-width:0}body.floating-sidebars .sidebar{position:absolute}.sidebar-content{height:100%;min-width:calc(var(--sidebar-width) - var(--divider-width-hover));top:0;padding:var(--sidebar-margin);padding-top:4em;line-height:var(--line-height-tight);background-color:var(--background-secondary);transition:background-color,border-right,border-left,box-shadow;transition-duration:var(--color-fade-speed);transition-timing-function:ease-in-out;position:absolute;display:flex;flex-direction:column}.sidebar:not(.is-collapsed) .sidebar-content{min-width:calc(max(100%,var(--sidebar-width)) - 3px);max-width:calc(max(100%,var(--sidebar-width)) - 3px)}.sidebar-left .sidebar-content{left:0;border-top-right-radius:var(--radius-l);border-bottom-right-radius:var(--radius-l)}.sidebar-right .sidebar-content{right:0;border-top-left-radius:var(--radius-l);border-bottom-left-radius:var(--radius-l)}.sidebar:has(.sidebar-content:empty):has(.topbar-content:empty){display:none}.sidebar-topbar{height:2em;width:var(--sidebar-width);top:var(--sidebar-margin);padding-inline:var(--sidebar-margin);z-index:1;position:fixed;display:flex;align-items:center;transition:width ease-in-out;transition-duration:inherit}.sidebar.is-collapsed .sidebar-topbar{width:calc(2.3em + var(--sidebar-margin) * 2)}.sidebar .sidebar-topbar.is-collapsed{width:0}.sidebar-left .sidebar-topbar{left:0}.sidebar-right .sidebar-topbar{right:0}.topbar-content{overflow:hidden;overflow:clip;width:100%;height:100%;display:flex;align-items:center;transition:inherit}.sidebar.is-collapsed .topbar-content{width:0;transition:inherit}.clickable-icon.sidebar-collapse-icon{background-color:transparent;color:var(--icon-color-focused);padding:0!important;margin:0!important;height:100%!important;width:2.3em!important;margin-inline:0.14em!important;position:absolute}.sidebar-left .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);right:var(--sidebar-margin)}.sidebar-right .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);left:var(--sidebar-margin)}.clickable-icon.sidebar-collapse-icon svg.svg-icon{width:100%;height:100%}.sidebar-section-header{margin:0 0 1em 0;text-transform:uppercase;letter-spacing:.06em;font-weight:600}body{transition:background-color var(--color-fade-speed) ease-in-out}.webpage-container{display:flex;flex-direction:row;height:100%;width:100%;align-items:stretch;justify-content:center}.document-container{opacity:1;flex-basis:100%;max-width:100%;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;transition:opacity .2s ease-in-out;contain:inline-size}.hide{opacity:0;transition:opacity .2s ease-in-out}.document-container>.markdown-preview-view{margin:var(--sidebar-margin);margin-bottom:0;width:100%;width:-webkit-fill-available;width:-moz-available;width:fill-available;background-color:var(--background-primary);transition:background-color var(--color-fade-speed) ease-in-out;border-top-right-radius:var(--window-radius,var(--radius-m));border-top-left-radius:var(--window-radius,var(--radius-m));overflow-x:hidden!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;contain:inline-size}.document-container>.markdown-preview-view>.markdown-preview-sizer{padding-bottom:80vh!important;width:100%!important;max-width:var(--line-width)!important;flex-basis:var(--line-width)!important;transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}.markdown-rendered img:not([width]),.view-content img:not([width]){max-width:100%;outline:0}.document-container>.view-content.embed{display:flex;padding:1em;height:100%;width:100%;align-items:center;justify-content:center}.document-container>.view-content.embed>*{max-width:100%;max-height:100%;object-fit:contain}:has(> :is(.math,table)){overflow-x:auto!important}.document-container>.view-content{overflow-x:auto;contain:content;padding:0;margin:0;height:100%}.scroll-highlight{position:absolute;width:100%;height:100%;pointer-events:none;z-index:1000;background-color:hsla(var(--color-accent-hsl),.25);opacity:0;padding:1em;inset:50%;translate:-50% -50%;border-radius:var(--radius-s)}</style><script defer="">async function loadIncludes(){if("file:"!=location.protocol){let e=document.querySelectorAll("include");for(let t=0;t<e.length;t++){let o=e[t],l=o.getAttribute("src");try{const e=await fetch(l);if(!e.ok){console.log("Could not include file: "+l),o?.remove();continue}let t=await e.text(),n=document.createRange().createContextualFragment(t),i=Array.from(n.children);for(let e of i)e.classList.add("hide"),e.style.transition="opacity 0.5s ease-in-out",setTimeout((()=>{e.classList.remove("hide")}),10);o.before(n),o.remove(),console.log("Included file: "+l)}catch(e){o?.remove(),console.log("Could not include file: "+l,e);continue}}}else{if(document.querySelectorAll("include").length>0){var e=document.createElement("div");e.id="error",e.textContent="Web server exports must be hosted on an http / web server to be viewed correctly.",e.style.position="fixed",e.style.top="50%",e.style.left="50%",e.style.transform="translate(-50%, -50%)",e.style.fontSize="1.5em",e.style.fontWeight="bold",e.style.textAlign="center",document.body.appendChild(e),document.querySelector(".document-container")?.classList.remove("hide")}}}document.addEventListener("DOMContentLoaded",(()=>{loadIncludes()}));let isFileProtocol="file:"==location.protocol;function waitLoadScripts(e,t){let o=e.map((e=>document.getElementById(e+"-script"))),l=0;!function e(){let n=o[l];l++,n&&"true"!=n.getAttribute("loaded")||l<o.length&&e(),l<o.length?n.addEventListener("load",e):t()}()}</script><link rel="stylesheet" href="lib/styles/obsidian.css"><link rel="preload" href="lib/styles/other-plugins.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/other-plugins.css"></noscript><link rel="stylesheet" href="lib/styles/theme.css"><link rel="preload" href="lib/styles/global-variable-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/global-variable-styles.css"></noscript><link rel="preload" href="lib/styles/main-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/main-styles.css"></noscript></head><body class="publish css-settings-manager theme-light show-inline-title show-ribbon pt-color-scheme-style-minimal-lt pt-accent-style-borderandfilled-lt pt-accent-color-grey-lt pt-highlight-text-accent-lt pt-accent-style-borderandfilled-dt pt-accent-color-purple-dt pt-highlight-text-accent-dt pt-focused-style-main-only pt-font-disable-ligatures pt-highlight-style-borderandfilled-lt pt-highlight-text-color-lt pt-highlight-style-borderandfilled-dt pt-highlight-text-color-dt pt-file-explorer-folder-icon-default pt-colored-folders-style-rainbow pt-center-kanban-title-text pt-kanban-background-grid-lt pt-kanban-background-grid-dt pt-icon-folder-accent"><script defer="">let theme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"==theme?(document.body.classList.add("theme-dark"),document.body.classList.remove("theme-light")):(document.body.classList.add("theme-light"),document.body.classList.remove("theme-dark")),window.innerWidth<480?document.body.classList.add("is-phone"):window.innerWidth<768?document.body.classList.add("is-tablet"):window.innerWidth<1024?document.body.classList.add("is-small-screen"):document.body.classList.add("is-large-screen")</script><div class="webpage-container workspace"><div class="sidebar-left sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><label class="theme-toggle-container" for="theme_toggle"><input class="theme-toggle-input" type="checkbox" id="theme_toggle"><div class="toggle-background"></div></label></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content"><div class="search-input-container"><input enterkeyhint="search" type="search" spellcheck="false" placeholder="Search..."><div class="search-input-clear-button" aria-label="Clear search"></div></div><include src="lib/html/file-tree.html"></include></div><script defer="">let ls = document.querySelector(".sidebar-left"); ls.classList.add("is-collapsed"); if (window.innerWidth > 768) ls.classList.remove("is-collapsed"); ls.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-left-width"));</script></div><div class="document-container markdown-reading-view hide"><div class="markdown-preview-view markdown-rendered allow-fold-headings allow-fold-lists is-readable-line-width"><style id="MJX-CHTML-styles"></style><div class="markdown-preview-sizer markdown-preview-section"><h1 class="page-title heading inline-title" id="K-Means clustering in FSharp"><p dir="auto">K-Means clustering in FSharp</p></h1><div><p dir="auto"><strong>Machine Learning in Action, in F#</strong></p></div><div><p dir="auto">Porting <a data-tooltip-position="top" aria-label="http://www.manning.com/pharrington/" rel="noopener" class="external-link" href="http://www.manning.com/pharrington/" target="_blank">Machine Learning in Action</a> from Python to F#</p></div><div><ul>
+<li data-line="0" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2012/07/29/Nearest-Neighbor-Classification-part-1/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2012/07/29/Nearest-Neighbor-Classification-part-1/" target="_blank">KNN classification (1)</a></li>
+<li data-line="1" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2012/08/01/Nearest-Neighbor-Classification-part-2/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2012/08/01/Nearest-Neighbor-Classification-part-2/" target="_blank">KNN classification (2)</a></li>
+<li data-line="2" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2012/08/05/Decision-Tree-classification/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2012/08/05/Decision-Tree-classification/" target="_blank">Decision Tree classification</a></li>
+<li data-line="3" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2012/08/18/Naive-Bayes-classification/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2012/08/18/Naive-Bayes-classification/" target="_blank">Naive Bayes classification</a></li>
+<li data-line="4" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2012/09/30/Logistic-Regression/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2012/09/30/Logistic-Regression/" target="_blank">Logistic Regression classification</a></li>
+<li data-line="5" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2012/11/25/Support-Vector-Machine-in-FSharp-work-in-progress/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2012/11/25/Support-Vector-Machine-in-FSharp-work-in-progress/" target="_blank">SVM classification (1)</a></li>
+<li data-line="6" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2012/12/26/Support-Vector-Machine-in-FSharp/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2012/12/26/Support-Vector-Machine-in-FSharp/" target="_blank">SVM classification (2)</a></li>
+<li data-line="7" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2012/12/29/AdaBoost-classifier-in-FSharp/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2012/12/29/AdaBoost-classifier-in-FSharp/" target="_blank">AdaBoost classification</a></li>
+<li data-line="8" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2013/02/10/K-Means-Clustering-in-FSharp/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2013/02/10/K-Means-Clustering-in-FSharp/" target="_blank">K-Means clustering</a></li>
+<li data-line="9" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2013/03/25/Simplify-data-with-SVD-and-MathNET-in-FSharp/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2013/03/25/Simplify-data-with-SVD-and-MathNET-in-FSharp/" target="_blank">SVD</a></li>
+<li data-line="10" dir="auto"><a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2013/04/28/Recommendation-Engine-with-SVD-and-MathNET-in-FSharp/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2013/04/28/Recommendation-Engine-with-SVD-and-MathNET-in-FSharp/" target="_blank">Recommendation engine</a></li>
+<li data-line="11" dir="auto"><a data-tooltip-position="top" aria-label="https://github.com/mathias-brandewinder/Machine-Learning-In-Action" rel="noopener" class="external-link" href="https://github.com/mathias-brandewinder/Machine-Learning-In-Action" target="_blank">Code on GitHub</a></li>
+</ul></div><div><p dir="auto">And the Journey converting “<a data-tooltip-position="top" aria-label="http://www.manning.com/pharrington/" rel="noopener" class="external-link" href="http://www.manning.com/pharrington/" target="_blank">Machine Learning in Action</a>” from Python to F# continues! Rather than following the order of the book, I decided to skip chapters 8 and 9, dedicated to regression methods (regression is something I spent a bit too much time doing in the past to be excited about it just right now), and go straight to Unsupervised Learning, which begins with the K-means clustering algorithm. So what is clustering about? In a nutshell, clustering focuses on the following question: given a set of observations, can the computer figure out a way to classify them into “meaningful groups”? The major difference with Classification methods is that in clustering, the Categories / Groups are initially unknown: it’s the algorithm’s job to figure out sensible ways to group items into Clusters, all by itself (hence the word “unsupervised”). Chapter 10 covers 2 clustering algorithms, k-means , and bisecting k-means. We’ll discuss only the first one today. The underlying idea behind the k-means algorithm is to identify k “representative archetypes” (k being a user input), the Centroids. The algorithm proceeds iteratively:</p></div><div><blockquote dir="auto">
+<p>Starting from k random Centroids,<br>
+Observations are assigned to the closest Centroid, and constitute a Cluster,<br>
+Centroids are updated, by taking the average of their Cluster,<br>
+Until the allocation of Observation to Clusters doesn’t change any more.</p>
+</blockquote></div><div><p dir="auto">When things go well, we end up with k stable Centroids (minimal modification of Centroids do not change the Clusters), and Clusters contain Observations that are similar, because they are all close to the same Centroid (The <a data-tooltip-position="top" aria-label="http://en.wikipedia.org/wiki/K-means_clustering#Standard_algorithm" rel="noopener" class="external-link" href="http://en.wikipedia.org/wiki/K-means_clustering#Standard_algorithm" target="_blank">wikipedia page</a> for the algorithm provides a nice graphical representation).</p></div><div class="heading-wrapper"><h2 data-heading="F# implementation" dir="auto" class="heading" id="F#_implementation"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>F# implementation</h2><div class="heading-children"><div><p dir="auto">The Python implementation proposed in the book is both very procedural and deals with Observations that are vectors. I thought it would be interesting to take a different approach, focused on functions instead. The current implementation is likely to change when I get into bisecting k-means, but should remain similar in spirit. Note also that I have given no focus to performance – this is my take on the easiest thing that would work. The entire code can be found <a data-tooltip-position="top" aria-label="https://github.com/mathias-brandewinder/Machine-Learning-In-Action/blob/463cc43a5870cc8253bbf8b608800cb8380404b6/MachineLearningInAction/MachineLearningInAction/KMeansClustering.fs" rel="noopener" class="external-link" href="https://github.com/mathias-brandewinder/Machine-Learning-In-Action/blob/463cc43a5870cc8253bbf8b608800cb8380404b6/MachineLearningInAction/MachineLearningInAction/KMeansClustering.fs" target="_blank">here on GitHub</a>. Here is how I approached the problem. First, rather than restricting ourselves to vectors, suppose we want to deal with any generic type. Looking at the pseudo-code above, we need a few functions to implement the algorithm:</p></div><div><ul>
+<li data-line="0" dir="auto">to assign Observations of type <code>'a</code> to the closest Centroid <code>'a</code>, we need a notion of Distance,</li>
+<li data-line="1" dir="auto">we need to create an initial collection of k Centroids of type <code>'a</code>, given a dataset of <code>'a</code>s,</li>
+<li data-line="2" dir="auto">to update the Centroids based on a Cluster of <code>'a</code>s, we need some aggregation function.</li>
+</ul></div><div><p dir="auto">Let’s create these 3 functions:</p></div><div><pre><code>// the Distance between 2 observations 'a is a float
+// It also better be positive - left to the implementer
+type Distance&lt;'a&gt; = 'a -&gt; 'a -&gt; float
+// CentroidsFactory, given a dataset, 
+// should generate n Centroids
+type CentroidsFactory&lt;'a&gt; = 'a seq -&gt; int -&gt; 'a seq
+// Given a Centroid and observations in a Cluster,
+// create an updated Centroid
+type ToCentroid&lt;'a&gt; = 'a -&gt; 'a seq -&gt; 'a
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">We can now define a function which, given a set of Centroids, will return the index of the closest Centroid to an Observation, as well as the distance from the Centroid to the Observation:</p></div><div><pre><code>// Returns the index of and distance to the 
+// Centroid closest to observation
+let closest (dist: Distance&lt;'a&gt;) centroids (obs: 'a) =
+    centroids
+    |&gt; Seq.mapi (fun i c -&gt; (i, dist c obs)) 
+    |&gt; Seq.minBy (fun (i, d) -&gt; d)
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">Finally, we’ll go for the laziest possible way to generate k initial Centroids, by picking up k random observations from our dataset:</p></div><div><pre><code>// Picks k random observations as initial centroids
+// (this is very lazy, even tolerates duplicates)
+let randomCentroids&lt;'a&gt; (rng: System.Random) 
+                        (sample: 'a seq) 
+                        k =
+    let size = Seq.length sample
+    seq { for i in 1 .. k do 
+            let pick = Seq.nth (rng.Next(size)) sample
+            yield pick }
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">We have all we need – we can now write the algorithm itself:</p></div><div><pre><code>// Given a distance, centroid factory and
+// centroid aggregation function, identify
+// the k centroids of a dataset
+let kmeans (dist: Distance&lt;'a&gt;) 
+           (factory: CentroidsFactory&lt;'a&gt;) 
+           (aggregator: ToCentroid&lt;'a&gt;)
+           (dataset: 'a seq) 
+           k =
+    // Recursively update Centroids and
+    // the assignment of observations to Centroids
+    let rec update (centroids, assignment) =
+        // Assign each point to the closest centroid
+        let next = 
+            dataset 
+            |&gt; Seq.map (fun obs -&gt; closest dist centroids obs)
+            |&gt; Seq.toList
+        // Check if any assignment changed
+        let change =
+            match assignment with
+            | Some(previous) -&gt; 
+                Seq.zip previous next    
+                |&gt; Seq.exists (fun ((i, _), (j, _)) -&gt; not (i = j))
+            | None -&gt; true // initially we have no assignment
+        if change 
+        then 
+            // Update each Centroid position:
+            // extract cluster of points assigned to each Centroid
+            // and compute the new Centroid by aggregating cluster
+            let updatedCentroids =
+                let assignedDataset = Seq.zip dataset next
+                centroids 
+                |&gt; Seq.mapi (fun i centroid -&gt; 
+                    assignedDataset 
+                    |&gt; Seq.filter (fun (_, (ci, _)) -&gt; ci = i)
+                    |&gt; Seq.map (fun (obs, _) -&gt; obs)
+                    |&gt; aggregator centroid)
+            // Perform another round of updates
+            update (updatedCentroids, Some(next))
+        // No assignment changed, we are done
+        else (centroids, next)
+
+    let initialCentroids = factory dataset k
+    let centroids = update (initialCentroids, None) |&gt; fst |&gt; Seq.toList        
+    let classifier = fun datapoint -&gt; 
+        centroids 
+        |&gt; List.minBy (fun centroid -&gt; dist centroid datapoint)
+    centroids, classifier
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">The meat of the algorithm is the update function. It takes in a set of current Centroids, and an optional Assignment of Observations to Centroids, represented as a list, mapping each Observation to Centroid indexes and corresponding distance. Note that we could drop the distance for the assignment – it’s never used afterwards, I added it prematurely because it is needed in the bissecting k-means algorithm.</p></div><div><p dir="auto">The update function is recursive – it computes what Centroid / Cluster each observation will be assigned to next, checks whether any Observation has been assigned to a different Cluster than before (or if there is an assignment at all, to cover the initial case when no assignment has been computed yet). If a change occurred, new Centroids are computed and we go for another round, and otherwise we are done.</p></div><div><p dir="auto">The outer function calls update, and once it terminates, returns the Centroids that have been identified, as well as a Classifier function, which will return the closest Centroid to an Observation.</p></div></div></div><div class="heading-wrapper"><h2 data-heading="The algorithm in action" dir="auto" class="heading" id="The_algorithm_in_action"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>The algorithm in action</h2><div class="heading-children"><div><p dir="auto">I created two small examples illustrating the algorithm in action: one classic, with numeric observations, and one “just for kicks”, attempting to cluster a collection of strings. Both can be found in the file <a data-tooltip-position="top" aria-label="https://github.com/mathias-brandewinder/Machine-Learning-In-Action/blob/463cc43a5870cc8253bbf8b608800cb8380404b6/MachineLearningInAction/MachineLearningInAction/Chapter10.fsx" rel="noopener" class="external-link" href="https://github.com/mathias-brandewinder/Machine-Learning-In-Action/blob/463cc43a5870cc8253bbf8b608800cb8380404b6/MachineLearningInAction/MachineLearningInAction/Chapter10.fsx" target="_blank">Chapter10.fsx</a>.</p></div><div><p dir="auto">The classic case operates on an artificially created dataset: we generate 3 points in 3 dimensions, and a collection of 50 points randomly generated in spheres around these 3 points:</p></div><div><pre><code>let rng = new System.Random()
+let centroids = [ [| 0.; 0.; 0. |]; [| 20.; 30.; 40. |]; [| -40.; -50.; -60. |] ]
+// Create 50 points centered around each Centroid
+let data = [ 
+    for centroid in centroids do
+        for i in 1 .. 50 -&gt; 
+            Array.map (fun x -&gt; x + 5. * (rng.NextDouble() - 0.5)) centroid ]
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">If everything works correctly, we expect the algorithm to identify 3 Centroids close to the 3 points we used as anchor points for our data sample. We need to define 2 functions, which are included in the main module: a Distance, and a function to compute a Centroid from a Cluster of Observations:</p></div><div><pre><code>// Euclidean distance between 2 points, represented as float []
+let euclidean x y = 
+    Array.fold2 (fun d e1 e2 -&gt; d + pown (e1 - e2) 2) 0. x y 
+    |&gt; sqrt
+
+// Recompute Centroid as average of given sample
+let avgCentroid (current: float []) (sample: float [] seq) =
+    let size = Seq.length sample
+    match size with
+    | 0 -&gt; current
+    | _ -&gt;
+        sample
+        |&gt; Seq.reduce (fun v1 v2 -&gt; 
+               Array.map2 (fun v1x v2x -&gt; v1x + v2x) v1 v2)
+        |&gt; Array.map (fun e -&gt; e / (float)size)
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">Armed with this, we can run the algorithm:</p></div><div><pre><code>let factory = randomCentroids&lt;float[]&gt; rng
+let identifiedCentroids, classifier = kmeans euclidean factory avgCentroid data 3
+printfn "Centroids identified"
+identifiedCentroids 
+|&gt; List.iter (fun c -&gt; 
+    printfn ""
+    printf "Centroid: "
+    Array.iter (fun x -&gt; printf "%.2f " x) c)
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">On my machine, this produces the following:</p></div><div><pre><code>Centroids identified  
+Centroid: 19.93 30.32 39.89  
+Centroid: -39.98 -50.10 -59.69  
+Centroid: -0.28 0.43 -0.01
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">The 3 centroids are exactly what we expect – 3 points close to {20; 30; 40}, {-40; –50; -60} and {0; 0; 0}. Things seem to be working.</p></div><div><p dir="auto">Now I was curious to see if this would be usable on something completely different, like strings. As usual, in order to make that work, we need a Distance, and a way to reduce a Cluster to a Centroid. The most obvious choice for a Distance between strings is the <a data-tooltip-position="top" aria-label="http://en.wikipedia.org/wiki/Levenshtein_distance" rel="noopener" class="external-link" href="http://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank">Levenshtein distance</a>, which measures how many edits are required to transform a string into another. Fortunately for me, someone already provided an <a data-tooltip-position="top" aria-label="http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance#F.23" rel="noopener" class="external-link" href="http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance#F.23" target="_blank">implementation in F#</a>, which I shamelessly lifted.</p></div><div><p dir="auto">The Centroid update question required a bit of thinking. Obviously, computing the average of strings isn’t going to work – so how could we find a good “representative string” from a Cluster? I decided to go for something fairly simple: pick the string in the Cluster which has the least worst-case distance to all the others (as an alternative, I also tried picking the string with the lowest sum of squares distance, which produced similar results).</p></div><div><p dir="auto">Finally, I created a sample, using a collection of 53 words sharing three different roots: “GRAPH”, “SCRIPT” and “GRAM”. Results vary from run to run (not surprisingly, the algorithm often struggles to separate GRAPH and GRAM words), but overall I was pleasantly surprised by the results:</p></div><div><pre><code>Words identified
+TELEGRAPHIC
+RADIOGRAM
+PRESCRIPTIVE
+
+Classification of sample words
+AUTOBIOGRAPHER -&gt; TELEGRAPHIC
+AUTOBIOGRAPHICAL -&gt; TELEGRAPHIC
+AUTOBIOGRAPHY -&gt; TELEGRAPHIC
+AUTOGRAPH -&gt; RADIOGRAM
+BIBLIOGRAPHIC -&gt; TELEGRAPHIC
+BIBLIOGRAPHY -&gt; TELEGRAPHIC
+CALLIGRAPHY -&gt; TELEGRAPHIC
+CARTOGRAPHY -&gt; RADIOGRAM
+CRYPTOGRAPHY -&gt; RADIOGRAM
+GRAPH -&gt; TELEGRAPHIC
+HISTORIOGRAPHY -&gt; TELEGRAPHIC
+PARAGRAPH -&gt; TELEGRAPHIC
+SEISMOGRAPH -&gt; TELEGRAPHIC
+STENOGRAPHER -&gt; TELEGRAPHIC
+TELEGRAPH -&gt; TELEGRAPHIC
+TELEGRAPHIC -&gt; TELEGRAPHIC
+BIBLIOGRAPHICAL -&gt; TELEGRAPHIC
+STEREOGRAPH -&gt; TELEGRAPHIC
+DESCRIBABLE -&gt; PRESCRIPTIVE
+DESCRIBE -&gt; PRESCRIPTIVE
+DESCRIBER -&gt; PRESCRIPTIVE
+DESCRIPTION -&gt; PRESCRIPTIVE
+DESCRIPTIVE -&gt; PRESCRIPTIVE
+INDESCRIBABLE -&gt; PRESCRIPTIVE
+INSCRIBE -&gt; PRESCRIPTIVE
+INSCRIPTION -&gt; PRESCRIPTIVE
+POSTSCRIPT -&gt; PRESCRIPTIVE
+PRESCRIBE -&gt; PRESCRIPTIVE
+PRESCRIPTION -&gt; PRESCRIPTIVE
+PRESCRIPTIVE -&gt; PRESCRIPTIVE
+SCRIBAL -&gt; RADIOGRAM
+SCRIBBLE -&gt; PRESCRIPTIVE
+SCRIBE -&gt; PRESCRIPTIVE
+SCRIBBLER -&gt; RADIOGRAM
+SCRIPT -&gt; PRESCRIPTIVE
+SCRIPTURE -&gt; PRESCRIPTIVE
+SCRIPTWRITER -&gt; PRESCRIPTIVE
+SUPERSCRIPT -&gt; PRESCRIPTIVE
+TRANSCRIBE -&gt; PRESCRIPTIVE
+TYPESCRIPT -&gt; PRESCRIPTIVE
+TRANSCRIPTION -&gt; PRESCRIPTIVE
+DESCRIPTOR -&gt; PRESCRIPTIVE
+ANAGRAM -&gt; RADIOGRAM
+CABLEGRAM -&gt; RADIOGRAM
+CRYPTOGRAM -&gt; RADIOGRAM
+GRAMMAR -&gt; RADIOGRAM
+GRAMMARIAN -&gt; RADIOGRAM
+GRAMMATICAL -&gt; RADIOGRAM
+MONOGRAM -&gt; RADIOGRAM
+RADIOGRAM -&gt; RADIOGRAM
+TELEGRAM -&gt; TELEGRAPHIC
+UNGRAMMATICAL -&gt; TELEGRAPHIC
+AEROGRAM -&gt; RADIOGRAM
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">That’s it for today! In our next “ML in Action” episode, we’ll look into the bissecting k-means algorithm, which is a variation on today’s algorithm, and probably revisit the implementation. In the meanwhile, feel free to leave comments or feedback!</p></div></div></div><div class="heading-wrapper"><h2 data-heading="Resources" dir="auto" class="heading" id="Resources"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>Resources</h2><div class="heading-children"><div><p dir="auto"><a data-tooltip-position="top" aria-label="https://github.com/mathias-brandewinder/Machine-Learning-In-Action/tree/463cc43a5870cc8253bbf8b608800cb8380404b6" rel="noopener" class="external-link" href="https://github.com/mathias-brandewinder/Machine-Learning-In-Action/tree/463cc43a5870cc8253bbf8b608800cb8380404b6" target="_blank">Source code on GitHub</a>: the relevant code is in the files KMeansClustering.fs and Chapter10.fsx.</p></div><div><p dir="auto"><a data-tooltip-position="top" aria-label="http://en.wikipedia.org/wiki/K-means_clustering#Standard_algorithm" rel="noopener" class="external-link" href="http://en.wikipedia.org/wiki/K-means_clustering#Standard_algorithm" target="_blank">K-means algorithm on Wikipedia</a>.</p></div><div><p dir="auto"><a data-tooltip-position="top" aria-label="http://en.wikipedia.org/wiki/Levenshtein_distance" rel="noopener" class="external-link" href="http://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank">Levenshtein distance on Wikipedia</a>, and an <a data-tooltip-position="top" aria-label="http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance#F.23" rel="noopener" class="external-link" href="http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance#F.23" target="_blank">F# implementation of Levenshtein distance</a>.</p></div><div><p dir="auto"><a data-tooltip-position="top" aria-label="http://richardminerich.com/2012/09/levenshtein-distance-and-the-triangle-inequality/" rel="noopener" class="external-link" href="http://richardminerich.com/2012/09/levenshtein-distance-and-the-triangle-inequality/" target="_blank">Interesting discussion on the Levenshtein distance</a> on <a data-tooltip-position="top" aria-label="https://twitter.com/rickasaurus" rel="noopener" class="external-link" href="https://twitter.com/rickasaurus" target="_blank">@Rickasaurus</a>’ blog.</p></div><div><p dir="auto">Another <a data-tooltip-position="top" aria-label="http://tech.blinemedical.com/k-means-step-by-step-in-f/" rel="noopener" class="external-link" href="http://tech.blinemedical.com/k-means-step-by-step-in-f/" target="_blank">K-means implementation in F#,</a> from <a data-tooltip-position="top" aria-label="https://twitter.com/devshorts" rel="noopener" class="external-link" href="https://twitter.com/devshorts" target="_blank">@DevShorts</a>.</p></div><div><p dir="auto"><a data-tooltip-position="top" aria-label="http://www.learnthat.org/pages/view/roots.html" rel="noopener" class="external-link" href="http://www.learnthat.org/pages/view/roots.html" target="_blank">Root Words</a>: an intriguing web page, providing help to learn words and vocabulary, which contains a list of words roots. It has one incredibly annoying feature – you can’t copy paste text from the page.</p></div><div class="mod-footer"></div></div></div></div></div></div><div class="sidebar-right sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content"><div class="graph-view-wrapper"><div class="sidebar-section-header">Interactive Graph</div><div class="graph-view-placeholder">
+		<div class="graph-view-container">
+			<div class="graph-icon graph-expand" role="button" aria-label="Expand" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></div>
+			<canvas id="graph-canvas" class="hide" width="512px" height="512px"></canvas>
+		</div>
+		</div></div><div class="tree-container mod-root nav-folder tree-item outline-tree" data-depth="0"><div class="tree-header"><span class="sidebar-section-header">Table Of Contents</span><button class="clickable-icon collapse-tree-button" aria-label="Collapse All"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button></div><div class="tree-scroll-area tree-item-children nav-folder-children"><div class="tree-item mod-tree-folder nav-folder mod-collapsible is-collapsed" style="display: none;"></div><div class="tree-item" data-depth="1"><a class="tree-link" href="computer-science/programming-language/fsharp/k-means-clustering-in-fsharp.html#K-Means clustering in FSharp"><div class="tree-item-contents heading-link" heading-name="K-Means clustering in FSharp"><span class="tree-item-title">K-Means clustering in FSharp</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/k-means-clustering-in-fsharp.html#F#_implementation"><div class="tree-item-contents heading-link" heading-name="F# implementation"><span class="tree-item-title">F# implementation</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/k-means-clustering-in-fsharp.html#The_algorithm_in_action"><div class="tree-item-contents heading-link" heading-name="The algorithm in action"><span class="tree-item-title">The algorithm in action</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/k-means-clustering-in-fsharp.html#Resources"><div class="tree-item-contents heading-link" heading-name="Resources"><span class="tree-item-title">Resources</span></div></a><div class="tree-item-children nav-folder-children"></div></div></div></div></div></div></div><script defer="">let rs = document.querySelector(".sidebar-right"); rs.classList.add("is-collapsed"); if (window.innerWidth > 768) rs.classList.remove("is-collapsed"); rs.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-right-width"));</script></div></div></body></html>

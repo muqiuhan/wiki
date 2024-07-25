@@ -1,0 +1,993 @@
+<!DOCTYPE html> <html><head>
+		<title>Raft实现 - 一致性算法介绍</title>
+		<base href="../../../">
+		<meta id="root-path" root-path="../../../">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0">
+		<meta charset="UTF-8">
+		<meta name="description" content="韩暮秋的个人维基 - Raft实现 - 一致性算法介绍">
+		<meta property="og:title" content="Raft实现 - 一致性算法介绍">
+		<meta property="og:description" content="韩暮秋的个人维基 - Raft实现 - 一致性算法介绍">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html">
+		<meta property="og:image" content="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172248.png">
+		<meta property="og:site_name" content="韩暮秋的个人维基">
+		<meta name="author" content="韩暮秋"><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://muqiuhan.github.io/wiki/lib/rss.xml"><script async="" id="webpage-script" src="lib/scripts/webpage.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script type="module" async="" id="graph-view-script" src="lib/scripts/graph-view.js"></script><script async="" id="graph-wasm-script" src="lib/scripts/graph-wasm.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-render-worker-script" src="lib/scripts/graph-render-worker.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="tinycolor-script" src="lib/scripts/tinycolor.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="pixi-script" src="lib/scripts/pixi.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="minisearch-script" src="lib/scripts/minisearch.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><link rel="icon" href="lib/media/favicon.ico"><script async="" id="graph-data-script" src="lib/scripts/graph-data.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><style>body{--line-width:40em;--line-width-adaptive:40em;--file-line-width:40em;--sidebar-width:min(20em, 80vw);--collapse-arrow-size:11px;--tree-horizontal-spacing:0.6em;--tree-vertical-spacing:0.6em;--sidebar-margin:12px}.sidebar{height:100%;min-width:calc(var(--sidebar-width) + var(--divider-width-hover));max-width:calc(var(--sidebar-width) + var(--divider-width-hover));font-size:14px;z-index:10;position:relative;overflow:hidden;transition:min-width ease-in-out,max-width ease-in-out;transition-duration:.2s;contain:size}.sidebar-left{left:0}.sidebar-right{right:0}.sidebar.is-collapsed{min-width:0;max-width:0}body.floating-sidebars .sidebar{position:absolute}.sidebar-content{height:100%;min-width:calc(var(--sidebar-width) - var(--divider-width-hover));top:0;padding:var(--sidebar-margin);padding-top:4em;line-height:var(--line-height-tight);background-color:var(--background-secondary);transition:background-color,border-right,border-left,box-shadow;transition-duration:var(--color-fade-speed);transition-timing-function:ease-in-out;position:absolute;display:flex;flex-direction:column}.sidebar:not(.is-collapsed) .sidebar-content{min-width:calc(max(100%,var(--sidebar-width)) - 3px);max-width:calc(max(100%,var(--sidebar-width)) - 3px)}.sidebar-left .sidebar-content{left:0;border-top-right-radius:var(--radius-l);border-bottom-right-radius:var(--radius-l)}.sidebar-right .sidebar-content{right:0;border-top-left-radius:var(--radius-l);border-bottom-left-radius:var(--radius-l)}.sidebar:has(.sidebar-content:empty):has(.topbar-content:empty){display:none}.sidebar-topbar{height:2em;width:var(--sidebar-width);top:var(--sidebar-margin);padding-inline:var(--sidebar-margin);z-index:1;position:fixed;display:flex;align-items:center;transition:width ease-in-out;transition-duration:inherit}.sidebar.is-collapsed .sidebar-topbar{width:calc(2.3em + var(--sidebar-margin) * 2)}.sidebar .sidebar-topbar.is-collapsed{width:0}.sidebar-left .sidebar-topbar{left:0}.sidebar-right .sidebar-topbar{right:0}.topbar-content{overflow:hidden;overflow:clip;width:100%;height:100%;display:flex;align-items:center;transition:inherit}.sidebar.is-collapsed .topbar-content{width:0;transition:inherit}.clickable-icon.sidebar-collapse-icon{background-color:transparent;color:var(--icon-color-focused);padding:0!important;margin:0!important;height:100%!important;width:2.3em!important;margin-inline:0.14em!important;position:absolute}.sidebar-left .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);right:var(--sidebar-margin)}.sidebar-right .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);left:var(--sidebar-margin)}.clickable-icon.sidebar-collapse-icon svg.svg-icon{width:100%;height:100%}.sidebar-section-header{margin:0 0 1em 0;text-transform:uppercase;letter-spacing:.06em;font-weight:600}body{transition:background-color var(--color-fade-speed) ease-in-out}.webpage-container{display:flex;flex-direction:row;height:100%;width:100%;align-items:stretch;justify-content:center}.document-container{opacity:1;flex-basis:100%;max-width:100%;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;transition:opacity .2s ease-in-out;contain:inline-size}.hide{opacity:0;transition:opacity .2s ease-in-out}.document-container>.markdown-preview-view{margin:var(--sidebar-margin);margin-bottom:0;width:100%;width:-webkit-fill-available;width:-moz-available;width:fill-available;background-color:var(--background-primary);transition:background-color var(--color-fade-speed) ease-in-out;border-top-right-radius:var(--window-radius,var(--radius-m));border-top-left-radius:var(--window-radius,var(--radius-m));overflow-x:hidden!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;contain:inline-size}.document-container>.markdown-preview-view>.markdown-preview-sizer{padding-bottom:80vh!important;width:100%!important;max-width:var(--line-width)!important;flex-basis:var(--line-width)!important;transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}.markdown-rendered img:not([width]),.view-content img:not([width]){max-width:100%;outline:0}.document-container>.view-content.embed{display:flex;padding:1em;height:100%;width:100%;align-items:center;justify-content:center}.document-container>.view-content.embed>*{max-width:100%;max-height:100%;object-fit:contain}:has(> :is(.math,table)){overflow-x:auto!important}.document-container>.view-content{overflow-x:auto;contain:content;padding:0;margin:0;height:100%}.scroll-highlight{position:absolute;width:100%;height:100%;pointer-events:none;z-index:1000;background-color:hsla(var(--color-accent-hsl),.25);opacity:0;padding:1em;inset:50%;translate:-50% -50%;border-radius:var(--radius-s)}</style><script defer="">async function loadIncludes(){if("file:"!=location.protocol){let e=document.querySelectorAll("include");for(let t=0;t<e.length;t++){let o=e[t],l=o.getAttribute("src");try{const e=await fetch(l);if(!e.ok){console.log("Could not include file: "+l),o?.remove();continue}let t=await e.text(),n=document.createRange().createContextualFragment(t),i=Array.from(n.children);for(let e of i)e.classList.add("hide"),e.style.transition="opacity 0.5s ease-in-out",setTimeout((()=>{e.classList.remove("hide")}),10);o.before(n),o.remove(),console.log("Included file: "+l)}catch(e){o?.remove(),console.log("Could not include file: "+l,e);continue}}}else{if(document.querySelectorAll("include").length>0){var e=document.createElement("div");e.id="error",e.textContent="Web server exports must be hosted on an http / web server to be viewed correctly.",e.style.position="fixed",e.style.top="50%",e.style.left="50%",e.style.transform="translate(-50%, -50%)",e.style.fontSize="1.5em",e.style.fontWeight="bold",e.style.textAlign="center",document.body.appendChild(e),document.querySelector(".document-container")?.classList.remove("hide")}}}document.addEventListener("DOMContentLoaded",(()=>{loadIncludes()}));let isFileProtocol="file:"==location.protocol;function waitLoadScripts(e,t){let o=e.map((e=>document.getElementById(e+"-script"))),l=0;!function e(){let n=o[l];l++,n&&"true"!=n.getAttribute("loaded")||l<o.length&&e(),l<o.length?n.addEventListener("load",e):t()}()}</script><link rel="stylesheet" href="lib/styles/obsidian.css"><link rel="preload" href="lib/styles/other-plugins.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/other-plugins.css"></noscript><link rel="stylesheet" href="lib/styles/theme.css"><link rel="preload" href="lib/styles/global-variable-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/global-variable-styles.css"></noscript><link rel="preload" href="lib/styles/main-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/main-styles.css"></noscript></head><body class="publish css-settings-manager theme-light show-inline-title show-ribbon pt-color-scheme-style-minimal-lt pt-accent-style-borderandfilled-lt pt-accent-color-grey-lt pt-highlight-text-accent-lt pt-accent-style-borderandfilled-dt pt-accent-color-purple-dt pt-highlight-text-accent-dt pt-focused-style-main-only pt-font-disable-ligatures pt-highlight-style-borderandfilled-lt pt-highlight-text-color-lt pt-highlight-style-borderandfilled-dt pt-highlight-text-color-dt pt-file-explorer-folder-icon-default pt-colored-folders-style-rainbow pt-center-kanban-title-text pt-kanban-background-grid-lt pt-kanban-background-grid-dt pt-icon-folder-accent"><script defer="">let theme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"==theme?(document.body.classList.add("theme-dark"),document.body.classList.remove("theme-light")):(document.body.classList.add("theme-light"),document.body.classList.remove("theme-dark")),window.innerWidth<480?document.body.classList.add("is-phone"):window.innerWidth<768?document.body.classList.add("is-tablet"):window.innerWidth<1024?document.body.classList.add("is-small-screen"):document.body.classList.add("is-large-screen")</script><div class="webpage-container workspace"><div class="sidebar-left sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><label class="theme-toggle-container" for="theme_toggle"><input class="theme-toggle-input" type="checkbox" id="theme_toggle"><div class="toggle-background"></div></label></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content"><div class="search-input-container"><input enterkeyhint="search" type="search" spellcheck="false" placeholder="Search..."><div class="search-input-clear-button" aria-label="Clear search"></div></div><include src="lib/html/file-tree.html"></include></div><script defer="">let ls = document.querySelector(".sidebar-left"); ls.classList.add("is-collapsed"); if (window.innerWidth > 768) ls.classList.remove("is-collapsed"); ls.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-left-width"));</script></div><div class="document-container markdown-reading-view hide"><div class="markdown-preview-view markdown-rendered allow-fold-headings allow-fold-lists is-readable-line-width"><style id="MJX-CHTML-styles"></style><div class="markdown-preview-sizer markdown-preview-section"><h1 class="page-title heading inline-title" id="Raft实现 - 一致性算法介绍"><p dir="auto">Raft实现 - 一致性算法介绍</p></h1><div class="heading-wrapper"><h2 data-heading="1. 一致性算法介绍" dir="auto" class="heading" id="1._一致性算法介绍"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>1. 一致性算法介绍</h2><div class="heading-children"><div class="heading-wrapper"><h3 data-heading="1.1 一致性同步与Paxos算法" dir="auto" class="heading" id="1.1_一致性同步与Paxos算法"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>1.1 一致性同步与Paxos算法</h3><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">对可靠性有很高要求的系统，通常都会额外部署1至多个机器为备用副本组成主备集群，避免出现单点故障。<br>
+有状态的系统需要主节点与备用副本间以某种方式进行数据复制，这样主节点出现故障时就能快速的令备用机器接管系统以达到高可用的目的。</li>
+<li data-line="2" dir="auto">常见的主备复制方式是异步、弱一致性的，例如DNS系统，mysql、redis(7.0之前)等数据库的主备复制，或者通过某种消息中间件来进行解耦，即在CAP中选择了AP(高可用、分区容错)而舍弃了C(强一致性)。<br>
+弱一致性的AP相比强一致CP的复制有着许多优点：<strong>效率高</strong>(多个单次操作可以批量处理)，<strong>耦合性低</strong>(备份节点挂了也不影响主节点工作)，实现相对简单等等。<br>
+但AP复制最大的缺点就是<strong>丧失了强一致性</strong>，主节点在操作完成响应客户端后，但还未成功同步到备份节点前宕机，对应的变更存在着丢失的风险，因此AP的方案不适用于对一致性有苛刻要求的场合。</li>
+<li data-line="5" dir="auto">最原始的强一致性主备同步，即主节点在每一个备份节点同步完成后才能响应客户端成功的方案效率太低，可用性太差(任意一个备份节点故障就会使得集群不可用)。<br>
+因此基于多数派的分布式强一致算法被发明了出来，其中最早被提出的便是<strong>Paxos</strong>算法。但Paxos算法过于复杂，在分布式环境下有大量的case需要得到正确的实现，因此时至今日也没有多少系统真正的将Paxos落地。</li>
+</ul></div></div></div><div class="heading-wrapper"><h3 data-heading="1.2 raft算法" dir="auto" class="heading" id="1.2_raft算法"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>1.2 raft算法</h3><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">由于Paxos过于复杂的原因，Raft算法被发明了出来。Raft算法在设计时大量参考了Paxos，也是一个基于日志和多数派的一致性算法，但在很多细节上相比Paxos做了许多简化。</li>
+<li data-line="1" dir="auto">因为Raft比Paxos要简单很多，更容易被开发人员理解并最终用于构建实际的系统。因此即使raft算法的性能相比Paxos要差一点，但目前流行的强一致分布式系统基本都是基于Raft算法的。</li>
+</ul></div><div><p dir="auto"><a data-tooltip-position="top" aria-label="https://raft.github.io/raft.pdf" rel="noopener" class="external-link" href="https://raft.github.io/raft.pdf" target="_blank">raft的论文</a> 中将raft算法的功能分解为4个模块：</p></div><div><ol>
+<li data-line="0" dir="auto">leader选举</li>
+<li data-line="1" dir="auto">日志复制</li>
+<li data-line="2" dir="auto">日志压缩</li>
+<li data-line="3" dir="auto">集群成员动态变更</li>
+</ol></div><div><p dir="auto">其中前两项“leader选举”和“日志复制”是raft算法的基础，而后两项“日志压缩”和“集群成员动态变更”属于raft算法在功能上的重要优化。</p></div><div><p dir="auto"><a data-tooltip-position="top" aria-label="https://www.cnblogs.com/xiaoxiongcanguan/p/17552027.html" rel="noopener" class="external-link" href="https://www.cnblogs.com/xiaoxiongcanguan/p/17552027.html" target="_blank">raft论文中英翻译</a></p></div></div></div></div></div><div class="heading-wrapper"><h2 data-heading="2. 自己动手实现一个基于Raft的简易KV数据库" dir="auto" class="heading" id="2._自己动手实现一个基于Raft的简易KV数据库"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>2. 自己动手实现一个基于Raft的简易KV数据库</h2><div class="heading-children"><div><p dir="auto">通过raft的论文或者其它相关资料，读者基本能大致理解raft的工作原理。<br>
+但纸上得来终觉浅，绝知此事要躬行，亲手实践才能更好的把握raft中的精巧细节，加深对raft算法的理解，更有效的阅读基于raft或其它一致性协议的开源项目源码。</p></div><div class="heading-wrapper"><h3 data-heading="MyRaft介绍" dir="auto" class="heading" id="MyRaft介绍"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>MyRaft介绍</h3><div class="heading-children"><div><p dir="auto">在这个系列博客中会带领读者一步步实现一个基于raft算法的简易KV数据库,即MyRaft。MyRaft的实现基于原始的raft算法，没有额外的优化，目的是为了保证实现的简单性。<br>
+MyRaft实现了raft论文中提到的三个功能，即”leader选举“、”日志复制“和”日志压缩“（在实践中发现“集群成员动态变更”对原有逻辑有较大改动而大幅增加了复杂度，限于个人水平暂不实现）。<br>
+三个功能会通过三次迭代实验逐步完成，其中每个迭代都会以博客的形式分享出来。</p></div><div class="heading-wrapper"><h5 data-heading="MyRaft架构图" dir="auto" class="heading" id="MyRaft架构图"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>MyRaft架构图</h5><div class="heading-children"><div><pre><code>![[Pasted image 20240725171642.png]]
+</code><button class="copy-code-button">Copy</button></pre></div></div></div></div></div></div></div><div class="heading-wrapper"><h2 data-heading="3. MyRaft基础结构源码分析" dir="auto" class="heading" id="3._MyRaft基础结构源码分析"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>3. MyRaft基础结构源码分析</h2><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">由于是MyRaft的第一个迭代，在这个迭代中需要先搭好MyRaft的基础骨架。<br>
+raft中的每个节点本质上是一个rpc服务器，同时也是一个rpc的消费者，节点之间通过rpc的方式互相通信。</li>
+<li data-line="2" dir="auto">MyRaft使用的rpc框架是上一个实验中自己实现的MyRpc框架：<br>
+博客地址: <a rel="noopener" class="external-link" href="https://www.cnblogs.com/xiaoxiongcanguan/p/17506728.html" target="_blank">https://www.cnblogs.com/xiaoxiongcanguan/p/17506728.html</a><br>
+github地址：<a rel="noopener" class="external-link" href="https://github.com/1399852153/MyRpc" target="_blank">https://github.com/1399852153/MyRpc</a> (main分支)</li>
+</ul></div><div class="heading-wrapper"><h5 data-heading="Raft的rpc接口定义" dir="auto" class="heading" id="Raft的rpc接口定义"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>Raft的rpc接口定义</h5><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto"><strong>因为lab1中只实现leader选举，简单起见只定义当前所需的api接口，接口参数相比最终的实现也省去了大量当前用不上的字段，后续有需要再进行拓展。</strong></li>
+</ul></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">RaftService</span> <span class="token punctuation">{</span>
+
+    <span class="token doc-comment comment">/**
+     * 请求投票 requestVote
+     *
+     * Receiver implementation:
+     * 1. Reply false if term &lt; currentTerm (§5.1)
+     * 2. If votedFor is null or candidateId, and candidate’s log is at
+     * least as up-to-date as receiver’s log, grant vote (§5.2, §5.4)
+     *
+     * 接受者需要实现以下功能：
+     * 1. 如果参数中的任期值term小于当前自己的任期值currentTerm，则返回false不同意投票给调用者
+     * 2. 如果自己还没有投票(FIFO)或者已经投票给了candidateId对应的节点(幂等)，
+     *    并且候选人的日志至少与被调用者的日志一样新(比较日志的任期值和索引值)，则投票给调用者(返回值里voteGranted为true)
+     * */</span>
+    <span class="token class-name">RequestVoteRpcResult</span> <span class="token function">requestVote</span><span class="token punctuation">(</span><span class="token class-name">RequestVoteRpcParam</span> requestVoteRpcParam<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 追加日志条目 AppendEntries
+     * */</span>
+    <span class="token class-name">AppendEntriesRpcResult</span> <span class="token function">appendEntries</span><span class="token punctuation">(</span><span class="token class-name">AppendEntriesRpcParam</span> appendEntriesRpcParam<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * 请求投票的RPC接口参数对象
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RequestVoteRpcParam</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+
+    <span class="token doc-comment comment">/**
+     * 候选人的任期编号
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> term<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 候选人的Id
+     * */</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> candidateId<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 候选人最新日志的索引编号
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">long</span> lastLogIndex<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 候选人最新日志对应的任期编号
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> lastLogTerm<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * 请求投票的RPC接口响应对象
+ * */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RequestVoteRpcResult</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+
+    <span class="token doc-comment comment">/**
+     * 被调用者当前的任期值
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> term<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 是否同意投票给调用者
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> voteGranted<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * 追加日志条目的RPC接口参数对象
+ * */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AppendEntriesRpcParam</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+
+    <span class="token doc-comment comment">/**
+     * 当前leader的任期值
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> term<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * leader的id
+     * */</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> leaderId<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * 追加日志条目的RPC接口响应对象
+ * */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AppendEntriesRpcResult</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+
+    <span class="token doc-comment comment">/**
+     * 被调用者当前的任期值
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> term<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 是否处理成功
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> success<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div></div></div><div class="heading-wrapper"><h5 data-heading="MyRaft的Rpc客户端与服务端实现" dir="auto" class="heading" id="MyRaft的Rpc客户端与服务端实现"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>MyRaft的Rpc客户端与服务端实现</h5><div class="heading-children"><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * raft的rpc服务
+ * */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftRpcServer</span> <span class="token keyword">extends</span> <span class="token class-name">RaftServer</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">Registry</span> registry<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftNodeConfig</span> currentNodeConfig<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">RaftRpcServer</span><span class="token punctuation">(</span><span class="token class-name">RaftConfig</span> raftConfig<span class="token punctuation">,</span> <span class="token class-name">Registry</span> registry<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">(</span>raftConfig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentNodeConfig <span class="token operator">=</span> raftConfig<span class="token punctuation">.</span><span class="token function">getCurrentNodeConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>registry <span class="token operator">=</span> registry<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> otherNodeInCluster<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 先初始化内部模块</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span>otherNodeInCluster<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 初始化内部的模块后，启动rpc</span>
+        <span class="token function">initRpcServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> <span class="token function">getRpcProxyList</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftNodeConfig</span><span class="token punctuation">&gt;</span></span> otherNodeInCluster<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">initRpcConsumer</span><span class="token punctuation">(</span>otherNodeInCluster<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> <span class="token function">initRpcConsumer</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftNodeConfig</span><span class="token punctuation">&gt;</span></span> otherNodeInCluster<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">ConsumerBootstrap</span> consumerBootstrap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConsumerBootstrap</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">registry</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">loadBalance</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">SimpleRoundRobinBalance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 注册消费者</span>
+        <span class="token class-name">Consumer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> consumer <span class="token operator">=</span> consumerBootstrap<span class="token punctuation">.</span><span class="token function">registerConsumer</span><span class="token punctuation">(</span><span class="token class-name">RaftService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token class-name">FastFailInvoker</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">RaftService</span> raftServiceProxy <span class="token operator">=</span> consumer<span class="token punctuation">.</span><span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> raftRpcConsumerList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">RaftNodeConfig</span> raftNodeConfig <span class="token operator">:</span> otherNodeInCluster<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// 使用rpc代理的客户端</span>
+            raftRpcConsumerList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RaftRpcConsumer</span><span class="token punctuation">(</span>raftNodeConfig<span class="token punctuation">,</span>raftServiceProxy<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> raftRpcConsumerList<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">initRpcServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">URLAddress</span> providerURLAddress <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URLAddress</span><span class="token punctuation">(</span>currentNodeConfig<span class="token punctuation">.</span><span class="token function">getIp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>currentNodeConfig<span class="token punctuation">.</span><span class="token function">getPort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Provider</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> provider <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Provider</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        provider<span class="token punctuation">.</span><span class="token function">setInterfaceClass</span><span class="token punctuation">(</span><span class="token class-name">RaftService</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        provider<span class="token punctuation">.</span><span class="token function">setRef</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        provider<span class="token punctuation">.</span><span class="token function">setUrlAddress</span><span class="token punctuation">(</span>providerURLAddress<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        provider<span class="token punctuation">.</span><span class="token function">setRegistry</span><span class="token punctuation">(</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        provider<span class="token punctuation">.</span><span class="token function">export</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">NettyServer</span> nettyServer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">NettyServer</span><span class="token punctuation">(</span>providerURLAddress<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        nettyServer<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftRpcConsumer</span> <span class="token keyword">implements</span> <span class="token class-name">RaftService</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">RaftRpcConsumer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftNodeConfig</span> targetNodeConfig<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftService</span> raftServiceProxy<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">RaftRpcConsumer</span><span class="token punctuation">(</span><span class="token class-name">RaftNodeConfig</span> targetNodeConfig<span class="token punctuation">,</span> <span class="token class-name">RaftService</span> proxyRaftService<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>targetNodeConfig <span class="token operator">=</span> targetNodeConfig<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>raftServiceProxy <span class="token operator">=</span> proxyRaftService<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">RequestVoteRpcResult</span> <span class="token function">requestVote</span><span class="token punctuation">(</span><span class="token class-name">RequestVoteRpcParam</span> requestVoteRpcParam<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 强制指定rpc目标的ip/port</span>
+        <span class="token function">setTargetProviderUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">RequestVoteRpcResult</span> result <span class="token operator">=</span> raftServiceProxy<span class="token punctuation">.</span><span class="token function">requestVote</span><span class="token punctuation">(</span>requestVoteRpcParam<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">AppendEntriesRpcResult</span> <span class="token function">appendEntries</span><span class="token punctuation">(</span><span class="token class-name">AppendEntriesRpcParam</span> appendEntriesRpcParam<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 强制指定rpc目标的ip/port</span>
+        <span class="token function">setTargetProviderUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">AppendEntriesRpcResult</span> result <span class="token operator">=</span> raftServiceProxy<span class="token punctuation">.</span><span class="token function">appendEntries</span><span class="token punctuation">(</span>appendEntriesRpcParam<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">setTargetProviderUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">ConsumerRpcContext</span> consumerRpcContext <span class="token operator">=</span> <span class="token class-name">ConsumerRpcContextHolder</span><span class="token punctuation">.</span><span class="token function">getConsumerRpcContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        consumerRpcContext<span class="token punctuation">.</span><span class="token function">setTargetProviderAddress</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token class-name">URLAddress</span><span class="token punctuation">(</span>targetNodeConfig<span class="token punctuation">.</span><span class="token function">getIp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>targetNodeConfig<span class="token punctuation">.</span><span class="token function">getPort</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div></div></div><div class="heading-wrapper"><h5 data-heading="raft服务元数据持久化" dir="auto" class="heading" id="raft服务元数据持久化"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>raft服务元数据持久化</h5><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">raft的论文中提到raft服务中需要持久化的三个要素：currentTerm（当前服务器的任期值）、votedFor(当前服务器在此之前投票给了谁)和logs(raft的操作日志，与本篇博客无关在lab2中才会引入)。</li>
+<li data-line="1" dir="auto">currentTerm和votedFor需要持久化的原因是为了避免raft节点在完成leader选举的投票后宕机，重启恢复后如果这两个数据丢失了就很容易在同一任期内投票给多个候选人而出现集群脑裂(即多个合法leader)。</li>
+<li data-line="2" dir="auto">MyRaft用磁盘文件进行持久化，简单起见在currentTerm或votedFor更新时加写锁，通过原子性的整体刷盘来完成持久化。</li>
+</ul></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftServerMetaData</span> <span class="token punctuation">{</span>
+
+    <span class="token doc-comment comment">/**
+     * 当前服务器的任期值
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> currentTerm<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 当前服务器在此之前投票给了谁？
+     * (候选者的serverId，如果还没有投递就是null)
+     * */</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> votedFor<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftServerMetaDataPersistentModule</span> <span class="token punctuation">{</span>
+
+    <span class="token doc-comment comment">/**
+     * 当前服务器的任期值
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token keyword">int</span> currentTerm<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 当前服务器在此之前投票给了谁？
+     * (候选者的serverId，如果还没有投递就是null)
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token class-name">String</span> votedFor<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">File</span> persistenceFile<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ReentrantReadWriteLock</span> reentrantLock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReentrantReadWriteLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ReentrantReadWriteLock<span class="token punctuation">.</span>WriteLock</span> writeLock <span class="token operator">=</span> reentrantLock<span class="token punctuation">.</span><span class="token function">writeLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ReentrantReadWriteLock<span class="token punctuation">.</span>ReadLock</span> readLock <span class="token operator">=</span> reentrantLock<span class="token punctuation">.</span><span class="token function">readLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">RaftServerMetaDataPersistentModule</span><span class="token punctuation">(</span><span class="token class-name">String</span> serverId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">String</span> userPath <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">getProperty</span><span class="token punctuation">(</span><span class="token string">"user.dir"</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token class-name">File</span><span class="token punctuation">.</span>separator <span class="token operator">+</span> serverId<span class="token punctuation">;</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>persistenceFile <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>userPath <span class="token operator">+</span> <span class="token class-name">File</span><span class="token punctuation">.</span>separator <span class="token operator">+</span> <span class="token string">"raftServerMetaData-"</span> <span class="token operator">+</span> serverId <span class="token operator">+</span> <span class="token string">".txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">MyRaftFileUtil</span><span class="token punctuation">.</span><span class="token function">createFile</span><span class="token punctuation">(</span>persistenceFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 读取持久化在磁盘中的数据</span>
+        <span class="token class-name">RaftServerMetaData</span> raftServerMetaData <span class="token operator">=</span> <span class="token function">readRaftServerMetaData</span><span class="token punctuation">(</span>persistenceFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentTerm <span class="token operator">=</span> raftServerMetaData<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>votedFor <span class="token operator">=</span> raftServerMetaData<span class="token punctuation">.</span><span class="token function">getVotedFor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        readLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> currentTerm<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            readLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setCurrentTerm</span><span class="token punctuation">(</span><span class="token keyword">int</span> currentTerm<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        writeLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>currentTerm <span class="token operator">=</span> currentTerm<span class="token punctuation">;</span>
+
+            <span class="token comment">// 更新后数据落盘</span>
+            <span class="token function">persistentRaftServerMetaData</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RaftServerMetaData</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentTerm<span class="token punctuation">,</span><span class="token keyword">this</span><span class="token punctuation">.</span>votedFor<span class="token punctuation">)</span><span class="token punctuation">,</span>persistenceFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            writeLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getVotedFor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        readLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> votedFor<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            readLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setVotedFor</span><span class="token punctuation">(</span><span class="token class-name">String</span> votedFor<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        writeLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token class-name">Objects</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>votedFor<span class="token punctuation">,</span>votedFor<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token comment">// 相等的话就不刷新了</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            
+            <span class="token keyword">this</span><span class="token punctuation">.</span>votedFor <span class="token operator">=</span> votedFor<span class="token punctuation">;</span>
+
+            <span class="token comment">// 更新后数据落盘</span>
+            <span class="token function">persistentRaftServerMetaData</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RaftServerMetaData</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentTerm<span class="token punctuation">,</span><span class="token keyword">this</span><span class="token punctuation">.</span>votedFor<span class="token punctuation">)</span><span class="token punctuation">,</span>persistenceFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            writeLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">RaftServerMetaData</span> <span class="token function">readRaftServerMetaData</span><span class="token punctuation">(</span><span class="token class-name">File</span> persistenceFile<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">String</span> content <span class="token operator">=</span> <span class="token class-name">MyRaftFileUtil</span><span class="token punctuation">.</span><span class="token function">getFileContent</span><span class="token punctuation">(</span>persistenceFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">hasText</span><span class="token punctuation">(</span>content<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token class-name">JsonUtil</span><span class="token punctuation">.</span><span class="token function">json2Obj</span><span class="token punctuation">(</span>content<span class="token punctuation">,</span><span class="token class-name">RaftServerMetaData</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token class-name">RaftServerMetaData</span><span class="token punctuation">.</span><span class="token function">getDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">persistentRaftServerMetaData</span><span class="token punctuation">(</span><span class="token class-name">RaftServerMetaData</span> raftServerMetaData<span class="token punctuation">,</span> <span class="token class-name">File</span> persistenceFile<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">String</span> content <span class="token operator">=</span> <span class="token class-name">JsonUtil</span><span class="token punctuation">.</span><span class="token function">obj2Str</span><span class="token punctuation">(</span>raftServerMetaData<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">MyRaftFileUtil</span><span class="token punctuation">.</span><span class="token function">writeInFile</span><span class="token punctuation">(</span>persistenceFile<span class="token punctuation">,</span>content<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div></div></div></div></div><div class="heading-wrapper"><h2 data-heading="3. leader选举原理与MyRaft实现解析" dir="auto" class="heading" id="3._leader选举原理与MyRaft实现解析"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>3. leader选举原理与MyRaft实现解析</h2><div class="heading-children"><div class="heading-wrapper"><h3 data-heading="leader选举原理" dir="auto" class="heading" id="leader选举原理"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>leader选举原理</h3><div class="heading-children"><div><p dir="auto">raft的leader选举在论文中有较详细的描述，这里说一下我认为的关键细节。</p></div><div><ul>
+<li data-line="0" dir="auto">Raft算法中leader扮演着绝对核心的角色，leader负责处理客户端的请求、将操作日志同步给其它的follower节点以及通知follower提交日志等等。<br>
+因此Raft集群必须基于多数原则选举出一个存活的leader才能对外提供服务，并且一个任期内只能有一个基于多数票选出的leader。</li>
+<li data-line="2" dir="auto">raft是非拜占庭容错共识算法，rpc通信时交互的双方的请求和响应都是可信的，不会作假，节点运行的行为也符合raft算法的规定。</li>
+<li data-line="3" dir="auto">raft中存在任期term的概念，任期值只会单向递增，可以理解为一个虚拟的时间，是raft实现线性一致性关键的一环。过去的leader(term值更小的)需要服从、追随现任的leader(term值更大的)。</li>
+<li data-line="4" dir="auto">在raft节点刚启动时处于follower追随者状态。如果一段时间内raft节点没有接受到来自leader的定时心跳rpc(logEntry为空的appendEntries)通知时就会发起一轮新的选举。<br>
+产生这个现象的原因有很多，比如集群刚刚启动还没有leader；或者之前的leader因为某种原因宕机或与follower的网络通信出现故障等。</li>
+<li data-line="6" dir="auto">发起请求的follower会转变为candidate候选人状态，并首先投票给自己。同时并行的向集群中的其它节点发起请求投票的rpc请求(requestVote),可以理解为给自己拉票。<br>
+接收到requestVote请求的节点会根据自身的状态等信息决定是否投票给发起投票的节点。<br>
+当candidate获得了集群中超过半数的投票(即包括自己在内的1票加上requestVote返回投票成功的数量超过半数(比如5节点得到3票，6节点得到4票))，则candidate成为当前任期的leader。<br>
+如果没有任何一个candidate获得多数选票(没选出leader，可能是分票了，也可能是网络波动等等)，则candidate会将当前任期自增1，则下一次选举超时时会再触发一轮新的选举，循环往复直至选出leader。<br>
+<span alt="Pasted image 20240725172248.png" src="Pasted image 20240725172248.png" class="internal-embed media-embed image-embed is-loaded"><img alt="Pasted image 20240725172248.png" src="computer-science/distributed-system/raft实现/pasted-image-20240725172248.png"></span></li>
+<li data-line="11" dir="auto">leader当选后需要立即向其它的节点发送心跳rpc(logEntry为空的appendEntries)，昭告新leader的产生以抑制其它节点发起新的选举。<br>
+心跳rpc必须以一定频率的定时向所有follower发送，发送的时间间隔需要小于设置的选举超时时间。</li>
+<li data-line="13" dir="auto">由于处理requestVote是先到先得的，同一任期内先发起投票请求的candidate会收到票，后发送的会被拒绝。<br>
+假如leader宕机了，则每个follower都会在一段时间后触发新一轮选举，如果没有额外的限制，则每个节点并发的发起选举很容易导致分票，即自己投给自己，则难以达成共识(取得多数票)。<br>
+Raft的论文中提出了随机化选举超时时间的方案，即每个follower节点的选举超时时间是一个固定值再加上一个随机化的值得到的，这样很难在同一瞬间都触发选举。<br>
+随机超时时间更短的follower能够最先发起选举，更快的得到其它节点的投票从而避免分票的情况。<br>
+虽然无法完全避免分票，但实践中发现效果很好，随机超时时间下通常少数的几次分票后就能收敛而选出leader来。</li>
+<li data-line="18" dir="auto">注意：raft论文在5.4安全性一节中提到，leader选举对于candidate的日志状态有一定的要求(因为只有拥有完整日志的节点才有资格成为leader，确保leader更替时日志不会丢失)，<br>
+但lab1中不支持日志复制，所以MyRaft在lab1的requestVote实现中省略了相关逻辑。</li>
+</ul></div></div></div><div class="heading-wrapper"><h3 data-heading="MyRaft leader选举源码分析" dir="auto" class="heading" id="MyRaft_leader选举源码分析"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>MyRaft leader选举源码分析</h3><div class="heading-children"><div><p dir="auto">下面基于源码展开介绍MyRaft是如何实现raft领导者选举的。</p></div><div><p dir="auto">大致分为以下几部分：</p></div><div><ol>
+<li data-line="0" dir="auto">raft节点配置</li>
+<li data-line="1" dir="auto">raft节点定时选举超时检查</li>
+<li data-line="2" dir="auto">candidate发起选举</li>
+<li data-line="3" dir="auto">leader定时发起心跳广播</li>
+<li data-line="4" dir="auto">raft节点处理requestVote请求</li>
+</ol></div><div class="heading-wrapper"><h4 data-heading="3.1 raft节点配置" dir="auto" class="heading" id="3.1_raft节点配置"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>3.1 raft节点配置</h4><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">raft服务中有很多参数需要配置，比如服务的ip/port，或者raft相关的选举超时时间、心跳间隔时间等等。</li>
+<li data-line="1" dir="auto">MyRaft中统一放到一个叫RaftConfig的类里维护，后续的功能实现时也会在这个类中进行拓展。</li>
+</ul></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftConfig</span> <span class="token punctuation">{</span>
+    
+    <span class="token doc-comment comment">/**
+     * 当前服务节点的id(集群内全局唯一)
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">String</span> serverId<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 自己节点的配置
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftNodeConfig</span> currentNodeConfig<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 整个集群所有的服务节点的id集合
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftNodeConfig</span><span class="token punctuation">&gt;</span></span> raftNodeConfigList<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 集群中多数的值(例如：5节点majorityNum=3,6节点majorityNum=4)
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">int</span> majorityNum<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 选举超时时间 单位:秒
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> electionTimeout<span class="token punctuation">;</span>
+    
+    <span class="token doc-comment comment">/**
+     * 选举超时时间的随机化区间 单位：毫秒
+     * */</span>
+    <span class="token keyword">private</span> <span class="token class-name">Range</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> electionTimeoutRandomRange<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 心跳间隔时间 单位：秒
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> <span class="token class-name">HeartbeatInternal</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftNodeConfig</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">String</span> serverId<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> ip<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">int</span> port<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div></div></div><div class="heading-wrapper"><h4 data-heading="3.2 raft节点定时选举超时检查" dir="auto" class="heading" id="3.2_raft节点定时选举超时检查"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>3.2 raft节点定时选举超时检查</h4><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">MyRaft中将leader选举相关的主要逻辑都集中维护在RaftLeaderElectionModule类中。<br>
+lastHeartbeatTime属性用于存储最后一次收到leader心跳的绝对时间，如果当前节点状态不是leader，并且发现lastHeartbeatTime距离当前时间已经超过了指定的选举超时时间则触发选举。</li>
+<li data-line="2" dir="auto">心跳检查的超时逻辑集中在HeartbeatTimeoutCheckTask中。<br>
+由于需要引入随机化的心跳超时时间，因此无法使用ScheduledExecutorService的scheduleAtFixedRate方法，改为在每个任务执行完成时再添加一个新任务回去的方式来实现。</li>
+</ul></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * Raft服务器的leader选举模块
+ * */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftLeaderElectionModule</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">RaftLeaderElectionModule</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 最近一次接受到心跳的时间
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token class-name">Date</span> lastHeartbeatTime<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ScheduledExecutorService</span> scheduledExecutorService<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ExecutorService</span> rpcThreadPool<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">RaftLeaderElectionModule</span><span class="token punctuation">(</span><span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer <span class="token operator">=</span> currentServer<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>lastHeartbeatTime <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>scheduledExecutorService <span class="token operator">=</span> <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newScheduledThreadPool</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>rpcThreadPool <span class="token operator">=</span> <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newFixedThreadPool</span><span class="token punctuation">(</span>
+                <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getOtherNodeInCluster</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">registerHeartbeatTimeoutCheckTaskWithRandomTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token doc-comment comment">/**
+     * 提交新的延迟任务(带有随机化的超时时间)
+     * */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">registerHeartbeatTimeoutCheckTaskWithRandomTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">int</span> electionTimeout <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getElectionTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDebugElectionTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// debug的时候多等待一些时间</span>
+            electionTimeout <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDebugElectionTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">long</span> randomElectionTimeout <span class="token operator">=</span> <span class="token function">getRandomElectionTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 选举超时时间的基础上，加上一个随机化的时间</span>
+        <span class="token keyword">long</span> delayTime <span class="token operator">=</span> randomElectionTimeout <span class="token operator">+</span> electionTimeout <span class="token operator">*</span> <span class="token number">1000L</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"registerHeartbeatTimeoutCheckTaskWithRandomTimeout delayTime={}"</span><span class="token punctuation">,</span>delayTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        scheduledExecutorService<span class="token punctuation">.</span><span class="token function">schedule</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token class-name">HeartbeatTimeoutCheckTask</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">,</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span>delayTime<span class="token punctuation">,</span><span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token doc-comment comment">/**
+     * 处理投票请求
+     * 注意：synchronized修饰防止不同candidate并发的投票申请处理，以FIFO的方式处理
+     * */</span>
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token class-name">RequestVoteRpcResult</span> <span class="token function">requestVoteProcess</span><span class="token punctuation">(</span><span class="token class-name">RequestVoteRpcParam</span> requestVoteRpcParam<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// Reply false if term &lt; currentTerm (§5.1)</span>
+            <span class="token comment">// 发起投票的candidate任期小于当前服务器任期，拒绝投票给它</span>
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"reject requestVoteProcess! term &lt; currentTerm, currentServerId={}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RequestVoteRpcResult</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 发起投票的节点任期高于当前节点，无条件投票给它(任期高的说了算)</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// 刷新元数据</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">refreshRaftServerMetaData</span><span class="token punctuation">(</span>
+                <span class="token keyword">new</span> <span class="token class-name">RaftServerMetaData</span><span class="token punctuation">(</span>requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getCandidateId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// 任期没它高，自己转为follower</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">setServerStatusEnum</span><span class="token punctuation">(</span><span class="token class-name">ServerStatusEnum</span><span class="token punctuation">.</span>FOLLOWER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RequestVoteRpcResult</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// term任期值相同，需要避免同一任期内投票给不同的节点而脑裂</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getVotedFor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getVotedFor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getCandidateId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// If votedFor is null or candidateId（取反的卫语句）</span>
+            <span class="token comment">// 当前服务器已经把票投给了别人,拒绝投票给发起投票的candidate</span>
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"reject requestVoteProcess! votedFor={},currentServerId={}"</span><span class="token punctuation">,</span>
+                currentServer<span class="token punctuation">.</span><span class="token function">getVotedFor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RequestVoteRpcResult</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 投票校验通过,刷新元数据</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">refreshRaftServerMetaData</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token class-name">RaftServerMetaData</span><span class="token punctuation">(</span>requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getCandidateId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">processCommunicationHigherTerm</span><span class="token punctuation">(</span>requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">RequestVoteRpcResult</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">refreshLastHeartbeatTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment">// 刷新最新的接受到心跳的时间</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>lastHeartbeatTime <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 接受新的心跳,说明现在leader是存活的，清理掉之前的投票信息</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">cleanVotedFor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token keyword">private</span> <span class="token keyword">long</span> <span class="token function">getRandomElectionTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">long</span> min <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getElectionTimeoutRandomRange</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getLeft</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> max <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getElectionTimeoutRandomRange</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRight</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 生成[min,max]范围内随机整数的通用公式为：n=rand.nextInt(max-min+1)+min。</span>
+        <span class="token keyword">return</span> <span class="token class-name">ThreadLocalRandom</span><span class="token punctuation">.</span><span class="token function">current</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">nextLong</span><span class="token punctuation">(</span>max<span class="token operator">-</span>min<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> min<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * 心跳超时检查任务
+ * */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HeartbeatTimeoutCheckTask</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">HeartbeatTimeoutCheckTask</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftLeaderElectionModule</span> raftLeaderElectionModule<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">HeartbeatTimeoutCheckTask</span><span class="token punctuation">(</span><span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">,</span> <span class="token class-name">RaftLeaderElectionModule</span> raftLeaderElectionModule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer <span class="token operator">=</span> currentServer<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>raftLeaderElectionModule <span class="token operator">=</span> raftLeaderElectionModule<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerStatusEnum</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token class-name">ServerStatusEnum</span><span class="token punctuation">.</span>LEADER<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// leader是不需要处理心跳超时的</span>
+            <span class="token comment">// 注册下一个心跳检查任务</span>
+            raftLeaderElectionModule<span class="token punctuation">.</span><span class="token function">registerHeartbeatTimeoutCheckTaskWithRandomTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token function">doTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span><span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"do HeartbeatTimeoutCheckTask error! ignore"</span><span class="token punctuation">,</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// 注册下一个心跳检查任务</span>
+            raftLeaderElectionModule<span class="token punctuation">.</span><span class="token function">registerHeartbeatTimeoutCheckTaskWithRandomTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"do HeartbeatTimeoutCheck start {}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">int</span> electionTimeout <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getElectionTimeout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 当前时间</span>
+        <span class="token class-name">Date</span> currentDate <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Date</span> lastHeartbeatTime <span class="token operator">=</span> raftLeaderElectionModule<span class="token punctuation">.</span><span class="token function">getLastHeartbeatTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> diffTime <span class="token operator">=</span> currentDate<span class="token punctuation">.</span><span class="token function">getTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> lastHeartbeatTime<span class="token punctuation">.</span><span class="token function">getTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"currentDate={}, lastHeartbeatTime={}, diffTime={}, serverId={}"</span><span class="token punctuation">,</span>
+            currentDate<span class="token punctuation">,</span>lastHeartbeatTime<span class="token punctuation">,</span>diffTime<span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 心跳超时判断</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>diffTime <span class="token operator">&gt;</span> <span class="token punctuation">(</span>electionTimeout <span class="token operator">*</span> <span class="token number">1000L</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"HeartbeatTimeoutCheck check fail, trigger new election! serverId={}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// 触发新的一轮选举</span>
+            <span class="token function">triggerNewElection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token comment">// 认定为心跳正常，无事发生</span>
+            logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"HeartbeatTimeoutCheck check success {}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span><span class="token string">"do HeartbeatTimeoutCheck end {}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">triggerNewElection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"HeartbeatTimeoutCheck check fail, trigger new election! serverId={}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 距离最近一次接到心跳已经超过了选举超时时间，触发新一轮选举</span>
+
+        <span class="token comment">// 当前服务器节点当前任期自增1</span>
+        currentServer<span class="token punctuation">.</span><span class="token function">setCurrentTerm</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 自己发起选举，先投票给自己</span>
+        currentServer<span class="token punctuation">.</span><span class="token function">setVotedFor</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 角色转变为CANDIDATE候选者</span>
+        currentServer<span class="token punctuation">.</span><span class="token function">setServerStatusEnum</span><span class="token punctuation">(</span><span class="token class-name">ServerStatusEnum</span><span class="token punctuation">.</span>CANDIDATE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 并行的发送请求投票的rpc给集群中的其它节点</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> otherNodeInCluster <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getOtherNodeInCluster</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Future</span><span class="token punctuation">&lt;</span><span class="token class-name">RequestVoteRpcResult</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> futureList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>otherNodeInCluster<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 构造请求参数</span>
+        <span class="token class-name">RequestVoteRpcParam</span> requestVoteRpcParam <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RequestVoteRpcParam</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">setTerm</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">setCandidateId</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">RaftService</span> node <span class="token operator">:</span> otherNodeInCluster<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token class-name">Future</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RequestVoteRpcResult</span><span class="token punctuation">&gt;</span></span> future <span class="token operator">=</span> raftLeaderElectionModule<span class="token punctuation">.</span><span class="token function">getRpcThreadPool</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span>
+                <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+                    <span class="token class-name">RequestVoteRpcResult</span> rpcResult <span class="token operator">=</span> node<span class="token punctuation">.</span><span class="token function">requestVote</span><span class="token punctuation">(</span>requestVoteRpcParam<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment">// 收到更高任期的处理</span>
+                    currentServer<span class="token punctuation">.</span><span class="token function">processCommunicationHigherTerm</span><span class="token punctuation">(</span>rpcResult<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> rpcResult<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            futureList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>future<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RequestVoteRpcResult</span><span class="token punctuation">&gt;</span></span> requestVoteRpcResultList <span class="token operator">=</span> <span class="token class-name">CommonUtil</span><span class="token punctuation">.</span><span class="token function">concurrentGetRpcFutureResult</span><span class="token punctuation">(</span>
+            <span class="token string">"requestVote"</span><span class="token punctuation">,</span> futureList<span class="token punctuation">,</span>
+            raftLeaderElectionModule<span class="token punctuation">.</span><span class="token function">getRpcThreadPool</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>SECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 获得rpc响应中决定投票给自己的总票数（算上自己的1票）</span>
+        <span class="token keyword">int</span> getRpcVoted <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> requestVoteRpcResultList<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token class-name">RequestVoteRpcResult</span><span class="token operator">::</span><span class="token function">isVoteGranted</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"HeartbeatTimeoutCheck election, getRpcVoted={}, currentServerId={}"</span><span class="token punctuation">,</span>getRpcVoted<span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 是否获得大多数的投票</span>
+        <span class="token keyword">boolean</span> majorVoted <span class="token operator">=</span> getRpcVoted <span class="token operator">&gt;=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getMajorityNum</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>majorVoted<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"HeartbeatTimeoutCheck election result: become a leader! {}, currentTerm={}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// 票数过半成功当选为leader</span>
+            currentServer<span class="token punctuation">.</span><span class="token function">setServerStatusEnum</span><span class="token punctuation">(</span><span class="token class-name">ServerStatusEnum</span><span class="token punctuation">.</span>LEADER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            currentServer<span class="token punctuation">.</span><span class="token function">setCurrentLeader</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// 成为leader后立马发送一次心跳,抑制其它节点发起新的一轮选举</span>
+            <span class="token comment">// Upon election: send initial empty AppendEntries RPCs (heartbeat) to each server;</span>
+            <span class="token comment">// repeat during idle periods to prevent election timeouts (§5.2)</span>
+            <span class="token class-name">HeartbeatBroadcastTask</span><span class="token punctuation">.</span><span class="token function">doHeartbeatBroadcast</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token comment">// 票数不过半，无法成为leader</span>
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"HeartbeatTimeoutCheck election result: not become a leader! {}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer<span class="token punctuation">.</span><span class="token function">cleanVotedFor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div></div></div><div class="heading-wrapper"><h4 data-heading="3.3 candidate发起选举" dir="auto" class="heading" id="3.3_candidate发起选举"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>3.3 candidate发起选举</h4><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">在上一节介绍的HeartbeatTimeoutCheckTask中，如果发现有一段时间没有收到心跳后当前节点便会触发新一轮的选举，主要逻辑在triggerNewElection方法中。<br>
+triggerNewElection中通过首先令当前term值自增1并投票给自己，然后并行的向集群中的其它节点发送requestVote的rpc请求。</li>
+<li data-line="2" dir="auto">并行处理逻辑通过CommonUtil中的concurrentGetRpcFutureResult方法收集所有的响应结果。<br>
+通过future.get设置超时时间，超时则认为是投票失败。</li>
+<li data-line="4" dir="auto">在超时时间内获得所有响应结果后，计算所得到的的票数是否大于半数(&gt;majorityNum)。<br>
+如果超过半数则认为选举成功，自己成为合法的leader。当前节点刷新相关的状态数据，同时立即发起一次心跳广播以抑制其它节点发起新的选举。</li>
+</ul></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CommonUtil</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">CommonUtil</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 并发的获得future列表的结果
+     * */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">concurrentGetRpcFutureResult</span><span class="token punctuation">(</span>
+            <span class="token class-name">String</span> info<span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Future</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> futureList<span class="token punctuation">,</span> <span class="token class-name">ExecutorService</span> threadPool<span class="token punctuation">,</span> <span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> timeUnit<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">CountDownLatch</span> countDownLatch <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CountDownLatch</span><span class="token punctuation">(</span>futureList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> resultList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>futureList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">Future</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> futureItem <span class="token operator">:</span> futureList<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            threadPool<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span><span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span>info <span class="token operator">+</span> <span class="token string">" concurrentGetRpcFutureResult start!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token class-name">T</span> result <span class="token operator">=</span> futureItem<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>timeout<span class="token punctuation">,</span>timeUnit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    logger<span class="token punctuation">.</span><span class="token function">debug</span><span class="token punctuation">(</span>info <span class="token operator">+</span> <span class="token string">" concurrentGetRpcFutureResult end!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                    resultList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment">// rpc异常不考虑</span>
+                    logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span> <span class="token string">"{} getFutureResult error!"</span><span class="token punctuation">,</span>info<span class="token punctuation">,</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                    countDownLatch<span class="token punctuation">.</span><span class="token function">countDown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            countDownLatch<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">MyRaftException</span><span class="token punctuation">(</span><span class="token string">"getFutureResult error!"</span><span class="token punctuation">,</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> resultList<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div></div></div><div class="heading-wrapper"><h4 data-heading="3.4 leader定时发起心跳广播" dir="auto" class="heading" id="3.4_leader定时发起心跳广播"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>3.4 leader定时发起心跳广播</h4><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">MyRaft中将leader心跳广播相关的逻辑都集中在了RaftHeartbeatBroadcastModule类中，心跳广播任务以RaftConfig中设置的频率定期执行。<br>
+需要注意的是，心跳的时间间隔必须配置为明显小于配置的选举超时时间的值(考虑到rpc网络请求延迟以及follower实际处理心跳的耗时)，否则leader心跳将无法抑制follower触发选举。</li>
+<li data-line="2" dir="auto">leader心跳广播的逻辑集中在HeartbeatBroadcastTask中。和发起投票类似，当前节点通过future并发的向集群中的所有节点发送logEntry为空的appendEntries(因为lab1中不涉及日志复制，所以直接去掉了logEntry这个参数字段)。<br>
+leader原则上可以不关心follower对于心跳的响应结果，但还是需要检查成功响应中返回的term值。如果发现有其它节点返回了更大的term值，说明集群中可能已经选出了新的leader或者正在进行选举，则当前节点需要退回到follower状态。</li>
+</ul></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * Raft服务器的心跳广播模块
+ * */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftHeartbeatBroadcastModule</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ScheduledExecutorService</span> scheduledExecutorService<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ExecutorService</span> rpcThreadPool<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">RaftHeartbeatBroadcastModule</span><span class="token punctuation">(</span><span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer <span class="token operator">=</span> currentServer<span class="token punctuation">;</span>
+
+        <span class="token keyword">this</span><span class="token punctuation">.</span>scheduledExecutorService <span class="token operator">=</span> <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newScheduledThreadPool</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>rpcThreadPool <span class="token operator">=</span> <span class="token class-name">Executors</span><span class="token punctuation">.</span><span class="token function">newFixedThreadPool</span><span class="token punctuation">(</span>
+            <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getOtherNodeInCluster</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">int</span> <span class="token class-name">HeartbeatInternal</span> <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getHeartbeatInternal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 心跳广播任务需要以固定频率执行(scheduleAtFixedRate)</span>
+        scheduledExecutorService<span class="token punctuation">.</span><span class="token function">scheduleAtFixedRate</span><span class="token punctuation">(</span>
+            <span class="token keyword">new</span> <span class="token class-name">HeartbeatBroadcastTask</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">,</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token class-name">HeartbeatInternal</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>SECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token doc-comment comment">/**
+ * leader心跳广播任务
+ * */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">HeartbeatBroadcastTask</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">HeartbeatBroadcastTask</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftHeartbeatBroadcastModule</span> raftHeartbeatBroadcastModule<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">int</span> <span class="token class-name">HeartbeatCount</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">HeartbeatBroadcastTask</span><span class="token punctuation">(</span><span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">,</span> <span class="token class-name">RaftHeartbeatBroadcastModule</span> raftHeartbeatBroadcastModule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>currentServer <span class="token operator">=</span> currentServer<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>raftHeartbeatBroadcastModule <span class="token operator">=</span> raftHeartbeatBroadcastModule<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerStatusEnum</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token class-name">ServerStatusEnum</span><span class="token punctuation">.</span>LEADER<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// 只有leader才需要广播心跳</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 心跳广播</span>
+        <span class="token function">doHeartbeatBroadcast</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token doc-comment comment">/**
+     * 做心跳广播
+     * <span class="token keyword">@return</span> 是否大多数节点依然认为自己是leader
+     * */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">boolean</span> <span class="token function">doHeartbeatBroadcast</span><span class="token punctuation">(</span><span class="token class-name">RaftServer</span> currentServer<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"do HeartbeatBroadcast start {}"</span><span class="token punctuation">,</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 先刷新自己的心跳时间</span>
+        currentServer<span class="token punctuation">.</span><span class="token function">getRaftLeaderElectionModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">refreshLastHeartbeatTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 并行的发送心跳rpc给集群中的其它节点</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> otherNodeInCluster <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getOtherNodeInCluster</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Future</span><span class="token punctuation">&lt;</span><span class="token class-name">AppendEntriesRpcResult</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> futureList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>otherNodeInCluster<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 构造请求参数(心跳rpc，entries为空)</span>
+        <span class="token class-name">AppendEntriesRpcParam</span> appendEntriesRpcParam <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AppendEntriesRpcParam</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        appendEntriesRpcParam<span class="token punctuation">.</span><span class="token function">setTerm</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        appendEntriesRpcParam<span class="token punctuation">.</span><span class="token function">setLeaderId</span><span class="token punctuation">(</span>currentServer<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token class-name">RaftService</span> node <span class="token operator">:</span> otherNodeInCluster<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token class-name">Future</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">AppendEntriesRpcResult</span><span class="token punctuation">&gt;</span></span> future <span class="token operator">=</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftHeartbeatBroadcastModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRpcThreadPool</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">submit</span><span class="token punctuation">(</span>
+                <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+                    <span class="token class-name">AppendEntriesRpcResult</span> rpcResult <span class="token operator">=</span> node<span class="token punctuation">.</span><span class="token function">appendEntries</span><span class="token punctuation">(</span>appendEntriesRpcParam<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment">// rpc交互时任期高于当前节点任期的处理</span>
+                    currentServer<span class="token punctuation">.</span><span class="token function">processCommunicationHigherTerm</span><span class="token punctuation">(</span>rpcResult<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> rpcResult<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            futureList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>future<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">AppendEntriesRpcResult</span><span class="token punctuation">&gt;</span></span> appendEntriesRpcResultList <span class="token operator">=</span> <span class="token class-name">CommonUtil</span><span class="token punctuation">.</span><span class="token function">concurrentGetRpcFutureResult</span><span class="token punctuation">(</span><span class="token string">"doHeartbeatBroadcast"</span><span class="token punctuation">,</span>futureList<span class="token punctuation">,</span>
+            currentServer<span class="token punctuation">.</span><span class="token function">getRaftHeartbeatBroadcastModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRpcThreadPool</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>SECONDS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 通知成功的数量(+1包括自己)</span>
+        <span class="token keyword">int</span> successResponseCount <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>appendEntriesRpcResultList<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token class-name">AppendEntriesRpcResult</span><span class="token operator">::</span><span class="token function">isSuccess</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">count</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>successResponseCount <span class="token operator">&gt;=</span> currentServer<span class="token punctuation">.</span><span class="token function">getRaftConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getMajorityNum</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token operator">&amp;&amp;</span> currentServer<span class="token punctuation">.</span><span class="token function">getServerStatusEnum</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token class-name">ServerStatusEnum</span><span class="token punctuation">.</span>LEADER<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// 大多数节点依然认为自己是leader,并且广播的节点中没有人任期高于当前节点，让当前节点主动让位</span>
+            <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token comment">// 大多数节点不认为自己是leader（包括广播超时等未接到响应的场景，也认为是广播失败）</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div></div></div><div class="heading-wrapper"><h4 data-heading="3.5 raft节点处理requestVote请求和心跳请求" dir="auto" class="heading" id="3.5_raft节点处理requestVote请求和心跳请求"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>3.5 raft节点处理requestVote请求和心跳请求</h4><div class="heading-children"><div><p dir="auto"><strong>处理requestVote请求</strong></p></div><div><ul>
+<li data-line="0" dir="auto">MyRaft处理requestVote的逻辑在上面提到的RaftLeaderElectionModule的requestVoteProcess方法中。<br>
+raft需要保证每个任期都只能选出一个leader，所以对于特定的term任期需要做到只有一个节点能获得超过半数选票。</li>
+<li data-line="2" dir="auto">因此，requestVoteProcess中会对发起投票的candidate和自己本地的term值进行比对，如果term值比自己低就直接拒绝(过去的leader不是leader，只有现在的leader才是leader)。<br>
+每个节点只有一票，如果term值相同则需要确保自己在此之前没有投票给其它candidate。</li>
+</ul></div><div><p dir="auto"><strong>处理心跳请求</strong></p></div><div><ul>
+<li data-line="0" dir="auto">MyRaft的处理心跳请求的逻辑在RaftServer类的appendEntries中。由于lab1没有日志复制的功能，所以认为收到的请求都是心跳请求。</li>
+<li data-line="1" dir="auto">appendEntries中，同样需要比对参数中term和本地term的值，<strong>尽可能</strong>的确保是真正的leader发来的心跳。<br>
+如果校验通过了，则将本地的最后接受到的心跳时间刷新为当前时间，来抑制选举超时检查任务中触发新一轮选举。</li>
+</ul></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftServer</span> <span class="token keyword">implements</span> <span class="token class-name">RaftService</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">RaftServer</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 当前服务节点的id(集群内全局唯一)
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">String</span> serverId<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * Raft服务端配置
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftConfig</span> raftConfig<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 当前服务器的状态
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token class-name">ServerStatusEnum</span> serverStatusEnum<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * raft服务器元数据(当前任期值currentTerm、当前投票给了谁votedFor)
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">RaftServerMetaDataPersistentModule</span> raftServerMetaDataPersistentModule<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 当前服务认为的leader节点的Id
+     * */</span>
+    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token class-name">String</span> currentLeader<span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 集群中的其它raft节点服务
+     * */</span>
+    <span class="token keyword">protected</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> otherNodeInCluster<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">RaftLeaderElectionModule</span> raftLeaderElectionModule<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">RaftHeartbeatBroadcastModule</span> raftHeartbeatBroadcastModule<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">RaftServer</span><span class="token punctuation">(</span><span class="token class-name">RaftConfig</span> raftConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>serverId <span class="token operator">=</span> raftConfig<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>raftConfig <span class="token operator">=</span> raftConfig<span class="token punctuation">;</span>
+        <span class="token comment">// 初始化时都是follower</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>serverStatusEnum <span class="token operator">=</span> <span class="token class-name">ServerStatusEnum</span><span class="token punctuation">.</span>FOLLOWER<span class="token punctuation">;</span>
+
+        <span class="token comment">// 服务器元数据模块</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>raftServerMetaDataPersistentModule <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RaftServerMetaDataPersistentModule</span><span class="token punctuation">(</span>raftConfig<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> otherNodeInCluster<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment">// 集群中的其它节点服务</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>otherNodeInCluster <span class="token operator">=</span> otherNodeInCluster<span class="token punctuation">;</span>
+
+        raftLeaderElectionModule <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RaftLeaderElectionModule</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        raftHeartbeatBroadcastModule <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RaftHeartbeatBroadcastModule</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"raft server init end! otherNodeInCluster={}, currentServerId={}"</span><span class="token punctuation">,</span>otherNodeInCluster<span class="token punctuation">,</span>serverId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">RequestVoteRpcResult</span> <span class="token function">requestVote</span><span class="token punctuation">(</span><span class="token class-name">RequestVoteRpcParam</span> requestVoteRpcParam<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token class-name">RequestVoteRpcResult</span> requestVoteRpcResult <span class="token operator">=</span> raftLeaderElectionModule<span class="token punctuation">.</span><span class="token function">requestVoteProcess</span><span class="token punctuation">(</span>requestVoteRpcParam<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">processCommunicationHigherTerm</span><span class="token punctuation">(</span>requestVoteRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"do requestVote requestVoteRpcParam={},requestVoteRpcResult={}, currentServerId={}"</span><span class="token punctuation">,</span>
+            requestVoteRpcParam<span class="token punctuation">,</span>requestVoteRpcResult<span class="token punctuation">,</span><span class="token keyword">this</span><span class="token punctuation">.</span>serverId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> requestVoteRpcResult<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">AppendEntriesRpcResult</span> <span class="token function">appendEntries</span><span class="token punctuation">(</span><span class="token class-name">AppendEntriesRpcParam</span> appendEntriesRpcParam<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>appendEntriesRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>raftServerMetaDataPersistentModule<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// Reply false if term &lt; currentTerm (§5.1)</span>
+            <span class="token comment">// 拒绝处理任期低于自己的老leader的请求</span>
+
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"doAppendEntries term &lt; currentTerm"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AppendEntriesRpcResult</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>raftServerMetaDataPersistentModule<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span>appendEntriesRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&gt;=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>raftServerMetaDataPersistentModule<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment">// appendEntries请求中任期值如果大于自己，说明已经有一个更新的leader了，自己转为follower，并且以对方更大的任期为准</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>serverStatusEnum <span class="token operator">=</span> <span class="token class-name">ServerStatusEnum</span><span class="token punctuation">.</span>FOLLOWER<span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>currentLeader <span class="token operator">=</span> appendEntriesRpcParam<span class="token punctuation">.</span><span class="token function">getLeaderId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>raftServerMetaDataPersistentModule<span class="token punctuation">.</span><span class="token function">setCurrentTerm</span><span class="token punctuation">(</span>appendEntriesRpcParam<span class="token punctuation">.</span><span class="token function">getTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 来自leader的心跳处理，清理掉之前选举的votedFor</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">cleanVotedFor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// entries为空，说明是心跳请求，刷新一下最近收到心跳的时间</span>
+        raftLeaderElectionModule<span class="token punctuation">.</span><span class="token function">refreshLastHeartbeatTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 心跳请求，直接返回</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">AppendEntriesRpcResult</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>raftServerMetaDataPersistentModule<span class="token punctuation">.</span><span class="token function">getCurrentTerm</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div></div></div></div></div></div></div><div class="heading-wrapper"><h2 data-heading="4. MyRaft leader选举demo验证" dir="auto" class="heading" id="4._MyRaft_leader选举demo验证"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>4. MyRaft leader选举demo验证</h2><div class="heading-children"><div><p dir="auto">在工程的test目录下，可以启动一个5节点的MyRaft的服务集群(用main方法启动即可)，通过修改其中的RaftClusterGlobalConfig类可以修改相关的配置。<br>
+<span alt="Pasted image 20240725172328.png" src="Pasted image 20240725172328.png" class="internal-embed media-embed image-embed is-loaded"><img alt="Pasted image 20240725172328.png" src="computer-science/distributed-system/raft实现/pasted-image-20240725172328.png"></span></p></div><div><pre class="language-java" tabindex="0"><code class="language-java is-loaded"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RaftClusterGlobalConfig</span> <span class="token punctuation">{</span>
+    
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">Registry</span> registry <span class="token operator">=</span> <span class="token class-name">RegistryFactory</span><span class="token punctuation">.</span><span class="token function">getRegistry</span><span class="token punctuation">(</span>
+        <span class="token keyword">new</span> <span class="token class-name">RegistryConfig</span><span class="token punctuation">(</span><span class="token class-name">RegistryCenterTypeEnum</span><span class="token punctuation">.</span>FAKE_REGISTRY<span class="token punctuation">.</span><span class="token function">getCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"127.0.0.1:2181"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * raft的集群配置
+     * */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftNodeConfig</span><span class="token punctuation">&gt;</span></span> raftNodeConfigList <span class="token operator">=</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">asList</span><span class="token punctuation">(</span>
+        <span class="token keyword">new</span> <span class="token class-name">RaftNodeConfig</span><span class="token punctuation">(</span><span class="token string">"raft-1"</span><span class="token punctuation">,</span><span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span><span class="token number">8001</span><span class="token punctuation">)</span>
+        <span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token class-name">RaftNodeConfig</span><span class="token punctuation">(</span><span class="token string">"raft-2"</span><span class="token punctuation">,</span><span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span><span class="token number">8002</span><span class="token punctuation">)</span>
+        <span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token class-name">RaftNodeConfig</span><span class="token punctuation">(</span><span class="token string">"raft-3"</span><span class="token punctuation">,</span><span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span><span class="token number">8003</span><span class="token punctuation">)</span>
+        <span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token class-name">RaftNodeConfig</span><span class="token punctuation">(</span><span class="token string">"raft-4"</span><span class="token punctuation">,</span><span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span><span class="token number">8004</span><span class="token punctuation">)</span>
+        <span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token class-name">RaftNodeConfig</span><span class="token punctuation">(</span><span class="token string">"raft-5"</span><span class="token punctuation">,</span><span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span><span class="token number">8005</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> electionTimeout <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Integer</span> debugElectionTimeout <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token class-name">HeartbeatInterval</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * N次心跳后，leader会自动模拟出现故障(退回follow，停止心跳广播)
+     * N&lt;=0代表不触发自动模拟故障
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> leaderAutoFailCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token doc-comment comment">/**
+     * 随机化的选举超时时间(毫秒)
+     * */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Range</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> electionTimeoutRandomRange <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Range</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token number">150</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">initRaftRpcServer</span><span class="token punctuation">(</span><span class="token class-name">String</span> serverId<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token class-name">RaftNodeConfig</span> currentNodeConfig <span class="token operator">=</span> <span class="token class-name">RaftClusterGlobalConfig</span><span class="token punctuation">.</span>raftNodeConfigList
+            <span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>item<span class="token operator">-&gt;</span>item<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>serverId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">findAny</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">orElseThrow</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token keyword">new</span> <span class="token class-name">MyRaftException</span><span class="token punctuation">(</span><span class="token string">"serverId must in raftNodeConfigList"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftNodeConfig</span><span class="token punctuation">&gt;</span></span> otherNodeList <span class="token operator">=</span> <span class="token class-name">RaftClusterGlobalConfig</span><span class="token punctuation">.</span>raftNodeConfigList
+            <span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>item<span class="token operator">-&gt;</span><span class="token operator">!</span>item<span class="token punctuation">.</span><span class="token function">getServerId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>serverId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">RaftConfig</span> raftConfig <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RaftConfig</span><span class="token punctuation">(</span>
+            currentNodeConfig<span class="token punctuation">,</span><span class="token class-name">RaftClusterGlobalConfig</span><span class="token punctuation">.</span>raftNodeConfigList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        raftConfig<span class="token punctuation">.</span><span class="token function">setElectionTimeout</span><span class="token punctuation">(</span><span class="token class-name">RaftClusterGlobalConfig</span><span class="token punctuation">.</span>electionTimeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        raftConfig<span class="token punctuation">.</span><span class="token function">setDebugElectionTimeout</span><span class="token punctuation">(</span><span class="token class-name">RaftClusterGlobalConfig</span><span class="token punctuation">.</span>debugElectionTimeout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        raftConfig<span class="token punctuation">.</span><span class="token function">setHeartbeatInternal</span><span class="token punctuation">(</span><span class="token class-name">RaftClusterGlobalConfig<span class="token punctuation">.</span>HeartbeatInterval</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        raftConfig<span class="token punctuation">.</span><span class="token function">setLeaderAutoFailCount</span><span class="token punctuation">(</span><span class="token class-name">RaftClusterGlobalConfig</span><span class="token punctuation">.</span>leaderAutoFailCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 随机化选举超时时间的范围</span>
+        raftConfig<span class="token punctuation">.</span><span class="token function">setElectionTimeoutRandomRange</span><span class="token punctuation">(</span><span class="token class-name">RaftClusterGlobalConfig</span><span class="token punctuation">.</span>electionTimeoutRandomRange<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">RaftRpcServer</span> raftRpcServer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RaftRpcServer</span><span class="token punctuation">(</span>raftConfig<span class="token punctuation">,</span> <span class="token class-name">RaftClusterGlobalConfig</span><span class="token punctuation">.</span>registry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">RaftService</span><span class="token punctuation">&gt;</span></span> raftServiceList <span class="token operator">=</span> raftRpcServer<span class="token punctuation">.</span><span class="token function">getRpcProxyList</span><span class="token punctuation">(</span>otherNodeList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// raft服务，启动！</span>
+        raftRpcServer<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span>raftServiceList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">验证lab1中MyRaft leader选举实现的正确性，可以通过以下几个case简单的验证下：</p></div><div><ol>
+<li data-line="0" dir="auto">启动5个节点，看看是否能够在短时间内选举出一个leader，leader是否能抑制后续的选举(leader定时心跳有日志能观察到)。</li>
+<li data-line="1" dir="auto">将leader杀掉(5节点集群最多能容忍2个节点故障)，看是否在选举超时后触发新一轮选举，并且成功选出新的leader。</li>
+<li data-line="2" dir="auto">将之前杀掉的leader再启动，看能否成功的回到集群中。</li>
+</ol></div></div></div><div class="heading-wrapper"><h2 data-heading="5. leader预选举优化(PreVote)" dir="auto" class="heading" id="5._leader预选举优化(PreVote)"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>5. leader预选举优化(PreVote)</h2><div class="heading-children"><div><p dir="auto">在原始的raft算法的leader选举中存在一个问题。具体场景举例如下：</p></div><div><ul>
+<li data-line="0" dir="auto">一个5节点的raft集群，突然其中2个follower节点与另外三个节点(包含当前leader)之间出现了网络分区，不同网络分区的节点无法正常通信。</li>
+<li data-line="1" dir="auto">此时3节点所在的网络分区是多数分区，因此可以正常工作。而2个节点所在的分区是少数分区，由于无法接到leader心跳而触发新的选举。<br>
+raft的论文中提到，发起新选举需要先将自己的任期值term自增1，然后发起并行的requestVote。<br>
+但此时2节点所在的少数分区是无法成功获得大多数选票的，因此在这个分区中的节点会不断的发起一轮又一轮的leader选举，term值也会在很短的时间内快速增长。</li>
+<li data-line="4" dir="auto">在一段时间后网络分区问题恢复后，集群中的所有节点又能互相通信了，此时少数分区节点的term值大概率远大于正常工作的多数分区中的节点。<br>
+在少数分区节点收到来自多数分区节点的leader的rpc请求时，其会响应一个更大的term值。此时位于多数分区中的leader会因为响应的term值高于自己而主动退位，集群内会发起一轮新的选举。</li>
+</ul></div><div><p dir="auto"><strong>从本质上来说，这个分区恢复后进行的新选举是无意义的。且由于进行选举会造成集群短暂的不可用，因此最好能避免这个问题。</strong></p></div><div><p dir="auto">业界给出的解决方法是在真正的选举前先发起一轮预选举(preVote)。</p></div><div><ul>
+<li data-line="0" dir="auto">预选举的操作和选举一样，也是并行的发起requestVote请求，主要的区别在于发起预选举的节点并不事先将term值自增，而是维持不变。节点的状态也在candidate的基础上新增了一个preCandidate状态。</li>
+<li data-line="1" dir="auto">发起预选举的节点需要根据预选举中发起的并行requestVote结果来决定是否开启实际的leader选举。<br>
+如果预选举中发起的并行requestVote得到了多数票，则可以接着发起实际的选举。而如果没有得到多数票，则不进行实际的选举。</li>
+<li data-line="3" dir="auto">引入了预选举的机制后，上面所说的网络分区发生时，少数分区的节点由于无法在预选举中获得大多数票，因此只会不断的发起一轮又一轮的预选举。<br>
+因此，其term值不会不断增加而是一直维持在分区发生时的值。在分区问题恢复后，其term值一定是小于或等于多数分区内leader的term值，而不会进行一轮无效的选举，从而解决上述的问题。<br>
+但需要注意的是，引入预选举机制也会增加正常状况下发起正常选举的开销。</li>
+</ul></div><div><p dir="auto">MyRaft为了保持实现的简单性，并没有实现预选举机制。但etcd、sofa-jraft等流行的开源raft系统都是实现了预选举优化的，所以在这里还是简单介绍一下。</p></div></div></div><div class="heading-wrapper"><h2 data-heading="6. 总结" dir="auto" class="heading" id="6._总结"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>6. 总结</h2><div class="heading-children"><div><ul>
+<li data-line="0" dir="auto">作为手写raft系列博客的第一篇，在博客的第一、二节简单介绍了raft算法和MyRaft，第3节则详细分析了leader选举的关键细节并基于源码详细分析了MyRaft是如何实现leader选举的。</li>
+<li data-line="1" dir="auto">单纯实现Raft的leader选举并没有什么难度。以我个人的实践经验来说，真正的困难之处在于后续功能的叠加。<br>
+由于raft的论文中介绍的几个模块彼此之间是紧密关联的。因此后续日志复制、日志压缩以及成员动态变更这几个功能的逐步实现中，每完成一个都会对上个版本的代码在细节上有不小的调整，大大增加了整体的复杂度。</li>
+<li data-line="3" dir="auto">博客中展示的完整代码在我的github上：<a rel="noopener" class="external-link" href="https://github.com/1399852153/MyRaft" target="_blank">https://github.com/1399852153/MyRaft</a> (release/lab1_leader_election分支)，希望能帮助到对raft算法感兴趣的小伙伴。<br>
+内容如有错误，还请多多指教。</li>
+</ul></div><div class="mod-footer"></div></div></div></div></div></div><div class="sidebar-right sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content"><div class="graph-view-wrapper"><div class="sidebar-section-header">Interactive Graph</div><div class="graph-view-placeholder">
+		<div class="graph-view-container">
+			<div class="graph-icon graph-expand" role="button" aria-label="Expand" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></div>
+			<canvas id="graph-canvas" class="hide" width="512px" height="512px"></canvas>
+		</div>
+		</div></div><div class="tree-container mod-root nav-folder tree-item outline-tree" data-depth="0"><div class="tree-header"><span class="sidebar-section-header">Table Of Contents</span><button class="clickable-icon collapse-tree-button" aria-label="Collapse All"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button></div><div class="tree-scroll-area tree-item-children nav-folder-children"><div class="tree-item mod-tree-folder nav-folder mod-collapsible is-collapsed" style="display: none;"></div><div class="tree-item" data-depth="1"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#Raft实现 - 一致性算法介绍"><div class="tree-item-contents heading-link" heading-name="Raft实现 - 一致性算法介绍"><span class="tree-item-title">Raft实现 - 一致性算法介绍</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#1._一致性算法介绍"><div class="tree-item-contents heading-link" heading-name="1. 一致性算法介绍"><div class="collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><span class="tree-item-title">1. 
+一致性算法介绍
+</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item" data-depth="3"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#1.1_一致性同步与Paxos算法"><div class="tree-item-contents heading-link" heading-name="1.1 一致性同步与Paxos算法"><span class="tree-item-title">1.1 一致性同步与Paxos算法</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="3"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#1.2_raft算法"><div class="tree-item-contents heading-link" heading-name="1.2 raft算法"><span class="tree-item-title">1.2 raft算法</span></div></a><div class="tree-item-children nav-folder-children"></div></div></div></div><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#2._自己动手实现一个基于Raft的简易KV数据库"><div class="tree-item-contents heading-link" heading-name="2. 自己动手实现一个基于Raft的简易KV数据库"><div class="collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><span class="tree-item-title">2. 
+自己动手实现一个基于Raft的简易KV数据库
+</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item mod-collapsible" data-depth="3"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#MyRaft介绍"><div class="tree-item-contents heading-link" heading-name="MyRaft介绍"><div class="collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><span class="tree-item-title">MyRaft介绍</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item" data-depth="5"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#MyRaft架构图"><div class="tree-item-contents heading-link" heading-name="MyRaft架构图"><span class="tree-item-title">MyRaft架构图</span></div></a><div class="tree-item-children nav-folder-children"></div></div></div></div></div></div><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#3._MyRaft基础结构源码分析"><div class="tree-item-contents heading-link" heading-name="3. MyRaft基础结构源码分析"><div class="collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><span class="tree-item-title">3. 
+MyRaft基础结构源码分析
+</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item" data-depth="5"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#Raft的rpc接口定义"><div class="tree-item-contents heading-link" heading-name="Raft的rpc接口定义"><span class="tree-item-title">Raft的rpc接口定义</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="5"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#MyRaft的Rpc客户端与服务端实现"><div class="tree-item-contents heading-link" heading-name="MyRaft的Rpc客户端与服务端实现"><span class="tree-item-title">MyRaft的Rpc客户端与服务端实现</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="5"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#raft服务元数据持久化"><div class="tree-item-contents heading-link" heading-name="raft服务元数据持久化"><span class="tree-item-title">raft服务元数据持久化</span></div></a><div class="tree-item-children nav-folder-children"></div></div></div></div><div class="tree-item mod-collapsible" data-depth="2"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#3._leader选举原理与MyRaft实现解析"><div class="tree-item-contents heading-link" heading-name="3. leader选举原理与MyRaft实现解析"><div class="collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><span class="tree-item-title">3. 
+leader选举原理与MyRaft实现解析
+</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item" data-depth="3"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#leader选举原理"><div class="tree-item-contents heading-link" heading-name="leader选举原理"><span class="tree-item-title">leader选举原理</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item mod-collapsible" data-depth="3"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#MyRaft_leader选举源码分析"><div class="tree-item-contents heading-link" heading-name="MyRaft leader选举源码分析"><div class="collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div><span class="tree-item-title">MyRaft leader选举源码分析</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item" data-depth="4"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#3.1_raft节点配置"><div class="tree-item-contents heading-link" heading-name="3.1 raft节点配置"><span class="tree-item-title">3.1 raft节点配置</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="4"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#3.2_raft节点定时选举超时检查"><div class="tree-item-contents heading-link" heading-name="3.2 raft节点定时选举超时检查"><span class="tree-item-title">3.2 raft节点定时选举超时检查</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="4"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#3.3_candidate发起选举"><div class="tree-item-contents heading-link" heading-name="3.3 candidate发起选举"><span class="tree-item-title">3.3 candidate发起选举</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="4"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#3.4_leader定时发起心跳广播"><div class="tree-item-contents heading-link" heading-name="3.4 leader定时发起心跳广播"><span class="tree-item-title">3.4 leader定时发起心跳广播</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="4"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#3.5_raft节点处理requestVote请求和心跳请求"><div class="tree-item-contents heading-link" heading-name="3.5 raft节点处理requestVote请求和心跳请求"><span class="tree-item-title">3.5 raft节点处理requestVote请求和心跳请求</span></div></a><div class="tree-item-children nav-folder-children"></div></div></div></div></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#4._MyRaft_leader选举demo验证"><div class="tree-item-contents heading-link" heading-name="4. MyRaft leader选举demo验证"><span class="tree-item-title">4. 
+MyRaft leader选举demo验证
+</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#5._leader预选举优化(PreVote)"><div class="tree-item-contents heading-link" heading-name="5. leader预选举优化(PreVote)"><span class="tree-item-title">5. 
+leader预选举优化(PreVote)
+</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html#6._总结"><div class="tree-item-contents heading-link" heading-name="6. 总结"><span class="tree-item-title">6. 
+总结
+</span></div></a><div class="tree-item-children nav-folder-children"></div></div></div></div></div></div></div><script defer="">let rs = document.querySelector(".sidebar-right"); rs.classList.add("is-collapsed"); if (window.innerWidth > 768) rs.classList.remove("is-collapsed"); rs.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-right-width"));</script></div></div></body></html>

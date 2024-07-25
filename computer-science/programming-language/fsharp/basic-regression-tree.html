@@ -1,0 +1,218 @@
+<!DOCTYPE html> <html><head>
+		<title>Basic Regression Tree</title>
+		<base href="../../../">
+		<meta id="root-path" root-path="../../../">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0">
+		<meta charset="UTF-8">
+		<meta name="description" content="韩暮秋的个人维基 - Basic Regression Tree">
+		<meta property="og:title" content="Basic Regression Tree">
+		<meta property="og:description" content="韩暮秋的个人维基 - Basic Regression Tree">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/basic-regression-tree.html">
+		<meta property="og:image" content="https://mathias-brandewinder.github.io//assets/2016-08-14-stump.png">
+		<meta property="og:site_name" content="韩暮秋的个人维基">
+		<meta name="author" content="韩暮秋"><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://muqiuhan.github.io/wiki/lib/rss.xml"><script async="" id="webpage-script" src="lib/scripts/webpage.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script type="module" async="" id="graph-view-script" src="lib/scripts/graph-view.js"></script><script async="" id="graph-wasm-script" src="lib/scripts/graph-wasm.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="graph-render-worker-script" src="lib/scripts/graph-render-worker.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="tinycolor-script" src="lib/scripts/tinycolor.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="pixi-script" src="lib/scripts/pixi.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><script async="" id="minisearch-script" src="lib/scripts/minisearch.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><link rel="icon" href="lib/media/favicon.ico"><script async="" id="graph-data-script" src="lib/scripts/graph-data.js" onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script><style>body{--line-width:40em;--line-width-adaptive:40em;--file-line-width:40em;--sidebar-width:min(20em, 80vw);--collapse-arrow-size:11px;--tree-horizontal-spacing:0.6em;--tree-vertical-spacing:0.6em;--sidebar-margin:12px}.sidebar{height:100%;min-width:calc(var(--sidebar-width) + var(--divider-width-hover));max-width:calc(var(--sidebar-width) + var(--divider-width-hover));font-size:14px;z-index:10;position:relative;overflow:hidden;transition:min-width ease-in-out,max-width ease-in-out;transition-duration:.2s;contain:size}.sidebar-left{left:0}.sidebar-right{right:0}.sidebar.is-collapsed{min-width:0;max-width:0}body.floating-sidebars .sidebar{position:absolute}.sidebar-content{height:100%;min-width:calc(var(--sidebar-width) - var(--divider-width-hover));top:0;padding:var(--sidebar-margin);padding-top:4em;line-height:var(--line-height-tight);background-color:var(--background-secondary);transition:background-color,border-right,border-left,box-shadow;transition-duration:var(--color-fade-speed);transition-timing-function:ease-in-out;position:absolute;display:flex;flex-direction:column}.sidebar:not(.is-collapsed) .sidebar-content{min-width:calc(max(100%,var(--sidebar-width)) - 3px);max-width:calc(max(100%,var(--sidebar-width)) - 3px)}.sidebar-left .sidebar-content{left:0;border-top-right-radius:var(--radius-l);border-bottom-right-radius:var(--radius-l)}.sidebar-right .sidebar-content{right:0;border-top-left-radius:var(--radius-l);border-bottom-left-radius:var(--radius-l)}.sidebar:has(.sidebar-content:empty):has(.topbar-content:empty){display:none}.sidebar-topbar{height:2em;width:var(--sidebar-width);top:var(--sidebar-margin);padding-inline:var(--sidebar-margin);z-index:1;position:fixed;display:flex;align-items:center;transition:width ease-in-out;transition-duration:inherit}.sidebar.is-collapsed .sidebar-topbar{width:calc(2.3em + var(--sidebar-margin) * 2)}.sidebar .sidebar-topbar.is-collapsed{width:0}.sidebar-left .sidebar-topbar{left:0}.sidebar-right .sidebar-topbar{right:0}.topbar-content{overflow:hidden;overflow:clip;width:100%;height:100%;display:flex;align-items:center;transition:inherit}.sidebar.is-collapsed .topbar-content{width:0;transition:inherit}.clickable-icon.sidebar-collapse-icon{background-color:transparent;color:var(--icon-color-focused);padding:0!important;margin:0!important;height:100%!important;width:2.3em!important;margin-inline:0.14em!important;position:absolute}.sidebar-left .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);right:var(--sidebar-margin)}.sidebar-right .clickable-icon.sidebar-collapse-icon{transform:rotateY(180deg);left:var(--sidebar-margin)}.clickable-icon.sidebar-collapse-icon svg.svg-icon{width:100%;height:100%}.sidebar-section-header{margin:0 0 1em 0;text-transform:uppercase;letter-spacing:.06em;font-weight:600}body{transition:background-color var(--color-fade-speed) ease-in-out}.webpage-container{display:flex;flex-direction:row;height:100%;width:100%;align-items:stretch;justify-content:center}.document-container{opacity:1;flex-basis:100%;max-width:100%;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;transition:opacity .2s ease-in-out;contain:inline-size}.hide{opacity:0;transition:opacity .2s ease-in-out}.document-container>.markdown-preview-view{margin:var(--sidebar-margin);margin-bottom:0;width:100%;width:-webkit-fill-available;width:-moz-available;width:fill-available;background-color:var(--background-primary);transition:background-color var(--color-fade-speed) ease-in-out;border-top-right-radius:var(--window-radius,var(--radius-m));border-top-left-radius:var(--window-radius,var(--radius-m));overflow-x:hidden!important;overflow-y:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;contain:inline-size}.document-container>.markdown-preview-view>.markdown-preview-sizer{padding-bottom:80vh!important;width:100%!important;max-width:var(--line-width)!important;flex-basis:var(--line-width)!important;transition:background-color var(--color-fade-speed) ease-in-out;contain:inline-size}.markdown-rendered img:not([width]),.view-content img:not([width]){max-width:100%;outline:0}.document-container>.view-content.embed{display:flex;padding:1em;height:100%;width:100%;align-items:center;justify-content:center}.document-container>.view-content.embed>*{max-width:100%;max-height:100%;object-fit:contain}:has(> :is(.math,table)){overflow-x:auto!important}.document-container>.view-content{overflow-x:auto;contain:content;padding:0;margin:0;height:100%}.scroll-highlight{position:absolute;width:100%;height:100%;pointer-events:none;z-index:1000;background-color:hsla(var(--color-accent-hsl),.25);opacity:0;padding:1em;inset:50%;translate:-50% -50%;border-radius:var(--radius-s)}</style><script defer="">async function loadIncludes(){if("file:"!=location.protocol){let e=document.querySelectorAll("include");for(let t=0;t<e.length;t++){let o=e[t],l=o.getAttribute("src");try{const e=await fetch(l);if(!e.ok){console.log("Could not include file: "+l),o?.remove();continue}let t=await e.text(),n=document.createRange().createContextualFragment(t),i=Array.from(n.children);for(let e of i)e.classList.add("hide"),e.style.transition="opacity 0.5s ease-in-out",setTimeout((()=>{e.classList.remove("hide")}),10);o.before(n),o.remove(),console.log("Included file: "+l)}catch(e){o?.remove(),console.log("Could not include file: "+l,e);continue}}}else{if(document.querySelectorAll("include").length>0){var e=document.createElement("div");e.id="error",e.textContent="Web server exports must be hosted on an http / web server to be viewed correctly.",e.style.position="fixed",e.style.top="50%",e.style.left="50%",e.style.transform="translate(-50%, -50%)",e.style.fontSize="1.5em",e.style.fontWeight="bold",e.style.textAlign="center",document.body.appendChild(e),document.querySelector(".document-container")?.classList.remove("hide")}}}document.addEventListener("DOMContentLoaded",(()=>{loadIncludes()}));let isFileProtocol="file:"==location.protocol;function waitLoadScripts(e,t){let o=e.map((e=>document.getElementById(e+"-script"))),l=0;!function e(){let n=o[l];l++,n&&"true"!=n.getAttribute("loaded")||l<o.length&&e(),l<o.length?n.addEventListener("load",e):t()}()}</script><link rel="stylesheet" href="lib/styles/obsidian.css"><link rel="preload" href="lib/styles/other-plugins.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/other-plugins.css"></noscript><link rel="stylesheet" href="lib/styles/theme.css"><link rel="preload" href="lib/styles/global-variable-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/global-variable-styles.css"></noscript><link rel="preload" href="lib/styles/main-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="lib/styles/main-styles.css"></noscript></head><body class="publish css-settings-manager theme-light show-inline-title show-ribbon pt-color-scheme-style-minimal-lt pt-accent-style-borderandfilled-lt pt-accent-color-grey-lt pt-highlight-text-accent-lt pt-accent-style-borderandfilled-dt pt-accent-color-purple-dt pt-highlight-text-accent-dt pt-focused-style-main-only pt-font-disable-ligatures pt-highlight-style-borderandfilled-lt pt-highlight-text-color-lt pt-highlight-style-borderandfilled-dt pt-highlight-text-color-dt pt-file-explorer-folder-icon-default pt-colored-folders-style-rainbow pt-center-kanban-title-text pt-kanban-background-grid-lt pt-kanban-background-grid-dt pt-icon-folder-accent"><script defer="">let theme=localStorage.getItem("theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"==theme?(document.body.classList.add("theme-dark"),document.body.classList.remove("theme-light")):(document.body.classList.add("theme-light"),document.body.classList.remove("theme-dark")),window.innerWidth<480?document.body.classList.add("is-phone"):window.innerWidth<768?document.body.classList.add("is-tablet"):window.innerWidth<1024?document.body.classList.add("is-small-screen"):document.body.classList.add("is-large-screen")</script><div class="webpage-container workspace"><div class="sidebar-left sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"><label class="theme-toggle-container" for="theme_toggle"><input class="theme-toggle-input" type="checkbox" id="theme_toggle"><div class="toggle-background"></div></label></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content"><div class="search-input-container"><input enterkeyhint="search" type="search" spellcheck="false" placeholder="Search..."><div class="search-input-clear-button" aria-label="Clear search"></div></div><include src="lib/html/file-tree.html"></include></div><script defer="">let ls = document.querySelector(".sidebar-left"); ls.classList.add("is-collapsed"); if (window.innerWidth > 768) ls.classList.remove("is-collapsed"); ls.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-left-width"));</script></div><div class="document-container markdown-reading-view hide"><div class="markdown-preview-view markdown-rendered allow-fold-headings allow-fold-lists is-readable-line-width"><style id="MJX-CHTML-styles"></style><div class="markdown-preview-sizer markdown-preview-section"><h1 class="page-title heading inline-title" id="Basic Regression Tree"><p dir="auto">Basic Regression Tree</p></h1><div><p dir="auto">In our previous installment, we <a data-tooltip-position="top" aria-label="https://mathias-brandewinder.github.io//2016/08/06/gradient-boosting-part-1/" rel="noopener" class="external-link" href="https://mathias-brandewinder.github.io//2016/08/06/gradient-boosting-part-1/" target="_blank">began exploring Gradient Boosting</a>, and outlined how by combining extremely crude regression models - stumps - we could iteratively create a decent prediction model for the quality of wine bottles, using one <code>Feature</code>, one of the chemical measurements we have available.</p></div><div><p dir="auto">In and of itself, this is an interesting result: the approach allows us to aggregate mediocre indicators together into a predictor that is better than its individual parts. However, so far, we are using only a tiny subset of the information available. Why restrict ourselves to a single <code>Feature</code>, and not use all of them? And, if the approach works with something as weak as a stump, perhaps we can do better, by aggregating less trivial prediction models?</p></div><div><p dir="auto">This will be our goal today: we will create a <a data-tooltip-position="top" aria-label="https://en.wikipedia.org/wiki/Decision_tree_learning#Types" rel="noopener" class="external-link" href="https://en.wikipedia.org/wiki/Decision_tree_learning#Types" target="_blank">Regression Tree</a>, which we will in a future installment use in place of stumps in our Boosting procedure.</p></div><div class="heading-wrapper"><h2 data-heading="Regression Trees" dir="auto" class="heading" id="Regression_Trees"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>Regression Trees</h2><div class="heading-children"><div><p dir="auto"><a data-tooltip-position="top" aria-label="https://gist.github.com/mathias-brandewinder/05683d63bfa67c8b706ce458035c0b81#file-gradient-boosting-2-fsx" rel="noopener" class="external-link" href="https://gist.github.com/mathias-brandewinder/05683d63bfa67c8b706ce458035c0b81#file-gradient-boosting-2-fsx" target="_blank"><em>Full code for this post available here as a Gist</em></a></p></div><div><p dir="auto">The Stump model is rather simple: we take a <code>Feature</code> and a split value, the threshold. If the input value is under that threshold, we predict the average output value computed across examples under the threshold, otherwise, we do the opposite:</p></div><div><p dir="auto"><img alt="Stump" src="https://mathias-brandewinder.github.io//assets/2016-08-14-stump.png" referrerpolicy="no-referrer"></p></div><div><p dir="auto">Or, in code:</p></div><div><pre class="language-none" tabindex="0"><code class="language-F# language-none is-loaded">type Wine = CsvProvider&lt;"data/winequality-red.csv",";",InferRows=1500&gt;
+
+type Observation = Wine.Row
+
+type Feature = Observation -&gt; float
+
+type Example = Observation * float
+
+type Predictor = Observation -&gt; float
+
+let learnStump (sample:Example seq) (feature:Feature) threshold =
+    let under = 
+        sample 
+        |&gt; Seq.filter (fun (obs,lbl) -&gt; feature obs &lt;= threshold)
+        |&gt; Seq.averageBy (fun (obs,lbl) -&gt; lbl)
+    let over = 
+        sample 
+        |&gt; Seq.filter (fun (obs,lbl) -&gt; feature obs &gt; threshold)
+        |&gt; Seq.averageBy (fun (obs,lbl) -&gt; lbl)
+    fun obs -&gt;
+        if (feature obs &lt;= threshold)
+        then under
+        else over
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">A regression tree extends the idea further. Instead of limiting ourselves to a single threshold, we can further divide each group, and create trees like this one for instance:</p></div><div><p dir="auto"><img alt="Simple Tree" src="https://mathias-brandewinder.github.io//assets/2016-08-14-simple-tree.png" referrerpolicy="no-referrer"></p></div><div><p dir="auto">Nothing forces us to keep the tree symmetrical, or to use a single <code>Feature</code>, though. This would be a perfectly acceptable tree as well:</p></div><div><p dir="auto"><img alt="Complex Tree" src="https://mathias-brandewinder.github.io//assets/2016-08-14-complex-tree.png" referrerpolicy="no-referrer"></p></div><div><p dir="auto">The nice thing about trees is, they are pretty flexible, and very easy to interpret. With a tree, we can incorporate multiple features and their interactions. In our example, we are really modelling Quality as a surface, instead of a simple line in the stump example:</p></div><div><p dir="auto"><img alt="Quality Surface" src="https://mathias-brandewinder.github.io//assets/2016-08-14-surface.png" referrerpolicy="no-referrer"></p></div><div><p dir="auto">The resulting model can be expressed in a very understandable form:</p></div><div><blockquote dir="auto">
+<p>If the Alcohol Level is over 10.5, the Quality is 5.5; Otherwise, check the Volatile Acidity. If it is below 0.8, the Quality is 6.0, otherwise it is 3.0.</p>
+</blockquote></div></div></div><div class="heading-wrapper"><h2 data-heading="Creating a Tree" dir="auto" class="heading" id="Creating_a_Tree"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>Creating a Tree</h2><div class="heading-children"><div><p dir="auto">How can we go about representing and learning a Tree?</p></div><div><p dir="auto">As it turns out, the representation is fairly straightforward. A <code>Tree</code> can be seen as a recursive data structure: either we reached a terminal <code>Leaf</code>, which gives us a prediction, or we reach a <code>Branch</code>, where, based on a <code>Feature</code> and associated split value, we will find 2 new <code>Tree</code>s, one for values under the split value, another for values above the split.</p></div><div><p dir="auto">That is a match in heaven for a Discriminated Union:</p></div><div><pre class="language-none" tabindex="0"><code class="language-F# language-none is-loaded">type Tree =
+    | Leaf of float
+    | Branch of (Feature * float) * Tree * Tree
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">Creating manually the “complex” tree we described above can be done along these lines:</p></div><div><pre class="language-none" tabindex="0"><code class="language-F# language-none is-loaded">let exampleTree =
+    // we start with a branch
+    Branch(
+        // we split on Alcohol level, 10.5
+        (``Alcohol Level``, 10.5),
+        // if alcohol level is under 10.5, 
+        // we have another branch
+        Branch(
+            // we split on Volatile Acidity, 0.8
+            (``Volatile Acidity``, 0.8),
+            // if acidity is under 0.8, 
+            // we predict 6.0
+            Leaf(6.0),
+            // otherwise we predict 3.0
+            Leaf(3.0)
+        ),
+        // if alcohol is over 10.5,
+        // we predict 5.5
+        Leaf(5.5)
+    )
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">How do we go about making predictions with a <code>Tree</code>? We simply walk it down recursively:</p></div><div><pre class="language-none" tabindex="0"><code class="language-F# language-none is-loaded">let rec predict (tree:Tree) (obs:Observation) =
+    match tree with
+    | Leaf(prediction) -&gt; prediction
+    | Branch((feature,split),under,over) -&gt;
+        let featureValue = feature obs
+        if featureValue &lt;= split
+        then predict under obs
+        else predict over obs
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">Let’s try it out on our example:</p></div><div><pre><code>predict exampleTree (reds.Rows |&gt; Seq.head)
+
+&gt; val it : float = 6.0
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">Note that, if we use partial application:</p></div><div><pre><code>let examplePredictor = predict exampleTree
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">… we get back a function, <code>examplePredictor</code>, which happens to have exactly the signature we defined earlier for a <code>Predictor</code>:</p></div><div><pre><code>val examplePredictor : (Observation -&gt; float)
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">As a result, we can immediately re-use the <code>sumOfSquares</code> error function we wrote last time, and evaluate how good our tree is fitting the dataset:</p></div><div><pre class="language-none" tabindex="0"><code class="language-F# language-none is-loaded">let sumOfSquares (sample:Example seq) predictor = 
+    sample
+    |&gt; Seq.sumBy (fun (obs,lbl) -&gt; 
+        pown (lbl - predictor obs) 2)
+
+let redSample = 
+    reds.Rows 
+    |&gt; Seq.map (fun row -&gt; row, row.Quality |&gt; float)
+
+sumOfSquares redSample examplePredictor 
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre><code>val it : float = 1617.0
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">The result is pretty terrible - but then, I picked the tree values randomly. Can we automatically learn a “good” <code>Tree</code>?</p></div></div></div><div class="heading-wrapper"><h2 data-heading="Learning a Tree" dir="auto" class="heading" id="Learning_a_Tree"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>Learning a Tree</h2><div class="heading-children"><div><p dir="auto">If you recall, the approach we followed to learn a “good” stump was the following: for a given <code>Feature</code>, try out various possible split values, and pick the one that gives us the smallest error, defined as the <code>sumOfSquares</code> between the predicted and actual values.</p></div><div><p dir="auto">We can use the same idea for a <code>Tree</code>. Instead of stopping once we found a good split, we will simply repeat the same process, and look for a good split in each of the two samples we got after the split. Also, instead of searching for a split on a single <code>Feature</code>, we will now consider all of them, and select the best split across all available <code>Feature</code>s.</p></div><div><p dir="auto">That smells like recursion. As a first pass, we will re-use some of the code we wrote last time, the <code>learnStump</code> and <code>evenSplits</code> functions, and whip together a quick-and-dirty tree learning function, disregarding any performance consideration:</p></div><div><pre class="language-none" tabindex="0"><code class="language-F# language-none is-loaded">let rec learnTree (sample:Example seq) (features:Feature list) (depth:int) =
+    
+    if depth = 0
+    then
+        // we reached maximum depth, and
+        // predict the sample average.
+        let avg = sample |&gt; Seq.averageBy snd
+        Leaf(avg)
+    else
+        let (bestFeature,bestSplit) = 
+            // create all feature * split combinations
+            seq {
+                for feature in features do
+                    let splits = evenSplits sample feature 10
+                    for split in splits -&gt; feature,split
+            }
+            // find the split with the smallest error
+            |&gt; Seq.minBy (fun (feature,split) -&gt; 
+                let predictor = learnStump sample feature split
+                sumOfSquares sample predictor)
+        // split the sample following the split
+        let under = 
+            sample 
+            |&gt; Seq.filter (fun (obs,_) -&gt; 
+                bestFeature obs &lt;= bestSplit)
+        let over = 
+            sample 
+            |&gt; Seq.filter (fun (obs,_) -&gt; 
+                bestFeature obs &gt; bestSplit)
+        // learn the corresponding trees
+        let underTree = learnTree under features (depth - 1)
+        let overTree =  learnTree over features (depth - 1)
+        // and create the corresponding branch
+        Branch((bestFeature,bestSplit),underTree,overTree)
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">Let’s try this out, with a <code>Tree</code> that should be equivalent to the first stump we created last time:</p></div><div><pre><code>let originalStump = learnTree redSample [ ``Alcohol Level`` ] 1
+sumOfSquares redSample (predict originalStump)
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre><code>val it : float = 864.4309287
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">Good news - we get the same result. Now let’s crank it up a notch:</p></div><div><pre><code>let deeperTree = learnTree redSample [``Alcohol Level``;``Volatile Acidity``] 4
+sumOfSquares redSample (predict deeperTree)
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre><code>val it : float = 680.1290569
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">This is significantly better that the best result we achieved by ensembling stumps, <code>811.4601191</code>.</p></div></div></div><div class="heading-wrapper"><h2 data-heading="Cleaning up our act (a bit)" dir="auto" class="heading" id="Cleaning_up_our_act_(a_bit)"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>Cleaning up our act (a bit)</h2><div class="heading-children"><div><p dir="auto">We have a decent-looking <code>Tree</code> learning algorithm. However, not everything is perfect. For instance, emboldened by our success, we could try to increase the depth a bit.</p></div><div><pre><code>let explodingTree = learnTree redSample [``Alcohol Level``] 5
+</code><button class="copy-code-button">Copy</button></pre></div><div><pre><code>System.ArgumentException: The step of a range cannot be zero.
+Parameter name: step
+// long list of F# complaints follows
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">Uh-oh. What is happening here?</p></div><div><p dir="auto">As we recurse deeper in the <code>Tree</code>, we split the samples further and further, and have less and less data to train our stump on. One thing which might happen for instance is that we are left only with examples sharing the same label. In that situation, generating even splits is going to cause issues, because the <code>width</code> in <code>[ min + width .. width .. max - width ]</code> (our evenly-spaced splits) will be <code>0.0</code>.</p></div><div><p dir="auto">This indicates a first problem, namely, that there might not be any good split to use for a given sample.</p></div><div><p dir="auto">Beyond that, the design is also a bit problematic. The choice of 10 even splits is quite arbitrary; we might want to use 3, or 42 even splits, or use different strategies altogether (splits of same size, every possible distinct value, …). Our <code>evenSplits</code> function is hard-coded deep inside the algorithm - it would be much nicer if we could inject any split function as an argument.</p></div><div><p dir="auto">In a similar vein, assuming we are comfortable with using stumps / binary splits, the choice of our error metric is also quite arbitrary. We might want to use something else that the sum of squared prediction errors (Manhattan distance, variance reduction, …). Again, that function is buried deep inside - we would like to use any reasonable cost function we think relevant to the problem.</p></div><div><p dir="auto">Finally, we are picking the split that yields the best cost. However, that split is not guaranteed to be an improvement. As an example, every observation in the sample could have the same label, in which case no split will improve our predictions. If the resulting cost is the same as before, it is pointless to split, and we might as well spare the algorithm a useless deeper search.</p></div><div><p dir="auto">In short,</p></div><div><ul>
+<li data-line="0" dir="auto">we are not guaranteed to have splits for every sample,</li>
+<li data-line="1" dir="auto">we should split only when strict cost improvements are found,</li>
+<li data-line="2" dir="auto">we would like to decide what splits to use,</li>
+<li data-line="3" dir="auto">we would like to decide what cost metric to use.</li>
+</ul></div><div><p dir="auto">We are probably going slightly overboard here; the only real problem we have is the first one. At the same time, why not have a bit of fun!</p></div><div><p dir="auto">I am going to start with defining a couple of type aliases and utilities:</p></div><div><pre><code>let underOver (sample:Example seq) (feat:Feature,split:float) =
+    let under = sample |&gt; Seq.filter (fun (obs,_) -&gt; feat obs &lt;= split)
+    let over =  sample |&gt; Seq.filter (fun (obs,_) -&gt; feat obs &gt; split)
+    under,over
+
+type Splitter = Example seq -&gt; Feature -&gt; float list
+
+type Cost = Example seq -&gt; float
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto"><code>underOver</code> simply takes a sample, and partitions it into 2 samples, based on a feature and a split value. <code>Splitter</code> is a function that, given a sample and a <code>Feature</code>, will produce a (potentially empty) list of values we could split on. <code>Cost</code> simply measures how good a sample is.</p></div><div><p dir="auto">Given these elements, we can now rewrite our <code>learnTree</code> function along these lines:</p></div><div><pre class="language-none" tabindex="0"><code class="language-F# language-none is-loaded">let rec learnTree (splitter:Splitter,cost:Cost) (sample:Example seq) (features:Feature list) (depth:int) =
+    
+    if depth = 0
+    then
+        let avg = sample |&gt; Seq.averageBy snd
+        Leaf(avg)
+    else
+        let initialCost = cost sample        
+        let candidates = 
+            // build up all the feature/split candidates,
+            // and their associated sample splits
+            seq {
+                for feature in features do
+                    let splits = splitter sample feature
+                    for split in splits -&gt; 
+                        let under,over = underOver sample (feature,split)  
+                        (feature,split),(under,over)
+            }
+            // compute and append cost of split
+            |&gt; Seq.map (fun (candidate,(under,over)) -&gt;
+                candidate,(under,over), cost under + cost over)
+            // retain only candidates with strict cost improvement
+            |&gt; Seq.filter (fun (candidate,(under,over),splitCost) -&gt;
+                splitCost &lt; initialCost)
+
+        if (Seq.isEmpty candidates)
+        then
+            let avg = sample |&gt; Seq.averageBy snd
+            Leaf(avg)
+        else
+            let ((bestFeature,bestSplit),(under,over),spliCost) = 
+                candidates 
+                |&gt; Seq.minBy (fun (_,_,splitCost) -&gt; splitCost)
+
+            let underTree = learnTree (splitter,cost) under features (depth - 1)
+            let overTree =  learnTree (splitter,cost) over features (depth - 1)
+
+            Branch((bestFeature,bestSplit),underTree,overTree)
+</code><button class="copy-code-button">Copy</button></pre></div></div></div><div class="heading-wrapper"><h2 data-heading="Trying it out" dir="auto" class="heading" id="Trying_it_out"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>Trying it out</h2><div class="heading-children"><div><p dir="auto">Does it work? Let’s try it out:</p></div><div><pre><code>let evenSplitter n (sample:Example seq) (feature:Feature) = 
+    let values = sample |&gt; Seq.map (fst &gt;&gt; feature)
+    let min = values |&gt; Seq.min
+    let max = values |&gt; Seq.max
+    if min = max 
+    then []
+    else
+        let width = (max-min) / (float (n + 1))
+        [ min + width .. width .. max - width ]
+
+let sumOfSquaresCost (sample:Example seq) = 
+    let avg = sample |&gt; Seq.averageBy snd
+    sample |&gt; Seq.sumBy (fun (_,lbl) -&gt; pown (lbl - avg) 2) 
+
+let stableTree = learnTree (evenSplitter 10,sumOfSquaresCost) redSample [``Alcohol Level``;``Volatile Acidity``] 10
+
+sumOfSquares redSample (predict stableTree)
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">This time, nothing explodes - and the value we get is</p></div><div><pre><code>val it : float = 331.1456491
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">The nice thing here is that at that point, all it takes to create and try new trees is a specification for the cost and split functions, and a list of features. We can, for instance, create a <code>Tree</code> using every feature we have available:</p></div><div><pre><code>let features = [
+    ``Alcohol Level``
+    ``Chlorides``
+    ``Citric Acid``
+    ``Density``
+    ``Fixed Acidity``
+    ``Free Sulfur Dioxide``
+    ``PH``
+    ``Residual Sugar``
+    ``Total Sulfur Dioxide``
+    ``Volatile Acidity``
+]
+
+let fullTree = learnTree (evenSplitter 5,sumOfSquaresCost) redSample features 10
+</code><button class="copy-code-button">Copy</button></pre></div><div><p dir="auto">The results are pretty decent, too:</p></div><div><p dir="auto"><img alt="Actual vs Predicted" src="https://mathias-brandewinder.github.io//assets/2016-08-14-actual-vs-predicted.PNG" referrerpolicy="no-referrer"></p></div><div><p dir="auto">Out of curiosity, I also performed a crude training vs. testing analysis, to get a feel for potential over-fitting issues.</p></div><div><p dir="auto"><img alt="Over Fitting" src="https://mathias-brandewinder.github.io//assets/2016-08-14-overfitting.PNG" referrerpolicy="no-referrer"></p></div><div><p dir="auto">The result we observe is typical of trees: as we increase depth, the error on the training sample steadily decreases, indicating that deeper tree fit the data better and better. However, the testing sample tells a different story: for a little while, error on the training and testing samples match fairly closely, but after we reach a certain depth (here, 3), they start diverging. While our tree fit the training sample better and better, that improvement doesn’t generalize to other samples, as we can see on the testing sample; at that point, we are over-fitting. In our particular case, this means that we shouldn’t put much trust in trees deeper than 3.</p></div></div></div><div class="heading-wrapper"><h2 data-heading="Conclusion" dir="auto" class="heading" id="Conclusion"><div class="heading-collapse-indicator collapse-indicator collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon right-triangle"><path d="M3 8L12 17L21 8"></path></svg></div>Conclusion</h2><div class="heading-children"><div><p dir="auto">At that point, we have a working regression tree algorithm. It’s not perfect; in particular, we largely ignored any performance consideration. Or, stated more bluntly, performance is terrible ;) Still, the result has a couple nice features, the code is fairly simple, and… it works!</p></div><div><p dir="auto">Trees are quite an interesting topic, which we only covered very superficially here. Still, we will leave it at that for now, and focus back on our initial goal, gradient boosting. All we needed was something a bit better than stumps to iteratively fit residuals. We have that now, with regression tree that allow us to learn a predictor using every feature we have available. In our next installments, we will look at replacing stumps with trees, and see where that leads us.</p></div><div class="mod-footer"></div></div></div></div></div></div><div class="sidebar-right sidebar"><div class="sidebar-handle"></div><div class="sidebar-topbar"><div class="topbar-content"></div><div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z"></path><path d="M10 4V20"></path><path d="M4 7H7"></path><path d="M4 10H7"></path><path d="M4 13H7"></path></svg></div></div><div class="sidebar-content"><div class="graph-view-wrapper"><div class="sidebar-section-header">Interactive Graph</div><div class="graph-view-placeholder">
+		<div class="graph-view-container">
+			<div class="graph-icon graph-expand" role="button" aria-label="Expand" data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></div>
+			<canvas id="graph-canvas" class="hide" width="512px" height="512px"></canvas>
+		</div>
+		</div></div><div class="tree-container mod-root nav-folder tree-item outline-tree" data-depth="0"><div class="tree-header"><span class="sidebar-section-header">Table Of Contents</span><button class="clickable-icon collapse-tree-button" aria-label="Collapse All"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg></button></div><div class="tree-scroll-area tree-item-children nav-folder-children"><div class="tree-item mod-tree-folder nav-folder mod-collapsible is-collapsed" style="display: none;"></div><div class="tree-item" data-depth="1"><a class="tree-link" href="computer-science/programming-language/fsharp/basic-regression-tree.html#Basic Regression Tree"><div class="tree-item-contents heading-link" heading-name="Basic Regression Tree"><span class="tree-item-title">Basic Regression Tree</span></div></a><div class="tree-item-children nav-folder-children"><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/basic-regression-tree.html#Regression_Trees"><div class="tree-item-contents heading-link" heading-name="Regression Trees"><span class="tree-item-title">Regression Trees</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/basic-regression-tree.html#Creating_a_Tree"><div class="tree-item-contents heading-link" heading-name="Creating a Tree"><span class="tree-item-title">Creating a Tree</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/basic-regression-tree.html#Learning_a_Tree"><div class="tree-item-contents heading-link" heading-name="Learning a Tree"><span class="tree-item-title">Learning a Tree</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/basic-regression-tree.html#Cleaning_up_our_act_(a_bit)"><div class="tree-item-contents heading-link" heading-name="Cleaning up our act (a bit)"><span class="tree-item-title">Cleaning up our act (a bit)</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/basic-regression-tree.html#Trying_it_out"><div class="tree-item-contents heading-link" heading-name="Trying it out"><span class="tree-item-title">Trying it out</span></div></a><div class="tree-item-children nav-folder-children"></div></div><div class="tree-item" data-depth="2"><a class="tree-link" href="computer-science/programming-language/fsharp/basic-regression-tree.html#Conclusion"><div class="tree-item-contents heading-link" heading-name="Conclusion"><span class="tree-item-title">Conclusion</span></div></a><div class="tree-item-children nav-folder-children"></div></div></div></div></div></div></div><script defer="">let rs = document.querySelector(".sidebar-right"); rs.classList.add("is-collapsed"); if (window.innerWidth > 768) rs.classList.remove("is-collapsed"); rs.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-right-width"));</script></div></div></body></html>
