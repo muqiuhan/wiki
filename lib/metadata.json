@@ -1,12 +1,15 @@
 {
   "vaultName": "韩暮秋的个人维基",
-  "lastExport": 1731644692296,
+  "lastExport": 1731645904106,
   "pluginVersion": "1.8.01",
   "validBodyClasses": "publish css-settings-manager theme-light show-inline-title show-ribbon show-file-explorer-navigation",
   "useCustomHeadContent": false,
   "useCustomFavicon": true,
   "files": [
     "Computer Science/Database/Intro to Databases (for people who don’t know a whole lot about them).md",
+    "Computer Science/Design/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115123905.png",
+    "Computer Science/Design/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115124216.png",
+    "Computer Science/Design/You don’t Need a Book to Know DDD(Domain-Driven Design)/You don’t Need a Book to Know DDD(Domain-Driven Design).md",
     "Computer Science/Design/从事件风暴看领域驱动设计.md",
     "Computer Science/Distributed System/Raft 原始论文中英/In Search of an Understandable Consensus Algorithm(Extended Version).md",
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725172940.png",
@@ -111,7 +114,6 @@
     "Computer Science/Programming Language/OCaml/The _intf trick.md",
     "Computer Science/Programming Language/OCaml/Transitioning to Multicore with ThreadSanitizer.md",
     "Computer Science/Programming Language/Rescript/Rescript @genType 生成的 TypeScript 代码中的 import 的问题.md",
-    "Computer Science/Programming Language/Rescript/基于 JavaScript Reflect API 在 Rescript 中实现依赖项注入容器.md",
     "Computer Science/Programming Language/Rust/Rust NewType 模式.md",
     "Computer Science/Programming Language/Rust/Rust Partial 语义.md",
     "Computer Science/Programming Language/Rust/Rust trait 实现函数重载.md",
@@ -141,9 +143,7 @@
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115115845.png",
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115120819.png",
     "Computer Science/Web/Svelte/Svelte 核心原理/Svelte 的编译器和运行时.md",
-    "Computer Science/Web/Svelte/SvelteKit 简述.md",
     "Computer Science/Web/Turborepo 简述.md",
-    "Computer Science/Web/使用 Rescript 基于 Node.JS 实现的 SSSO 服务器.md",
     "lib/scripts/graph-wasm.wasm",
     "lib/fonts/94f2f163d4b698242fef.otf",
     "lib/fonts/72505e6a122c6acd5471.woff2",
@@ -210,7 +210,20 @@
     "computer-science/functional-programming/fsm-functional-state-machines/pasted-image-20240912175321.png",
     "computer-science/functional-programming/fsm-functional-state-machines/pasted-image-20240912175449.png",
     "computer-science/functional-programming/fsm-functional-state-machines/pasted-image-20240912175517.png",
-    "computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png"
+    "computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112012.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112612.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112039.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112127.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112203.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112230.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112241.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112450.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112544.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115009.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115845.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png"
   ],
   "mainDependencies": [
     "lib/scripts/graph-wasm.wasm",
@@ -1048,91 +1061,91 @@
       "dependencies": []
     },
     "lib/scripts/graph-wasm.wasm": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 23377,
       "exportedPath": "lib/scripts/graph-wasm.wasm",
       "dependencies": []
     },
     "lib/fonts/94f2f163d4b698242fef.otf": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 66800,
       "exportedPath": "lib/fonts/94f2f163d4b698242fef.otf",
       "dependencies": []
     },
     "lib/fonts/72505e6a122c6acd5471.woff2": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 104232,
       "exportedPath": "lib/fonts/72505e6a122c6acd5471.woff2",
       "dependencies": []
     },
     "lib/fonts/2d5198822ab091ce4305.woff2": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 104332,
       "exportedPath": "lib/fonts/2d5198822ab091ce4305.woff2",
       "dependencies": []
     },
     "lib/fonts/c8ba52b05a9ef10f4758.woff2": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 98868,
       "exportedPath": "lib/fonts/c8ba52b05a9ef10f4758.woff2",
       "dependencies": []
     },
     "lib/fonts/cb10ffd7684cd9836a05.woff2": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 106876,
       "exportedPath": "lib/fonts/cb10ffd7684cd9836a05.woff2",
       "dependencies": []
     },
     "lib/fonts/b5f0f109bc88052d4000.woff2": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 105804,
       "exportedPath": "lib/fonts/b5f0f109bc88052d4000.woff2",
       "dependencies": []
     },
     "lib/fonts/cbe0ae49c52c920fd563.woff2": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 106108,
       "exportedPath": "lib/fonts/cbe0ae49c52c920fd563.woff2",
       "dependencies": []
     },
     "lib/fonts/535a6cf662596b3bd6a6.woff2": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 111708,
       "exportedPath": "lib/fonts/535a6cf662596b3bd6a6.woff2",
       "dependencies": []
     },
     "lib/fonts/70cc7ff27245e82ad414.ttf": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 192740,
       "exportedPath": "lib/fonts/70cc7ff27245e82ad414.ttf",
       "dependencies": []
     },
     "lib/fonts/454577c22304619db035.ttf": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 161376,
       "exportedPath": "lib/fonts/454577c22304619db035.ttf",
       "dependencies": []
     },
     "lib/fonts/52ac8f3034507f1d9e53.ttf": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 191568,
       "exportedPath": "lib/fonts/52ac8f3034507f1d9e53.ttf",
       "dependencies": []
     },
     "lib/fonts/05b618077343fbbd92b7.ttf": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 155288,
       "exportedPath": "lib/fonts/05b618077343fbbd92b7.ttf",
       "dependencies": []
     },
     "lib/fonts/4bb6ac751d1c5478ff3a.woff2": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 7876,
       "exportedPath": "lib/fonts/4bb6ac751d1c5478ff3a.woff2",
       "dependencies": []
     },
     "lib/media/874d8b8e340f75575caa.svg": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 317,
       "exportedPath": "lib/media/874d8b8e340f75575caa.svg",
       "dependencies": []
@@ -1276,49 +1289,49 @@
       "dependencies": []
     },
     "lib/html/file-tree.html": {
-      "modifiedTime": 1731644692296,
-      "sourceSize": 144249,
+      "modifiedTime": 1731645904106,
+      "sourceSize": 145846,
       "exportedPath": "lib/html/file-tree.html",
       "dependencies": []
     },
     "lib/scripts/webpage.js": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 47290,
       "exportedPath": "lib/scripts/webpage.js",
       "dependencies": []
     },
     "lib/scripts/graph-view.js": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 15519,
       "exportedPath": "lib/scripts/graph-view.js",
       "dependencies": []
     },
     "lib/scripts/graph-wasm.js": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 14021,
       "exportedPath": "lib/scripts/graph-wasm.js",
       "dependencies": []
     },
     "lib/scripts/graph-render-worker.js": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 5179,
       "exportedPath": "lib/scripts/graph-render-worker.js",
       "dependencies": []
     },
     "lib/scripts/tinycolor.js": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 29832,
       "exportedPath": "lib/scripts/tinycolor.js",
       "dependencies": []
     },
     "lib/scripts/pixi.js": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 449509,
       "exportedPath": "lib/scripts/pixi.js",
       "dependencies": []
     },
     "lib/scripts/minisearch.js": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 29422,
       "exportedPath": "lib/scripts/minisearch.js",
       "dependencies": []
@@ -1330,37 +1343,37 @@
       "dependencies": []
     },
     "lib/scripts/graph-data.js": {
-      "modifiedTime": 1731644692296,
-      "sourceSize": 10758,
+      "modifiedTime": 1731645904106,
+      "sourceSize": 10638,
       "exportedPath": "lib/scripts/graph-data.js",
       "dependencies": []
     },
     "lib/styles/obsidian.css": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 131134,
       "exportedPath": "lib/styles/obsidian.css",
       "dependencies": []
     },
     "lib/styles/other-plugins.css": {
-      "modifiedTime": 1731644692296,
-      "sourceSize": 2452,
+      "modifiedTime": 1731645904106,
+      "sourceSize": 7072,
       "exportedPath": "lib/styles/other-plugins.css",
       "dependencies": []
     },
     "lib/styles/theme.css": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 633611,
       "exportedPath": "lib/styles/theme.css",
       "dependencies": []
     },
     "lib/styles/global-variable-styles.css": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 385,
       "exportedPath": "lib/styles/global-variable-styles.css",
       "dependencies": []
     },
     "lib/styles/main-styles.css": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 23130,
       "exportedPath": "lib/styles/main-styles.css",
       "dependencies": []
@@ -1467,12 +1480,6 @@
       "exportedPath": "computer-science/programming-language/ocaml/advanced-c-binding-using-ocaml-ctypes-and-dune.html",
       "dependencies": []
     },
-    "Computer Science/Programming Language/Rescript/基于 JavaScript Reflect API 在 Rescript 中实现依赖项注入容器.md": {
-      "modifiedTime": 1727876221837,
-      "sourceSize": 2173,
-      "exportedPath": "computer-science/programming-language/rescript/基于-javascript-reflect-api-在-rescript-中实现依赖项注入容器.html",
-      "dependencies": []
-    },
     "Computer Science/Programming Language/Rust/Rust trait 实现函数重载.md": {
       "modifiedTime": 1727876221837,
       "sourceSize": 3207,
@@ -1495,12 +1502,6 @@
       "modifiedTime": 1731644692296,
       "sourceSize": 6148,
       "exportedPath": "computer-science/programming-language/typescript/implement-a-dependency-injection-container-in-typescript-from-scratch.html",
-      "dependencies": []
-    },
-    "Computer Science/Web/Svelte/SvelteKit 简述.md": {
-      "modifiedTime": 1727876221837,
-      "sourceSize": 0,
-      "exportedPath": "computer-science/web/svelte/sveltekit-简述.html",
       "dependencies": []
     },
     "Computer Science/Web/Turborepo 简述.md": {
@@ -1546,13 +1547,13 @@
       "dependencies": []
     },
     "lib/media/favicon.jpg": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 39075,
       "exportedPath": "lib/media/favicon.jpg",
       "dependencies": []
     },
     "lib/styles/supported-plugins.css": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 154,
       "exportedPath": "lib/styles/supported-plugins.css",
       "dependencies": []
@@ -1564,8 +1565,8 @@
       "dependencies": []
     },
     "Computer Science/Design/从事件风暴看领域驱动设计.md": {
-      "modifiedTime": 1731644692296,
-      "sourceSize": 2654,
+      "modifiedTime": 1731645904106,
+      "sourceSize": 2659,
       "exportedPath": "computer-science/design/从事件风暴看领域驱动设计.html",
       "dependencies": []
     },
@@ -1660,8 +1661,8 @@
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Svelte 的编译器和运行时.md": {
-      "modifiedTime": 1731644692296,
-      "sourceSize": 24891,
+      "modifiedTime": 1731645904106,
+      "sourceSize": 24915,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/svelte-的编译器和运行时.html",
       "dependencies": [
         "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png",
@@ -1679,88 +1680,115 @@
         "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png"
       ]
     },
-    "Computer Science/Web/使用 Rescript 基于 Node.JS 实现的 SSSO 服务器.md": {
-      "modifiedTime": 1731644692296,
-      "sourceSize": 2047,
-      "exportedPath": "computer-science/web/使用-rescript-基于-node.js-实现的-ssso-服务器.html",
-      "dependencies": []
-    },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 247514,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112012.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 65682,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112012.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112612.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 78684,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112612.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112039.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 8144,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112039.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112127.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 505148,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112127.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112203.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 593561,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112203.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112230.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 419779,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112230.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112241.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 730111,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112241.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112450.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 564689,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112450.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112544.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 370797,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112544.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115009.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 296633,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115009.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115845.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 452653,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115845.png",
       "dependencies": []
     },
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png": {
-      "modifiedTime": 1731644692296,
+      "modifiedTime": 1731645904106,
       "sourceSize": 801225,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png",
+      "dependencies": []
+    },
+    "Computer Science/Design/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115123905.png": {
+      "modifiedTime": 1731645904106,
+      "sourceSize": 86420,
+      "exportedPath": "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png",
+      "dependencies": []
+    },
+    "Computer Science/Design/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115124216.png": {
+      "modifiedTime": 1731645904106,
+      "sourceSize": 155920,
+      "exportedPath": "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png",
+      "dependencies": []
+    },
+    "Computer Science/Design/You don’t Need a Book to Know DDD(Domain-Driven Design)/You don’t Need a Book to Know DDD(Domain-Driven Design).md": {
+      "modifiedTime": 1731645904106,
+      "sourceSize": 8281,
+      "exportedPath": "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/you-don’t-need-a-book-to-know-ddd(domain-driven-design).html",
+      "dependencies": [
+        "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png",
+        "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png"
+      ]
+    },
+    "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png": {
+      "modifiedTime": 1731645904106,
+      "sourceSize": 86420,
+      "exportedPath": "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png",
+      "dependencies": []
+    },
+    "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png": {
+      "modifiedTime": 1731645904106,
+      "sourceSize": 155920,
+      "exportedPath": "computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png",
       "dependencies": []
     }
   }

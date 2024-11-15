@@ -1,4 +1,793 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[韩暮秋的个人维基]]></title><description><![CDATA[Obsidian digital garden]]></description><link>https://muqiuhan.github.io/wiki/</link><image><url>https://muqiuhan.github.io/wiki/lib/media/favicon.ico</url><title>韩暮秋的个人维基</title><link>https://muqiuhan.github.io/wiki/</link></image><generator>Webpage HTML Export plugin for Obsidian</generator><lastBuildDate>Thu, 25 Jul 2024 10:02:26 GMT</lastBuildDate><atom:link href="https://muqiuhan.github.io/wiki/lib/rss.xml" rel="self" type="application/rss+xml"/><pubDate>Thu, 25 Jul 2024 10:02:04 GMT</pubDate><copyright><![CDATA[韩暮秋]]></copyright><ttl>60</ttl><dc:creator>韩暮秋</dc:creator><item><title><![CDATA[Intro to Databases (for people who don’t know a whole lot about them)]]></title><description><![CDATA[ 
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[韩暮秋的个人维基]]></title><description><![CDATA[Obsidian digital garden]]></description><link>https://muqiuhan.github.io/wiki/</link><image><url>https://muqiuhan.github.io/wiki/lib/media/favicon.jpg</url><title>韩暮秋的个人维基</title><link>https://muqiuhan.github.io/wiki/</link></image><generator>Webpage HTML Export plugin for Obsidian</generator><lastBuildDate>Fri, 15 Nov 2024 04:45:06 GMT</lastBuildDate><atom:link href="https://muqiuhan.github.io/wiki/lib/rss.xml" rel="self" type="application/rss+xml"/><pubDate>Fri, 15 Nov 2024 04:45:04 GMT</pubDate><copyright><![CDATA[韩暮秋]]></copyright><ttl>60</ttl><dc:creator>韩暮秋</dc:creator><item><title><![CDATA[You don’t Need a Book to Know DDD(Domain-Driven Design)]]></title><description><![CDATA[<a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:design" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#design</a> <a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:ddd" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#ddd</a> 
+ <br><a href="https://muqiuhan.github.io/wiki?query=tag:design" class="tag" target="_blank" rel="noopener nofollow">#design</a> <a href="https://muqiuhan.github.io/wiki?query=tag:ddd" class="tag" target="_blank" rel="noopener nofollow">#ddd</a><br><img alt="Pasted image 20241115123905.png" src="https://muqiuhan.github.io/wiki/computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png"><br>It took me a while to figure out the patterns behind DDD, though the most important thing are ubiquitous language and bounded context. In this article, I don’t want to address the philosophical part of DDD, instead I want to dive into the practical implementation of some parts to connect with the philosophy behind it. If you are not familiar with the two most important concepts behind DDD, there are countless articles out there explaining them, just go and search them.<br>Somewhere I read this conclusion of DDD patterns and I found it quite good:<br>
+You model your business using Entities (the ID matters) and Value Objects (the values matter). You use Repositories to retrieve and store them. You create them with the help of Factories. If an object is too complex for a single class, you’ll create Aggregates that will bind Entities &amp; Value Objects under the same root. If a business logic doesn’t belong to a given object, you’ll define Services that will manipulate the involved elements. Eventually, when the state of the business changes (a change that matters to business experts), you’ll publish Domain Events to communicate the change.
+<br>Breaking down each concept will help piece up the whole picture of DDD.<br>I just use some Rust example, they are very readable I promise!<br><br>Entities are objects that have a distinct identity that runs through time and different states. The identity is usually represented by an ID.<br>// src/entities/user.rs
+pub struct User {
+    pub id: u32,
+    pub username: String,
+    pub email: String,
+    pub age: u8,
+}
+
+impl User {
+    pub fn new(id: u32, username: String, email: String, age: u8) -&gt; Self {
+        User { id, username, email, age }
+    }
+}
+Copy<br><br>Value objects are objects that are defined by their attributes. They do not have a distinct identity.<br>// src/value_objects/address.rs
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Address {
+    pub street: String,
+    pub city: String,
+    pub zip_code: String,
+}
+
+impl Address {
+    pub fn new(street: String, city: String, zip_code: String) -&gt; Self {
+        Address { street, city, zip_code }
+    }
+}
+Copy<br><br>Repositories are used to retrieve and store entities. They act as a collection of entities.<br>// src/repositories/user_repository.rs
+use crate::entities::user::User;
+
+pub struct UserRepository {
+    users: Vec&lt;User&gt;,
+}
+
+impl UserRepository {
+    pub fn new() -&gt; Self {
+        UserRepository { users: Vec::new() }
+    }
+
+    pub fn add(&amp;mut self, user: User) {
+        self.users.push(user);
+    }
+
+    pub fn find_by_id(&amp;self, id: u32) -&gt; Option&lt;&amp;User&gt; {
+        self.users.iter().find(|&amp;user| user.id == id)
+    }
+}
+
+Copy<br><br>Factories are used to create complex objects and aggregates.<br>// src/factories/user_factory.rs
+use crate::entities::user::User;
+
+pub struct UserFactory;
+
+impl UserFactory {
+    pub fn create_user(id: u32, username: String, email: String, age: u8) -&gt; User {
+        User::new(id, username, email, age)
+    }
+}
+
+Copy<br><br>Aggregates are clusters of entities and value objects that are treated as a single unit.<br>// src/aggregates/order.rs
+use crate::entities::user::User;
+use crate::value_objects::address::Address;
+
+pub struct Order {
+    pub id: u32,
+    pub user: User,
+    pub shipping_address: Address,
+}
+
+impl Order {
+    pub fn new(id: u32, user: User, shipping_address: Address) -&gt; Self {
+        Order { id, user, shipping_address }
+    }
+}
+Copy<br><br>Services contain business logic that doesn’t naturally fit within an entity or value object.<br>// src/services/order_service.rs
+use crate::aggregates::order::Order;
+use crate::entities::user::User;
+use crate::value_objects::address::Address;
+
+pub struct OrderService;
+
+impl OrderService {
+    pub fn create_order(user: User, shipping_address: Address) -&gt; Order {
+        let order_id = 1; // In a real application, this would be generated
+        Order::new(order_id, user, shipping_address)
+    }
+}
+
+Copy<br>Key Points about Services are:<br>1.Stateless: Services are typically stateless. They do not hold any state themselves but operate on the state of entities and value objects.<br>2.Encapsulation of Business Logic: They encapsulate business logic that spans multiple entities or value objects or that doesn’t fit neatly within a single entity or value object.<br>3.Coordination: They often coordinate interactions between multiple entities and value objects.<br><br>Domain events are used to communicate changes in the state of the business.<br>// src/events/user_registered.rs
+pub struct UserRegistered {
+    pub user_id: u32,
+    pub username: String,
+}
+
+impl UserRegistered {
+    pub fn new(user_id: u32, username: String) -&gt; Self {
+        UserRegistered { user_id, username }
+    }
+}
+Copy<br>They are typically published to an event bus or event store, which can then be used to notify other parts of the system or external systems about these events.<br>Where Domain Events Are Published:<br>1.Event Bus: Domain events are often published to an in-memory event bus within the application. This allows other parts of the application to subscribe to and handle these events. Since it is in-memory, the events are ephemeral and will be lost if the application restarts or crashes. It is suitable for scenarios where events need to be processed quickly and do not require persistence, such as inter-component communication within a single application instance.<br>2.Event Store: For more complex scenarios, domain events can be published to an event store, such as AWS EventBridge, Kafka, or a custom event store. This allows for durable storage and replay of events. Think of it as just:<br>pub struct EventStore {
+    file_path: String,
+}
+
+Copy<br>An event store can serve as the single source of truth in an event-driven architecture, particularly in the context of event sourcing.<br>In event sourcing, every change to the state of an application is captured as an event and stored in the event store. The current state of the application can be reconstructed by replaying these events.<br>A quick take-away is events are immutable and represent facts that have occurred. Once an event is stored, it is never changed or deleted.<br><img alt="Pasted image 20241115124216.png" src="https://muqiuhan.github.io/wiki/computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png"><br>3.Message Brokers: Domain events can also be published to message brokers like RabbitMQ or AWS SNS/SQS for asynchronous processing and integration with other systems.<br><br>mod entities {
+    pub mod user;
+}
+
+mod value_objects {
+    pub mod address;
+}
+
+mod repositories {
+    pub mod user_repository;
+}
+
+mod factories {
+    pub mod user_factory;
+}
+
+mod aggregates {
+    pub mod order;
+}
+
+mod services {
+    pub mod order_service;
+}
+
+mod events {
+    pub mod user_registered;
+}
+
+use entities::user::User;
+use value_objects::address::Address;
+use repositories::user_repository::UserRepository;
+use factories::user_factory::UserFactory;
+use services::order_service::OrderService;
+use events::user_registered::UserRegistered;
+
+fn main() {
+    // Create a user using the factory
+    let user = UserFactory::create_user(1, String::from("Alice"), String::from("alice@example.com"), 30);
+
+    // Create a repository and add the user
+    let mut user_repo = UserRepository::new();
+    user_repo.add(user);
+
+    // Find the user by ID
+    if let Some(user) = user_repo.find_by_id(1) {
+        println!("User found: {}", user.username);
+    }
+
+    // Create an address
+    let address = Address::new(String::from("123 Main St"), String::from("Hometown"), String::from("12345"));
+
+    // Create an order using the service
+    let order = OrderService::create_order(user.clone(), address);
+
+    // Publish a domain event, typically published to an event bus or event store, 
+   // which can then be used to notify other parts of the system or external systems about these events.
+    let event = UserRegistered::new(user.id, user.username.clone());
+    println!("Domain event: UserRegistered for user {}", event.username);
+}
+Copy<br>A key point take-away is that factories focus on object creation, while services focus on business logic and operations.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/you-don’t-need-a-book-to-know-ddd(domain-driven-design).html</link><guid isPermaLink="false">Computer Science/Design/You don’t Need a Book to Know DDD(Domain-Driven Design)/You don’t Need a Book to Know DDD(Domain-Driven Design).md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Fri, 15 Nov 2024 04:42:58 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/design/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[从事件风暴看领域驱动设计]]></title><description><![CDATA[<a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:design" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#design</a> <a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:ddd" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#ddd</a> 
+ <br><a href="https://muqiuhan.github.io/wiki?query=tag:design" class="tag" target="_blank" rel="noopener nofollow">#design</a> <a href="https://muqiuhan.github.io/wiki?query=tag:ddd" class="tag" target="_blank" rel="noopener nofollow">#ddd</a><br>事件风暴（Event Storming）是一种领域驱动设计（DDD）的工作坊实践方法，由Alberto Brandolini提出，旨在通过团队协作的方式快速理解和建模业务领域。以下是事件风暴及相关领域驱动设计中的一些核心概念和知识点：<br>
+1.&nbsp;领域（Domain）：指的是业务相关知识的集合，可以进一步划分为子域。<br>
+2.&nbsp;子域（Subdomain）：是领域的一部分，可以是核心域、支撑域或通用域。<br>
+3.&nbsp;核心域（Core Domain）：指领域中最核心的部分，通常对应企业的核心业务。<br>
+4.&nbsp;通用语言（Ubiquitous Language）：团队所有成员使用的一种语言，用于确保业务和软件之间的沟通一致性。<br>
+5.&nbsp;限界上下文（Bounded Context）：定义了一组规则和协议，用于明确领域模型的适用范围。<br>
+6.&nbsp;实体（Entity）：具有唯一标识和生命周期的领域对象。<br>
+7.&nbsp;值对象（Value Object）：描述了某种特性或属性的对象，没有概念标识。<br>
+8.&nbsp;聚合（Aggregate）：一组相关对象的集合，由一个聚合根（Aggregate Root）统一管理。<br>
+9.&nbsp;领域事件（Domain Event）：领域中发生的重要事件，可以用于通知其他领域对象或跨限界上下文进行解耦和协作。<br>
+10.&nbsp;命令（Command）：表示要执行的操作，通常与事件一一对应。<br>
+11.&nbsp;读模型（Read Model）：为了优化读取操作而设计的模型，可能与写模型不同。<br>
+12.&nbsp;决策命令（Decision Command）：在事件风暴中，直接导致事件发生的命令。<br>
+13.&nbsp;战略设计（Strategic Design）：高层次的抽象和归类，包括理清上下文和子域的划分。<br>
+14.&nbsp;战术设计（Tactical Design）：对特定上下文下的模型进行详细设计，包括聚合、实体和值对象。<br>
+15.&nbsp;贫血模型（Anemic Domain Model）：领域对象只有属性及其getter/setter方法的纯数据类，业务逻辑通过服务实现。<br>
+16.&nbsp;充血模型（Rich Domain Model）：领域对象包含业务逻辑，每个对象都是活跃的。<br>
+17.&nbsp;资源库（Repository）：用于检索和持久化领域对象的机制。<br>
+18.&nbsp;服务（Service）：在模型中独立的操作，可以是领域服务或应用服务。<br>
+19.&nbsp;固定规则（Invariant）：为设计元素做出的断言，必须一直保持为真。<br>
+事件风暴通常包括以下步骤：<br>
+识别领域事件<br>
+确定事件顺序<br>
+识别命令和触发器<br>
+识别聚合和实体<br>
+划分限界上下文<br>
+识别领域服务和资源库<br>
+通过这些步骤，团队可以共同创建出反映业务领域的领域模型，为软件设计和开发提供指导。]]></description><link>https://muqiuhan.github.io/wiki/computer-science/design/从事件风暴看领域驱动设计.html</link><guid isPermaLink="false">Computer Science/Design/从事件风暴看领域驱动设计.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Fri, 15 Nov 2024 04:38:05 GMT</pubDate></item><item><title><![CDATA[Svelte 的编译器和运行时]]></title><description><![CDATA[<a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:svelte" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#svelte</a> <a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:web" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#web</a> <a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:compiler" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#compiler</a> 
+ <br><a href="https://muqiuhan.github.io/wiki?query=tag:svelte" class="tag" target="_blank" rel="noopener nofollow">#svelte</a> <a href="https://muqiuhan.github.io/wiki?query=tag:web" class="tag" target="_blank" rel="noopener nofollow">#web</a> <a href="https://muqiuhan.github.io/wiki?query=tag:compiler" class="tag" target="_blank" rel="noopener nofollow">#compiler</a><br>在 svelte 源码里，使用了 <a data-tooltip-position="top" aria-label="https://github.com/acornjs/acorn" rel="noopener nofollow" class="external-link" href="https://github.com/acornjs/acorn" target="_blank"><code></code></a>acorn parser 将 javascript 编译成 ast 树，然后对 Javascript 的语义解释过程做了额外的工作：<br>
+<br>编译赋值语句时，除了生成对应的赋值逻辑，额外生成数据更新逻辑代码<br>
+
+<br>编译变量声明时，变量被编译成上下文数组<br>
+
+<br>编译模板时，标记依赖，并对每个变量引用生成更新逻辑<br>
+
+<br>这就是编译型框架，与传统前端框架的区别：把运行时的逻辑提前在编译期就完成。所以自然而然的，运行时逻辑很轻量级，很显然是有利于页面的首屏和渲染性能的。<br><br>每一个 .svelte 文件代表一个 svelte 的组件。<br>通过 svelte 的编译，最终会转换为下图所示的组件的结构<br><img alt="Pasted image 20241115111951.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png"><br>每一个 svelte 的组件类，都继承了 SvelteComponent。<br>svelte 组件使用 create, mount, patch, destroy 这四个方法实现对 DOM 视图的操作。<br>
+<br>create 负责组件 dom 的创建<br>
+
+<br>mount 负责将 dom 挂载到对应的父节点上<br>
+
+<br>patch 负责根据数据的变化更新 dom<br>
+
+<br>destroy 负责销毁对应的 dom<br>
+
+<br>svelte 的组件实例化，是通过 instance 方法和组件上下文构成的。<br>
+<br>instance 方法是 svelte 组件的构造器。写在 script 里的代码，会被生成在 instance 方法里。每个组件实例都会调用一次形成自己的闭包，从而隔离各自的数据，通过 instance 方法返回的数组就是上下文。代码中的赋值语句，会被生成为数据更新逻辑。变量定义会被收集生成上下文数组。
+<br>每个 svelte 组件都会有自己的上下文，上下文存储的就是 script 标签内定义的变量的值。svelte 会为每个组件实例内定义的数据生成上下文，按照变量的声明顺序保存在一个名为 ctx 数组内。
+<br><img alt="Pasted image 20241115112012.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112012.png"><br><br>例如有如下 Svelte 代码:<br>&lt;h1&gt;Hello world!&lt;/h1&gt;
+Copy<br>编译后:<br>/* App.svelte generated by Svelte v3.59.1 */
+import {
+  SvelteComponent,
+  detach,
+  element,
+  init,
+  insert,
+  noop,
+  safe_not_equal
+} from "svelte/internal";
+
+function create_fragment(ctx) {
+  let h1;
+
+  return {
+    c() {
+      h1 = element("h1");
+      h1.textContent = "Hello world!";
+    },
+    m(target, anchor) {
+      insert(target, h1, anchor);
+    },
+    p: noop,
+    i: noop,
+    o: noop,
+    d(detaching) {
+      if (detaching) detach(h1);
+    }
+  };
+}
+
+class App extends SvelteComponent {
+  constructor(options) {
+    super();  
+    init(this, options, null, create_fragment, safe_not_equal, {});
+  }
+}
+
+export default App;
+Copy<br>很明显，组件编译之后，会返回一个继承了SvelteComponent的类，并且在构造函数中执行了init方法，它的其中一个参数是组件中定义的create_fragment函数。<br>这个函数会返回一个对象，包含组件对应的的create mount update delete操作。由于上面的代码中是个静态的字符串，所以p对应的值为noop即no operate没有操作。<br>接下来加点料:<br>&lt;script&gt;
+let count = 0
+&lt;/script&gt;
+&lt;h1 on:click={() =&gt; count++}&gt;Hello world!&lt;/h1&gt;
+Copy<br>编译结果:<br>function create_fragment(ctx) {
+  let h1;
+  let mounted;
+  let dispose;
+  
+  return {
+    c() {
+      h1 = element("h1");
+      h1.textContent = "Hello world!";
+    },
+    m(target, anchor) {
+      insert(target, h1, anchor);
+      if (!mounted) {
+        dispose = listen(h1, "click", /*click_handler*/ ctx[1]);
+        mounted = true;
+      }
+    },
+    // ...
+    d(detaching) {
+      if (detaching) detach(h1);
+      mounted = false;
+      dispose();
+    }
+  };
+}
+
+function instance($$self, $$props, $$invalidate) {
+  let count = 0;
+  const click_handler = () =&gt; $$invalidate(0, count++, count);
+  return [count, click_handler];
+}
+Copy<br>我们可以看到在mounted之后使用listen方法新增了一个针对h1的click方法的监听事件，并且在delete阶段移除监听事件。<br>同时多了个实例方法instance，它的返回值是count的实际值，以及修改count的处理函数。<br>再改改:<br>&lt;script&gt;
+let count = 0
+&lt;/script&gt;
+&lt;h1 on:click={() =&gt; count++}&gt;Hello world!{count}&lt;/h1&gt;
+Copy<br>编译结果:<br>function create_fragment(ctx) {
+  let h1;
+  let t0;
+  let t1;
+  let mounted;
+  let dispose;
+  
+  return {
+    c() {
+      h1 = element("h1");
+      h1.textContent = "Hello world!";
+      t0 = text("Hello world!");
+      t1 = text(/*count*/ ctx[0]);
+    },
+    m(target, anchor) {
+      insert(target, h1, anchor);
+      append(h1, t0);
+      append(h1, t1);
+      if (!mounted) {
+        dispose = listen(h1, "click", /*click_handler*/ ctx[1]);
+        mounted = true;
+      }
+    },
+    // ...
+    p(ctx, [dirty]) {
+      if (dirty &amp; /*count*/ 1) set_data(t1, /*count*/ ctx[0]);
+    },
+    d(detaching) {
+      if (detaching) detach(h1);
+      mounted = false;
+      dispose();
+    }
+  };
+}
+Copy<br><br>svelte 通过位运算(bitmask)对变量的改变进行脏标记<br>每个变量都被分配一个位值，可以用于在 ctx 上下文数据里取得变量对应的值，也可以通过位运算对变量改动进行标记和检查。<br>比如 name 的位值是 1，那 name 的值可以通过 ctx[1] 取得。<br>通过 dirty |= 1 设置 name 已经改动的状态，再通过 dirty &amp; 1 判断 name 是否改动。<br>Javascript 的位运算可以有 32 位。 svelte 支持每个组件里对 32 个变量标记改动。<br>一般一个组件不应该定义过多的变量。当然如果定义变量多于 32 个，无非就是拿两个位标记变量，凑成 64 位，以此类推。<br><img alt="Pasted image 20241115112612.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112612.png"><br>设置位：bitmask |= 1 &lt;&lt; (n-1)<br>检测位：if (bitmask &amp; (1 &lt;&lt; (n-1)))<br><br><br>前端框架创建视图的方式有几种，比如虚拟 dom，字符串模板，过程式创建。<br>svelte 采用的是过程式创建。<br>举个例子，假设我想要通过纯 js 的方式创建一个如下的 web ui：<br><img alt="Pasted image 20241115112039.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112039.png"><br>我们可能会写下这样的代码：<br>const todoListNode = document.createElement('ul');
+const todos = [1,2,3];
+for (const todo of todos) {
+    const itemNode = document.createElement('li');
+    itemNode.textContent = `item ${todo}`;
+    todoListNode.appendChild(itemNode);
+}
+Copy<br>而 svelte 生成的视图代码就很类似我们手动编写的 js 代码。<br>这部分创建 dom 的代码，会生成为组件内部的 create 函数， mount 函数，patch 函数。<br>下面我们来看一下模板编译过程。<br>
+<br>首先解析 svelte 模板并生成模板 AST<br>
+
+<br>然后遍历模板 AST<br>
+
+<br>如果碰到普通的 html tag 或者文本，输出 dom 创建语句（dom.createElement)
+
+<br>如果碰到变量
+<br>转换为上下文引用方式并输出取值语句（如： name 被生成为 ctx[/** name */0])
+
+<br>在 patch 函数中生成对应的更新语句
+
+
+<br>如果碰到 if 模板
+<br>获取 condition 语句，输出选择函数 select_block （子模板选择器）
+
+<br>获取 condition 为 true 的模板片段，输出 if_block 子模板构建函数
+<br>获取 condition 为 false 的模板片段，输出 else_block 子模板构建函数
+
+
+<br>如果碰到 each 模板
+<br>获取循环模板片段，生成块构建函数 create_each_block
+
+<br>根据循环内变量引用，生成循环实例上下文获取 get_each_block_context
+
+
+
+
+<br>生成 key获取函数 get_key<br>
+
+<br>生成基于key更新列表的 patch 逻辑函数 update_keyed_each<br>
+
+<br><img alt="Pasted image 20241115112127.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112127.png"><br><br>svelte 会把 if 模板， each 模板中的逻辑分支，抽取成子模板，并为其生成独立的模板实例（包含创建，挂载，更新，销毁等生命周期）<br><br>视图更新时通过 patch 函数来完成的。<br>下图是模板解析过程中 patch 函数的逻辑：<br>function patch(ctx, [dirty]) {
+  if (dirty &amp; /*name*/ 1) set_data(t1, /*name*/ ctx[0]);
+  if (dirty &amp; /*age*/ 2) set_data(t4, /*age*/ ctx[1]);
+  if (dirty &amp; /*school*/ 4) set_data(t6, /*school*/ ctx[2]);
+}
+Copy<br>通过 dirty 位检查变量是否发生更新，如果发生更新调用 dom 操作函数对 dom 进行局部更新。上面例子的 set_data 函数作用是给 dom 设置 innerText。根据数据更新的视图位置的不同，还会有 set_props 之类的更新 dom 属性的函数等。<br><br>条件分支例子：<br>&lt;script&gt;
+   let isLogin = false;
+	const login = () =&gt; {
+		isLogin = true;
+	}
+	const logout = () =&gt; {
+		isLogin = false;
+	}
+&lt;/script&gt;
+
+{#if !isLogin}
+&lt;button on:click={login}&gt;
+	login
+&lt;/button&gt;
+{:else}
+&lt;div&gt;
+	hello, xxx
+	&lt;button on:click={logout}&gt;logout&lt;/button&gt;
+&lt;/div&gt;
+{/if}
+Copy<br><img alt="Pasted image 20241115112203.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112203.png"><br>
+<br>条件分支的判断语句会生成 select_block 函数，用于判断条件，并根据条件返回条件判断为真的子模板 (if_block) 或者条件判断为假的子模板 (else_block)
+<br>// 根据条件返回对应的block构造函数
+function select_block(ctx, dirty) {
+  if (!/*isLogin*/ ctx[0]) return if_block;
+  return else_block;
+}
+// 选择block构造函数
+let current_block = select_block(ctx, -1);
+// 返回子模板实例，跟组件类似，提供create，mount，patch等生命周期
+let block = current_block(ctx);
+Copy<br>
+<br>条件逻辑分支会生成独立的子模板构造函数
+<br>if block示例<br>// 子模板构造函数
+function if_block(ctx) {
+  let button;
+  let mounted;
+  let dispose;
+
+  return {
+    // 创建block
+    create() {
+      button = element("button");
+      button.textContent = "login";
+    },
+    // 挂载block
+    mount(target, anchor) {
+      insert(target, button, anchor);
+      if (!mounted) {
+        mounted = true;
+      }
+    },
+    // 销毁block
+    destroy(detaching) {
+      if (detaching) detach(button);
+      mounted = false;
+      dispose();
+    }
+  };
+}
+Copy<br>
+<br>if分支如何挂载及更新
+<br>if 分支的创建：<br><img alt="Pasted image 20241115112230.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112230.png"><br>if 分支的更新：<br><img alt="Pasted image 20241115112241.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112241.png"><br><br>svelte 的循环模板跟条件分支模板一样，也会生成迭代逻辑的子模板，每一个循环迭代都是子模板的实例，并且拥有独立的上下文。<br>主要由4部分组成：<br>
+<br>循环迭代构建函数 create_each_block
+<br>循环迭代实例上下文获取函数 get_each_block_context
+<br>循环迭代 key 获取函数 get_key
+<br>基于 key 更新列表的 patch 逻辑函数 update_keyed_each
+<br><br>
+<br>svelte 调用 acorn 生成 JS AST 树<br>
+
+<br>遍历 AST 找到赋值语句<br>
+
+<br>为赋值语句生成数据响应式代码<br>
+
+<br><img alt="Pasted image 20241115112450.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112450.png"><br>例如：<br>&lt;script&gt;
+    let name = 'world';
+    const changeName = () =&gt; {
+        name = 'yyb';
+    }
+&lt;/script&gt;
+Copy<br>编译结果：<br>function instance($$self, $$props, $$invalidate) {
+	let name = 'world';
+
+	const changeName = () =&gt; {
+		$$invalidate(0, name = 'yyb');
+	};
+
+	return [name];
+}
+Copy<br><br>每个数据的赋值语句，svelte 都会生成对 invalidate 的调用, invalidate 的调用主要做的是对某个改动的变量进行标记，然后在微任务中调用patch函数，根据变量改动的脏标记进行局部更新<br>数据赋值触发视图更新：<br><img alt="Pasted image 20241115112544.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112544.png"><br><br><br>在进入运行时，首先执行init方法，该方法大致流程如下：<br>
+<br>初始化状态
+<br>初始化周期函数
+<br>执行instance方法，在回调函数中标记 脏组件 (dirty_components)
+<br>执行所有beforeUpdate生命周期的函数
+<br>执行创建片段create_fragment函数
+<br>挂载当前组件并执行create_fragement返回的m（mounted）方法
+<br>执行flush方法
+<br>export function init(
+  component,
+  options,
+  instance,
+  create_fragment,
+  not_equal,
+  props,
+  append_styles,
+  dirty = [-1]
+) {
+  const parent_component = current_component;
+  set_current_component(component);
+
+  const $$: T$$ = component.$$ = {
+    fragment: null,
+    ctx: [],
+
+    // state
+    props,
+    update: noop,
+    not_equal,
+    bound: blank_object(),
+
+    // lifecycle
+    on_mount: [],
+    on_destroy: [],
+    on_disconnect: [],
+    before_update: [],
+    after_update: [],
+    context: new Map(options.context || (parent_component ? parent_component.$$.context : [])),
+
+    // everything else
+    callbacks: blank_object(),
+    dirty,
+    skip_bound: false,
+    root: options.target || parent_component.$$.root
+  };
+
+  append_styles &amp;&amp; append_styles($$.root);
+
+  let ready = false;
+
+  $$.ctx = instance
+    ? instance(component, options.props || {}, (i, ret, ...rest) =&gt; {
+        const value = rest.length ? rest[0] : ret;
+        if ($$.ctx &amp;&amp; not_equal($$.ctx[i], $$.ctx[i] = value)) {
+            if (!$$.skip_bound &amp;&amp; $$.bound[i]) $$.bound[i](value);
+            if (ready) make_dirty(component, i);
+        }
+        return ret;
+    })
+    : [];
+
+  $$.update();
+  ready = true;
+  run_all($$.before_update);
+
+  // `false` as a special case of no DOM component
+  $$.fragment = create_fragment ? create_fragment($$.ctx) : false;
+
+  if (options.target) {
+    if (options.hydrate) {
+        start_hydrating();
+        const nodes = children(options.target);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        $$.fragment &amp;&amp; $$.fragment!.l(nodes);
+        nodes.forEach(detach);
+    } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        $$.fragment &amp;&amp; $$.fragment!.c();
+    }
+
+    if (options.intro) transition_in(component.$$.fragment);
+    mount_component(component, options.target, options.anchor, options.customElement);
+    end_hydrating();
+    flush();
+  }
+
+  set_current_component(parent_component);
+}
+Copy<br><br>flush 的方法主要做了一件事：<br>
+遍历需要更新的组件（dirty_components），然后更新它，并且调用afterUpdate方法:<br>export function flush() {
+  // Do not reenter flush while dirty components are updated, as this can
+  // result in an infinite loop. Instead, let the inner flush handle it.
+  // Reentrancy is ok afterwards for bindings etc.
+  if (flushidx !== 0) {
+    return;
+  }
+
+  const saved_component = current_component;
+
+  do {
+    // first, call beforeUpdate functions
+    // and update components
+    try {
+        while (flushidx &lt; dirty_components.length) {
+            const component = dirty_components[flushidx];
+            flushidx++;
+            set_current_component(component);
+            update(component.$$);
+        }
+    } catch (e) {
+        // reset dirty state to not end up in a deadlocked state and then rethrow
+        dirty_components.length = 0;
+        flushidx = 0;
+        throw e;
+    }
+
+    set_current_component(null);
+
+    dirty_components.length = 0;
+    flushidx = 0;
+
+    // then, once components are updated, call
+    // afterUpdate functions. This may cause
+    // subsequent updates...
+    for (let i = 0; i &lt; render_callbacks.length; i += 1) {
+        const callback = render_callbacks[i];
+
+        if (!seen_callbacks.has(callback)) {
+            // ...so guard against infinite loops
+            seen_callbacks.add(callback);
+
+            callback();
+        }
+    }
+
+    render_callbacks.length = 0;
+  } while (dirty_components.length);
+
+  while (flush_callbacks.length) {
+    flush_callbacks.pop()();
+  }
+
+  update_scheduled = false;
+  seen_callbacks.clear();
+  set_current_component(saved_component);
+}
+Copy<br>再来看看具体的更新操作update函数做了啥<br>
+<br>首先执行所有的before_update方法
+<br>然后执行create_fragment返回的p（update）方法
+<br>function update($$) {
+    if ($$.fragment !== null) {
+        $$.update();
+        run_all($$.before_update);
+        const dirty = $$.dirty;
+        $$.dirty = [-1];
+        $$.fragment &amp;&amp; $$.fragment.p($$.ctx, dirty);
+
+        $$.after_update.forEach(add_render_callback);
+    }
+}
+Copy<br>总结,在运行时:<br>
+<br>初始化状态、初始化周期函数
+<br>执行instance方法，在回调函数中标记脏组件
+<br>执行所有beforeUpdate生命周期的函数
+<br>执行创建片段create_fragment函数
+<br>挂载当前组件并执行create_fragement返回的m（mounted）方法
+<br>执行flush方法
+<br>执行所有的before_update方法
+<br>执行create_fragment返回的p（update）方法
+<br>最后，执行afterUpdate方法
+<br><br>
+<br><a rel="noopener nofollow" class="external-link" href="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/index.js" target="_blank">https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/index.js</a>
+<br>/**
+ * `compile` converts your `.svelte` source code into a JavaScript module that exports a component
+ *
+ * @param {string} source The component source code
+ * @param {CompileOptions} options The compiler options
+ * @returns {CompileResult}
+ */
+export function compile(source, options) {
+	source = remove_bom(source);
+	state.reset_warning_filter(options.warningFilter);
+	const validated = validate_component_options(options, '');
+	state.reset(source, validated);
+
+	let parsed = _parse(source);
+
+	const { customElement: customElementOptions, ...parsed_options } = parsed.options || {};
+
+	/** @type {ValidatedCompileOptions} */
+	const combined_options = {
+		...validated,
+		...parsed_options,
+		customElementOptions
+	};
+
+	if (parsed.metadata.ts) {
+		parsed = {
+			...parsed,
+			fragment: parsed.fragment &amp;&amp; remove_typescript_nodes(parsed.fragment),
+			instance: parsed.instance &amp;&amp; remove_typescript_nodes(parsed.instance),
+			module: parsed.module &amp;&amp; remove_typescript_nodes(parsed.module)
+		};
+	}
+
+	const analysis = analyze_component(parsed, source, combined_options);
+	const result = transform_component(analysis, source, combined_options);
+	result.ast = to_public_ast(source, parsed, options.modernAst);
+	return result;
+}
+Copy<br>从这里看, Svelte的编译过程可以分为三个主要阶段：<br>
+<br>Parse&nbsp;解析
+<br>Analyze&nbsp;分析
+<br>Transform&nbsp;转换
+<br> velte 文件的 Script、HTML 和 CSS 代码被分开以形成单个组件对象:<br>
+<img alt="Pasted image 20241115115009.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115009.png"><br>
+在Parser构造函数内部， <a data-tooltip-position="top" aria-label="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/phases/1-parse/state/fragment.js" rel="noopener nofollow" class="external-link" href="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/phases/1-parse/state/fragment.js" target="_blank"><code></code></a>fragment 函数用于递归地解析自身:<br>/** @param {Parser} parser */
+export default function fragment(parser) {
+	if (parser.match('&lt;')) {
+		return element;
+	}
+
+	if (parser.match('{')) {
+		return tag;
+	}
+
+	return text;
+}
+Copy<br>fragment 根据条件返回 element tag text 等函数, 这个返回值会被调用以从源代码中提取信息。<br>包含在script标签中的区域通过<a data-tooltip-position="top" aria-label="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/phases/1-parse/read/script.js" rel="noopener nofollow" class="external-link" href="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/phases/1-parse/read/script.js" target="_blank"><code></code></a>read_script进行解析:<br>/**
+ * @param {Parser} parser
+ * @param {number} start
+ * @param {Array&lt;AST.Attribute | AST.SpreadAttribute | Directive&gt;} attributes
+ * @returns {AST.Script}
+ */
+export function read_script(parser, start, attributes) {
+...
+	const source =
+		parser.template.slice(0, script_start).replace(regex_not_newline_characters, ' ') + data;
+	parser.read(regex_starts_with_closing_script_tag);
+
+	/** @type {Program} */
+	let ast;
+
+	try {
+		ast = acorn.parse(source, parser.ts);
+	} catch (err) {
+		parser.acorn_error(err);
+	}
+...
+}
+Copy<br>其他区域使用 Svelte Compiler 自己的解析逻辑。当遇到style标签时，会使用<a data-tooltip-position="top" aria-label="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/phases/1-parse/read/style.js" rel="noopener nofollow" class="external-link" href="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/phases/1-parse/read/style.js" target="_blank"><code></code></a>read_style:<br>/**
+ * @param {Parser} parser
+ * @param {number} start
+ * @param {Array&lt;AST.Attribute | AST.SpreadAttribute | Directive&gt;} attributes
+ * @returns {Css.StyleSheet}
+ */
+export default function read_style(parser, start, attributes) {
+	const content_start = parser.index;
+	const children = read_body(parser, '&lt;/style');
+	const content_end = parser.index;
+
+	parser.read(/^&lt;\/style\s*&gt;/);
+
+	return {
+		type: 'StyleSheet',
+		start,
+		end: parser.index,
+		attributes,
+		children,
+		content: {
+			start: content_start,
+			end: content_end,
+			styles: parser.template.slice(content_start, content_end),
+			comment: null
+		}
+	};
+}
+Copy<br>其他类似的也都和 read_style 放在一起.<br>最终会生成一个这样的 JSON:<br>{
+  html: { type, start, end, children }
+  css: { type, start, end, attributes, children, content }
+  instance: { type, start, end, context, content }
+  module: { type, start, end, context, content }
+}
+Copy<br><br>从创建的 AST 中提取用于执行组件的各种操作的信息:<br>
+<img alt="Pasted image 20241115115845.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115845.png"><br>参考<a data-tooltip-position="top" aria-label="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/phases/2-analyze/index.js#L398" rel="noopener nofollow" class="external-link" href="https://github.com/sveltejs/svelte/blob/main/packages/svelte/src/compiler/phases/2-analyze/index.js#L398" target="_blank">源码</a>，组件的主要属性可以总结如下：<br>const analysis = {
+root: scope_root,
+module,
+instance,
+template,
+stylesheet: new Stylesheet({...}),
+// Various compile options
+runes,
+warnings,
+reactive_statements: new Map(),
+binding_groups: new Map(),
+slot_names: new Set(),
+...
+};
+Copy<br>ScopeRoot是一个充当组件最高<a data-tooltip-position="top" aria-label="https://developer.mozilla.org/ko/docs/Glossary/Scope" rel="noopener nofollow" class="external-link" href="https://developer.mozilla.org/ko/docs/Glossary/Scope" target="_blank">作用域</a>的对象。在内部，它使用Set数据结构来确保变量和函数等标识符的唯一性。<br>遍历 instance script 和 module script 的 AST 来识别变量被引用的所有区域，从而了解变量可能发生变化的所有情况。在此过程中，将创建 script 的较低作用域，引用 scope_root 为变量分配唯一标识符.<br>instance script 和 module script 的区别是:<br>
+<br>module 定义组件之间共享的状态和逻辑, 可以使用<a data-tooltip-position="top" aria-label="https://learn.svelte.dev/tutorial/sharing-code" rel="noopener nofollow" class="external-link" href="https://learn.svelte.dev/tutorial/sharing-code" target="_blank"><code></code></a>&lt;script context="module"&gt;声明, 但不能包含 reactive 的代码
+<br>instance 定义组件的唯一状态和逻辑.
+<br>其他的基本没啥讲的, stylesheet 会根据收集到的analysis信息执行一些优化任务:<br>
+<br>重复的全局 CSS 选择器和组件范围内未使用的选择器将被删除。
+<br>组件范围内使用的 CSS 选择器被哈希为.svelte-xxx格式，防止与同名选择器发生冲突。
+<br><br>最后会根据获得的analysis信息，再次遍历 AST 来优化组件状态:<br>walk(
+  /** @type {import('#compiler').SvelteNode} \*/ (ast),
+  /** @type {import('./types').AnalysisState} \*/ (state),
+  merge(
+    set_scope(scopes),
+    validation_runes,
+    runes_scope_tweaker,
+    common_visitors,
+  ),
+);
+Copy<br>
+<br>validation_runes 检查不正确的赋值或更新表达式, 验证变量的声明和导出并检查新的reactive语法runes的有效性。
+<br>runes_scope_tweaker 调整作用域, 设置使用特定模式的变量声明的作用域和绑定类型, 并将变量或函数移动到实例之外而不改变状态。
+<br>common_visitors 处理directive和binding相关指令和一般 HTML 或 Svelte 特定元素, 并处理与事件相关的属性并确定是否需要事件委托或提升。
+<br><br>最后，Svelte编译器经过一个转换过程来生成渲染代码。<br><img alt="Pasted image 20241115120819.png" src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png"><br>在这个过程中，SSR（服务器端渲染）和 CSR（客户端渲染）的代码生成逻辑是不同的。编译器使用两个函数server_component和client_component来创建针对每种场景优化的代码, 就像这样:<br>const program =
+  options.generate === 'server'
+    ? server_component(analysis, options)
+    : client_component(source, analysis, options);
+
+Copy<br>在 SSR 中，组件仅渲染一次，并且组件没有生命周期。<br>
+因此， server_component专注于创建<a data-tooltip-position="top" aria-label="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals" rel="noopener nofollow" class="external-link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals" target="_blank"><code></code></a>template literals 。它使用javascript_visitors和template_visitors等访问者添加代码块。<br>在 CSR 中，需要与 DOM 不断交互，并且组件需要有生命周期。<br>
+因此， client_component由更加多样化和复杂的访问者组成。即使相同的javascript_visitors也包含遍历过程中函数的附加处理逻辑。<br><br>
+<br><a data-tooltip-position="top" aria-label="https://svelte.dev/docs/svelte-compiler" rel="noopener nofollow" class="external-link" href="https://svelte.dev/docs/svelte-compiler" target="_blank">svelte/compiler</a>
+<br><a data-tooltip-position="top" aria-label="https://blog.kalan.dev/en/series/svelte-series/1" rel="noopener nofollow" class="external-link" href="https://blog.kalan.dev/en/series/svelte-series/1" target="_blank">Svelte — What made me meet you like this</a>
+<br><a data-tooltip-position="top" aria-label="https://juejin.cn/post/7235628080219078693" rel="noopener nofollow" class="external-link" href="https://juejin.cn/post/7235628080219078693" target="_blank">🚀Svelte原理和进阶看这篇就够了🚀</a>
+<br><a data-tooltip-position="top" aria-label="https://bepyan.me/en/post/svelte-compiler-operation" rel="noopener nofollow" class="external-link" href="https://bepyan.me/en/post/svelte-compiler-operation" target="_blank">How Does the Svelte Compiler Work?</a>
+<br><a data-tooltip-position="top" aria-label="https://juejin.cn/post/7185433911437033531" rel="noopener nofollow" class="external-link" href="https://juejin.cn/post/7185433911437033531" target="_blank">一文讲透前端新秀 svelte</a>
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/svelte-的编译器和运行时.html</link><guid isPermaLink="false">Computer Science/Web/Svelte/Svelte 核心原理/Svelte 的编译器和运行时.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Fri, 15 Nov 2024 04:38:21 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Intro to Databases (for people who don’t know a whole lot about them)]]></title><description><![CDATA[ 
  <br>I was a CS major from an Ivy League university who’s now a software developer at <a data-tooltip-position="top" aria-label="https://www.brandverity.com/" rel="noopener" class="external-link" href="https://www.brandverity.com/" target="_blank">an awesome company</a> — and I don’t know much about databases.<br>I’m guessing I’m not the only one. It didn’t seem to be a beginner-friendly subject. The specific class wasn’t required. Any time storage systems were mentioned, they were on a higher level, very theoretical. There seems to be a common issue around CS graduates knowing very little about real-world software development (source control? deployment? huh?), and it’s up to us to figure most of this stuff out after the fact.<br>But I’m embracing my lack of knowledge on the subject, and blogging is a cool thing. Here’s hoping for some clarity of thought via writing.<br><br>Besides the fact that it wasn’t super accessible or approachable in college, it’s probably also taken me so long to do any self-learning here because it just seemed so intimidating and mysterious (but this might just be me). I switched from design to CS two years into college with no prior experience, and I was grasping at things that were readily available and that piqued my interest. For whatever reason, databases seemed like a thing that more experienced or “smarter” people were into. “Backend work” was something I veered away from, and the word “database” conjured images of highly technical, complicated systems with jargon I just wouldn’t understand. It was much easier to pretend it was ~magic~ and leave it for others to figure out (for now — it was always my intention to pick it all up eventually).<br><img src="https://miro.medium.com/v2/resize:fit:998/1*66lYXVFX3rJxRu-8Ze3meg.gif" referrerpolicy="no-referrer"><br>Basically how I viewed data storage and retrieval.<br><br>Google defines database as “a structured set of data held in a computer, especially one that is accessible in various ways.” At its most basic, a database is just a way of storing and organizing information. Ideally it is organized in such a way that it can be easily accessed, managed, and updated.<br>I like metaphors, so this simple definition of a database for me is like a toolbox. You’ve got lots of screws, nails, bits, a couple different hammers… A toolbox is a storage system that allows you to easily organize and access all of these things. Whenever you need a tool, you go to the toolbox. Maybe you have labels on the drawers — those will help you find, say, a cordless power drill. But now you need the right battery for the drill. You look in your “battery” drawer, but how do you find the one that fits this particular drill? You can run through all of your batteries using trial and error, but that seems inefficient. You think, ‘Maybe I should store my batteries with their respective drills, link them in some way.’ That might be a viable solution. But if you need all of your batteries (because you’re setting up a nice new charging station maybe?), will you have to access each of your drills to get them? Maybe one battery fits multiple drills? Also, toolboxes are great for storing disjointed tools and pieces, but you wouldn’t want to have to take your car apart and store every piece separately whenever you park it in the garage. In that case, you would want to store your car as a single entry in the database (ahem garage), and access its pieces through it.<br><img src="https://miro.medium.com/v2/resize:fit:1180/1*Xfxl8HoQqqg_KtpEsEcskw.jpeg" referrerpolicy="no-referrer"><br>At least I can easily find the alternator this way, right?<br>This example is contrived, but reveals some issues you’ll have to consider when choosing a database or how to store your data within it.<br><br>If you start directionlessly googling “databases” (like I did), you’ll soon realize there are several different types and lots of terminology surrounding them. So let’s try and clear up any potential language barriers.<br>While I’m sure someone has written books on each of these (some of which I should probably read), I’ll try to keep my definitions relatively simple. These were all terms that I came across while doing this research that I thought could use some quick explanation.<br>
 <br>Query  
 
@@ -117,7 +906,7 @@ Document Store
 Object or Object-Oriented Database<br>
 Not as common as other non-relational databases, an object or object-oriented database is ones in which data is represented in the form of “objects” (with attributes and methods) as used in object-oriented programming. This type might be used in place of a relational database and ORM, and may make sense when the data is complex or there are complex many-to-many relationships involved. Beware its language dependence and difficulty with ad-hoc queries though.
 
-<br><br>Now that we know some stuff about databases, how can we apply that knowledge? How do you compare/test/benchmark different databases? What does it look like when they’re actually implemented, or when you have many working together?<br>All of this and more coming soon in blog post dos.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/database/intro-to-databases-(for-people-who-don’t-know-a-whole-lot-about-them).html</link><guid isPermaLink="false">Computer Science/Database/Intro to Databases (for people who don’t know a whole lot about them).md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Fri, 10 May 2024 09:55:39 GMT</pubDate><enclosure url="https://miro.medium.com/v2/resize:fit:998/1*66lYXVFX3rJxRu-8Ze3meg.gif" length="0" type="image/gif"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://miro.medium.com/v2/resize:fit:998/1*66lYXVFX3rJxRu-8Ze3meg.gif&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Introduction to Actors]]></title><description><![CDATA[ 
+<br><br>Now that we know some stuff about databases, how can we apply that knowledge? How do you compare/test/benchmark different databases? What does it look like when they’re actually implemented, or when you have many working together?<br>All of this and more coming soon in blog post dos.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/database/intro-to-databases-(for-people-who-don’t-know-a-whole-lot-about-them).html</link><guid isPermaLink="false">Computer Science/Database/Intro to Databases (for people who don’t know a whole lot about them).md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Fri, 10 May 2024 09:55:39 GMT</pubDate><enclosure url="https://miro.medium.com/v2/resize:fit:998/1*66lYXVFX3rJxRu-8Ze3meg.gif" length="0" type="image/gif"/><content:encoded>&lt;figure&gt;&lt;img src="https://miro.medium.com/v2/resize:fit:998/1*66lYXVFX3rJxRu-8Ze3meg.gif"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Introduction to Actors]]></title><description><![CDATA[ 
  <br>Actor 模型为编写并发和分布式系统提供了更高级别的抽象。它使开发人员不必显式管理线程（例如加锁），从而更容易编写正确的并发和并行系统。<br>首先从一个简单的例子开始:<br>```scala3
 Copy<br>object HelloWorld:<br>
 final case class Greet(whom: String, replyTo: ActorRef[Greeted])<br>
@@ -1361,7 +2150,7 @@ This work was supported by the Gigascale Systems Research Center and the Multisc
 two of six research centers funded under the Focus Center Research Program, a Semiconductor Research Corporation program,<br>
 by STAR net, a Semiconductor Research Corporation program sponsored by MARCO and DARPA,<br>
 by the National Science Foundation under Grant No. 0963859, and by grants from Facebook, Google, Mellanox, NEC, NetApp, SAP,<br>
-and Samsung. Diego Ongaro is supported by The Junglee Corporation Stanford Graduate Fellowship.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft-原始论文中英/in-search-of-an-understandable-consensus-algorithm(extended-version).html</link><guid isPermaLink="false">Computer Science/Distributed System/Raft 原始论文中英/In Search of an Understandable Consensus Algorithm(Extended Version).md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:32:41 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172940.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172940.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Raft实现 - 一致性算法介绍]]></title><description><![CDATA[ 
+and Samsung. Diego Ongaro is supported by The Junglee Corporation Stanford Graduate Fellowship.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft-原始论文中英/in-search-of-an-understandable-consensus-algorithm(extended-version).html</link><guid isPermaLink="false">Computer Science/Distributed System/Raft 原始论文中英/In Search of an Understandable Consensus Algorithm(Extended Version).md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:32:41 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172940.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172940.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Raft实现 - 一致性算法介绍]]></title><description><![CDATA[ 
  <br><br><br>
 <br>对可靠性有很高要求的系统，通常都会额外部署1至多个机器为备用副本组成主备集群，避免出现单点故障。<br>
 有状态的系统需要主节点与备用副本间以某种方式进行数据复制，这样主节点出现故障时就能快速的令备用机器接管系统以达到高可用的目的。
@@ -2322,7 +3111,7 @@ raft的论文中提到，发起新选举需要先将自己的任期值term自增
 由于raft的论文中介绍的几个模块彼此之间是紧密关联的。因此后续日志复制、日志压缩以及成员动态变更这几个功能的逐步实现中，每完成一个都会对上个版本的代码在细节上有不小的调整，大大增加了整体的复杂度。
 <br>博客中展示的完整代码在我的github上：<a rel="noopener" class="external-link" href="https://github.com/1399852153/MyRaft" target="_blank">https://github.com/1399852153/MyRaft</a> (release/lab1_leader_election分支)，希望能帮助到对raft算法感兴趣的小伙伴。<br>
 内容如有错误，还请多多指教。
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html</link><guid isPermaLink="false">Computer Science/Distributed System/Raft实现/Raft实现 - 一致性算法介绍.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:23:38 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172248.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172248.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Raft实现 - 实现日志压缩]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html</link><guid isPermaLink="false">Computer Science/Distributed System/Raft实现/Raft实现 - 一致性算法介绍.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:23:38 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172248.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172248.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Raft实现 - 实现日志压缩]]></title><description><![CDATA[ 
  <br><br>我们知道raft协议是基于日志复制的协议，日志数据是raft的核心。但随着raft集群的持续工作，raft的日志文件将会维护越来越多的日志，而这会带来以下几个问题。<br>
 <br>日志文件过大会占用所在机器过多的本地磁盘空间。
 <br>对于新加入集群的follower，leader与该follower之间完成日志同步会非常缓慢。
@@ -3007,7 +3796,7 @@ Copy<br><br>和lab2中一样，通过启动一个raft集群并触发几个case�
 <br>raft是一个相对复杂的算法，因此MyRaft在功能实现上为了追求实现的简单性，舍弃了很多性能方面的优化(比如一把全局大锁防并发，快照数据完整放到内存中处理等等)。<br>
 同时分布式系统中处处有并发、机器也时刻可能宕机，需要考虑的细节繁多。所以MyRaft即使通过了我自己设计的一些单测和集成测试的case，但肯定还存在许多尚未被发现bug，还请多多指教。
 <br>博客中展示的完整代码在我的github上：<a rel="noopener" class="external-link" href="https://github.com/1399852153/MyRaft" target="_blank">https://github.com/1399852153/MyRaft</a> (release/lab3_log_compaction分支)，希望能帮助到对raft算法感兴趣的小伙伴。
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/raft实现-实现日志压缩.html</link><guid isPermaLink="false">Computer Science/Distributed System/Raft实现/Raft实现 - 实现日志压缩.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:26:29 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172559.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172559.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Raft实现 - 实现日志复制]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/raft实现-实现日志压缩.html</link><guid isPermaLink="false">Computer Science/Distributed System/Raft实现/Raft实现 - 实现日志压缩.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:26:29 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172559.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172559.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Raft实现 - 实现日志复制]]></title><description><![CDATA[ 
  <br><br>在上一篇博客中MyRaft实现了leader选举，为接下来实现日志复制功能打下了基础: <a data-tooltip-position="top" aria-label="https://www.cnblogs.com/xiaoxiongcanguan/p/17569697.html" rel="noopener" class="external-link" href="https://www.cnblogs.com/xiaoxiongcanguan/p/17569697.html" target="_blank">手写raft(一) 实现leader选举</a><br>日志复制是raft最核心也是最复杂的功能，大体上来说一次正常的raft日志复制大致可以简化为以下几步完成：<br>
 <br>客户端向raft集群发送一次操作请求(比如kv数据库状态机的写命令(set k1 v1))，如果接受到请求的节点是leader则受理该请求；<br>
 如果不是leader则转发给自己认为的leader或者返回leader的地址让客户端向leader重新发送请求(如果过程中小概率发生了leader变更，则循环往复直到leader受理)
@@ -3684,7 +4473,7 @@ Copy<br><br><img alt="Pasted image 20240725172512.png" src="https://muqiuhan.git
 <br>作为手写raft系列博客的第二篇，在博客的第1节简单介绍了raft的日志复制功能，第2节详细分析了MyRaft关于日志复制功能的实现源码，第3节通过分析日志复制过程中异常情况的处理来证明raft日志复制功能的正确性。
 <br>raft的日志复制功能是raft算法中最复杂的一部分，除了正常执行逻辑以外还包含了大量异常情况的处理。在博客中我结合MyRaft的源码尽可能的将自己理解的各种细节分享出来，希望能帮到对raft实现细节、正确性证明等相关内容感兴趣的读者。
 <br>博客中展示的完整代码在我的github上：<a rel="noopener" class="external-link" href="https://github.com/1399852153/MyRaft" target="_blank">https://github.com/1399852153/MyRaft</a> (release/lab2_log_replication分支)，内容如有错误，还请多多指教。
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/raft实现-实现日志复制.html</link><guid isPermaLink="false">Computer Science/Distributed System/Raft实现/Raft实现 - 实现日志复制.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:25:24 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172412.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172412.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[自己动手实现rpc框架(一) 实现点对点的rpc通信]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/raft实现-实现日志复制.html</link><guid isPermaLink="false">Computer Science/Distributed System/Raft实现/Raft实现 - 实现日志复制.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:25:24 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172412.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/distributed-system/raft实现/pasted-image-20240725172412.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[自己动手实现rpc框架(一) 实现点对点的rpc通信]]></title><description><![CDATA[ 
  <br><br>RPC是远过程调用(Remote Procedure Call)的缩写形式，其区别于一个程序内部基本的过程调用(或者叫函数/方法调用)。<br>随着应用程序变得越来越复杂，在单个机器上中仅通过一个进程来运行整个应用程序的方式已经难以满足现实中日益增长的需求。<br>
 开发者对应用程序进行模块化的拆分，以分布式部署的方式来降低程序整体的复杂度和提升性能方面的可拓展性(分而治之的思想)。<br>拆分后部署在不同机器上的各个模块无法像之前那样通过内存寻址的方式来互相访问，而是需要通过网络来进行通信。<br>
 RPC最主要的功能就是在提供不同模块服务间的网络通信能力的同时，又尽可能的不丢失本地调用时语义的简洁性。rpc可以认为是分布式系统中类似人体经络一样的基础设施，因此有必要对其工作原理有一定的了解。<br><br>要学习rpc的原理，理论上最好的办法就是去看流行的开源框架源码。但dubbo这样成熟的rpc框架由于已经迭代了很多年，为了满足多样的需求而有着复杂的架构和庞大的代码量。对于普通初学者来说往往很难从层层抽象封装中把握住关于rpc框架最核心的内容。<br>MyRpc是我最近在学习MIT6.824分布式系统公开课时，使用java并基于netty实现的一个简易rpc框架，实现的过程中许多地方都参考了dubbo以及一些demo级别的rpc框架。<br>
@@ -4469,7 +5258,7 @@ Copy<br>可以看到，引入了代理模式后的使用方式就变得简单很
 <br>这篇博客是我关于Mit6.824分布式系统公开课lab的第一篇博客，按照计划会将实现简易版rpc和raft k/v数据库的心得以博客的形式分享出来，希望能帮助到对分布式系统相关技术的小伙伴。
 <br>打个广告：对于英语不好(没法直接啃生肉)但又对国外著名的计算机公开课(涉及操作系统、数据库、分布式系统、编译原理、计算机网络、算法等等)感兴趣的小伙伴，可以咨询simviso购买中英翻译质量很高的公开课视频(比如Mit6.824，b站上开放了一部分免费的视频：<a rel="noopener" class="external-link" href="https://www.bilibili.com/video/BV1x7411M7Sf" target="_blank">https://www.bilibili.com/video/BV1x7411M7Sf</a>)。
 <br>博客中展示的完整代码在我的github上：<a rel="noopener" class="external-link" href="https://github.com/1399852153/MyRpc" target="_blank">https://github.com/1399852153/MyRpc</a> (release/lab1分支)，内容如有错误，还请多多指教。
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/自己动手实现rpc框架(一)-实现点对点的rpc通信.html</link><guid isPermaLink="false">Computer Science/Distributed System/RPC框架的实现/自己动手实现rpc框架(一) 实现点对点的rpc通信.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:21:13 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171915.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171915.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[自己动手实现rpc框架(二) 实现集群间rpc通信]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/自己动手实现rpc框架(一)-实现点对点的rpc通信.html</link><guid isPermaLink="false">Computer Science/Distributed System/RPC框架的实现/自己动手实现rpc框架(一) 实现点对点的rpc通信.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:21:13 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171915.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171915.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[自己动手实现rpc框架(二) 实现集群间rpc通信]]></title><description><![CDATA[ 
  <br><br>上一篇博客中MyRpc框架实现了基本的点对点rpc通信功能。而在这篇博客中我们需要实现MyRpc的集群间rpc通信功能。<br>
 <br><a data-tooltip-position="top" aria-label="https://www.cnblogs.com/xiaoxiongcanguan/p/17506728.html" rel="noopener" class="external-link" href="https://www.cnblogs.com/xiaoxiongcanguan/p/17506728.html" target="_blank">自己动手实现rpc框架(一) 实现点对点的rpc通信</a>
 <br>上篇博客的点对点rpc通信实现中，客户端和服务端的ip地址和端口都是固定配置死的。而通常为了提升服务总负载，客户端和服务端都是以集群的方式部署的(水平拓展)，客户端和服务端的节点都不止1个。<br>集群条件下出现了很多新的问题需要解决：<br>
@@ -5069,7 +5858,7 @@ Copy<br><br>
 虽然无论在功能上还是在各种细节的处理上都还有很多需要优化的地方，但作为一个demo级别的框架，其没有过多的抽象封装，更有利于rpc框架的初学者去理解。
 <br>做为Mit6.824课程学习的一部分，rpc的实现到此就暂时告一段落。后续我会继续分享实现简易raft kv数据库的学习心得。
 <br>博客中展示的完整代码在我的github上：<a rel="noopener" class="external-link" href="https://github.com/1399852153/MyRpc" target="_blank">https://github.com/1399852153/MyRpc</a> (release/lab2分支)，内容如有错误，还请多多指教。
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/自己动手实现rpc框架(二)-实现集群间rpc通信.html</link><guid isPermaLink="false">Computer Science/Distributed System/RPC框架的实现/自己动手实现rpc框架(二) 实现集群间rpc通信.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:22:05 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172146.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172146.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[分布式任务调度框架]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/自己动手实现rpc框架(二)-实现集群间rpc通信.html</link><guid isPermaLink="false">Computer Science/Distributed System/RPC框架的实现/自己动手实现rpc框架(二) 实现集群间rpc通信.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:22:05 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172146.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172146.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[分布式任务调度框架]]></title><description><![CDATA[ 
  <br>前段时间，公司要改造现有的单节点调度为分布式任务调度，然后就研究了目前市面上主流的开源分布式任务调度框架，用起来就一个感觉：麻烦！特别是之前在一个类里写了好多个调度任务，改造起来更加麻烦。我这人又比较懒，总感觉用了别人写好的工具还要改一大堆，心里就有点不舒服。于是我就想自己写一个框架，毕竟自己觉得分布式任务调度在所有分布式系统中是最简单的，因为一般公司任务调度本身不可能同时调度海量的任务，很大的并发，改造成分布式主要还是为了分散任务到多个节点，以便同一时间处理更多的任务。后面有一天，我在公司前台取快递，看到这样一个现象:我们好几个同事(包括我)在前台那从头到尾看快递是不是自己的，是自己的就取走，不是就忽略，然后我就收到了启发。这个场景类比到分布式调度系统中，我们可以认为是快递公司或者快递员已经把每个快递按照我们名字电话分好了快递，我们只需要取走自己的就行了。但是从另外一个角度看，也可以理解成我们每个人都是从头到尾看了所有快递，然后按照某种约定的规则，如果是自己的快递就拿走，不是自己的就忽略继续看下一个。如果把快递想象成任务，一堆人去拿一堆快递也可以很顺利的拿到各自的快递，那么一堆节点自己去取任务是不是也可以很好的处理各自的任务呢?<br>传统的分布式任务调度都有一个调度中心，这个调度中心也都要部署称多节点的集群，避免单点故障，然后还有一堆执行器，执行器负责执行调度中心分发的任务。按照上面的启发，我的思路是放弃中心式的调度中心直接由各个执行器节点去公共的地方按照约定的规则去取任务，然后执行。设计示意图如下<br><img alt="Pasted image 20240507114701.png" src="https://muqiuhan.github.io/wiki/computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png">有人可能怀疑那任务db库不是有单点问题吗，我想反问下，难道其他的分布式任务调度框架没有这个问题吗？针对数据库单点我们可以单独类似业务库那样考虑高可用方案，这里不是这篇文章的讨论重点。很明显我们重点放在执行节点那里到底怎么保证高可用，单个任务不会被多个节点同时执行，单个节点执行到一半突然失联了，这个任务怎么办等复杂的问题。后续我们使用未经修饰的代码的方式一一解决这个问题（未经修饰主要是没有优化结构流水账式的代码风格，主要是很多人包括我自己看别人源码时总是感觉晕头转向的，仿佛置身迷宫般，看起来特别费劲，可能是我自己境界未到吧）<br>既然省略了集中式的调度，那么既然叫任务调度很明显必须要有调度的过程，不然多个节点去抢一个任务怎么避免冲突呢?我这里解决方式是：首先先明确一个任务的几种状态:待执行，执行中，有异常，已完成。每个节点起一个线程一直去查很快就要开始执行的待执行任务，然后遍历这些任务，使用乐观锁的方式先更新这个任务的版本号（版本号+1）和状态（变成执行中），如果更新成功就放入节点自己的延时队列中等待执行。由于每个节点的线程都是去数据库查待执行的任务，很明显变成执行中的任务下次就不会被其他节点再查询到了，至于对于那些在本节点更新状态之前就查到的待执行任务也会经过乐观锁尝试后更新失败从而跳过这个任务，这样就可以避免一个任务同时被多个节点重复执行。关键代码如下:<br>package com.rdpaas.task.scheduler;
 
 import com.rdpaas.task.common.*;
@@ -5815,12 +6604,12 @@ public class ContextRefreshedListener implements ApplicationListener&lt;ContextR
 
     }
 }
-Copy<br>上述代码就完成了spring初始化完成后加载了自己的自定义任务调度的注解，并且也受spring的调度开关@EnableScheduling的控制，实现无缝整合到spring或者springboot中去，达到了我这种的懒人的要求。<br>好了其实写这个框架差不多就用了5天业余时间，估计会有一些隐藏的坑，不过明显的坑我自己都解决了，开源出来的目的既是为了抛砖引玉，也为了广大屌丝程序员提供一种新的思路，希望对大家有所帮助，同时也希望大家多帮忙找找bug，一起来完善这个东西,大神们请忽略。文笔不好，主要是好久没写作文了，请大家多多担待。详细的流水账式的源码加上长篇大论式的汉语注释尽情查看:<a rel="noopener" class="external-link" href="https://github.com/rongdi/easy-job" target="_blank">https://github.com/rongdi/easy-job</a>]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/分布式任务调度框架/分布式任务调度框架.html</link><guid isPermaLink="false">Computer Science/Distributed System/分布式任务调度框架/分布式任务调度框架.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:27:09 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://muqiuhan.github.io/wiki/computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Basic System Architecture]]></title><description><![CDATA[ 
+Copy<br>上述代码就完成了spring初始化完成后加载了自己的自定义任务调度的注解，并且也受spring的调度开关@EnableScheduling的控制，实现无缝整合到spring或者springboot中去，达到了我这种的懒人的要求。<br>好了其实写这个框架差不多就用了5天业余时间，估计会有一些隐藏的坑，不过明显的坑我自己都解决了，开源出来的目的既是为了抛砖引玉，也为了广大屌丝程序员提供一种新的思路，希望对大家有所帮助，同时也希望大家多帮忙找找bug，一起来完善这个东西,大神们请忽略。文笔不好，主要是好久没写作文了，请大家多多担待。详细的流水账式的源码加上长篇大论式的汉语注释尽情查看:<a rel="noopener" class="external-link" href="https://github.com/rongdi/easy-job" target="_blank">https://github.com/rongdi/easy-job</a>]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/分布式任务调度框架/分布式任务调度框架.html</link><guid isPermaLink="false">Computer Science/Distributed System/分布式任务调度框架/分布式任务调度框架.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Thu, 25 Jul 2024 09:27:09 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Basic System Architecture]]></title><description><![CDATA[ 
  <br>In this article, we’ll introduce some of the fundamental approaches to scaling a software system. The type of systems this series of articles is oriented towards are the Internet-facing systems we all utilize every day. I’ll let you name your favorite. These systems accept requests from users through Web and mobile interfaces, store and retrieve data based on user requests or events (e.g. a GPS-based system), and have some intelligent features such as providing recommendations or providing notifications based on previous user interactions.<br>We’ll start with a simple system design and show how it can be scaled. In the process, several concepts will be introduced that we’ll cover in much more detail later in this series. Hence this article gives a broad overview of these concepts and how they aid in scalability — truly a whirlwind tour! If you’ve missed Part 1 in this series, <a data-tooltip-position="top" aria-label="https://medium.com/swlh/building-scalable-distributed-systems-part-1-introduction-to-scalable-systems-9ca471fd77d7" rel="noopener" class="external-link" href="https://medium.com/swlh/building-scalable-distributed-systems-part-1-introduction-to-scalable-systems-9ca471fd77d7" target="_blank">here it is</a>!<br><br>Virtually all massive-scale systems start off small and grow due to their success. It’s common, and sensible, to start with a development framework such as Ruby on Rails or Django or equivalent that promotes rapid development to get a system quickly up and running. A typical, very simple software architecture for ‘starter’ systems that closely resembles what you get with rapid development frameworks is shown in Figure 1. This comprises a client tier, application service tier, and a database tier. If you use Rails or equivalent, you also get a framework that hardwires a Model-View-Controller (MVC) pattern for Web application processing and an Object-Relational Mapper (ORM) that generates SQL queries.<br>With this architecture, users submit requests to the application from their mobile app or Web browser across the Internet. The magic of Internet networking delivers these requests to the application service which is running on a machine hosted in some corporate or commercial cloud data center. Communications uses a standard network protocol, typically HTTP.<br>The application service runs code that supports an application programming interface (API) that clients use to format data and send HTTP requests to. Upon receipt of a request, the service executes the code associated with the requested API. In the process, it may read from or write to a database, depending on the semantics of the API. When the request is complete, the server sends the results to the client to display in their app or browser.<br><img alt="Basic system architecture" src="https://miro.medium.com/v2/resize:fit:584/1*MTjAf75AZDXNDLO7iWgsxQ.png" referrerpolicy="no-referrer"><br>Figure 1 Basic Multi-Tier Distributed Systems Architecture<br>Many systems conceptually look exactly like this. The application service code exploits an execution environment that enables multiple requests from multiple users to be processed simultaneously. There’s a myriad of these application server technologies — JEE and Spring for Java, <a data-tooltip-position="top" aria-label="https://en.wikipedia.org/wiki/Flask_(web_framework)" rel="noopener" class="external-link" href="https://en.wikipedia.org/wiki/Flask_(web_framework)" target="_blank">Flask for Python</a> – that are widely used in this scenario.<br>This approach leads to what is generally known as a monolithic architecture. Single, monolithic services grow in complexity as the application becomes more feature-rich. This eventually makes it hard to modify and test rapidly, and their execution footprint can become extremely heavyweight as all the API implementations run in the same application service.<br>Still, as long as request loads stay relatively low, this application architecture can suffice. The service has the capacity to process requests with consistently low latency. If request loads keep growing, this means eventually latencies will grow as the server has insufficient CPU/memory capacity for the concurrent request volume and hence requests will take longer to process. In these circumstances, our single server is overloaded and has become a bottleneck.<br>In this case, the first strategy for scaling is usually to ‘scale up’ the application service hardware. For example, if your application is running on AWS, you might upgrade your server from a modest t3.xlarge instance with 4 (virtual) CPUs and 16GBs of memory to a t3.2xlarge instance <a data-tooltip-position="top" aria-label="https://aws.amazon.com/ec2/instance-types/" rel="noopener" class="external-link" href="https://aws.amazon.com/ec2/instance-types/" target="_blank">which doubles the number of vCPUs and memory available for the application</a>.<br>Scale up is simple. It gets many real-world applications a long way to supporting larger workloads. It obviously just costs more money for hardware, but that’s scaling for you.<br>It’s inevitable however that for many applications the load will grow to a level that will swamp a single server node, no matter how many CPUs and how much memory you have. That’s when you need a new strategy — namely scaling out, or horizontal scaling, that we touched on <a data-tooltip-position="top" aria-label="https://medium.com/swlh/building-scalable-distributed-systems-part-1-introduction-to-scalable-systems-9ca471fd77d7" rel="noopener" class="external-link" href="https://medium.com/swlh/building-scalable-distributed-systems-part-1-introduction-to-scalable-systems-9ca471fd77d7" target="_blank">in the first article in this series</a>.<br><br>Scaling out relies on the ability to replicate a service in the architecture and run multiple copies on multiple server nodes. Requests from clients are distributed across the replicas so that in theory, if we have N replicas, each server node processes {#requests/N} requests. This simple strategy increases an application’s capacity and hence scalability.<br>To successfully scale out an application, we need two fundamental elements in our design. As illustrated in Figure 2, these are:<br>A Load balancer: All user requests are sent to a load balancer, which chooses a service replica to process the request. Various strategies exist for choosing a service, all with the core aim of keeping each processing resource equally busy. The load balancer also relays the responses from the service back to the client. Most load balancers belong to a class of Internet components known as <a data-tooltip-position="top" aria-label="https://en.wikipedia.org/wiki/Reverse_proxy" rel="noopener" class="external-link" href="https://en.wikipedia.org/wiki/Reverse_proxy" target="_blank">reverse proxies</a>, which control access to server resources for client requests. As an intermediary, reverse proxies add an extra network hop for a request, and hence need to be extremely low latency to minimize the overheads they introduce. There are many off-the-shelf load balancing solutions as well as cloud-provider specific ones, and we’ll cover the general characteristics of these in much more detail in a later article.<br>Stateless services: For load balancing to be effective and share requests evenly, the load balancer must be free to send consecutive requests from the same client to different service instances for processing. This means the API implementations in the services must retain no knowledge, or state, associated with an individual client’s session. When a user accesses an application, a user session is created by the service, and a unique session identified is managed internally to identify the sequence of user interactions and track session state. A classic example of session state is a shopping cart. To use a load balancer effectively, the data representing the current contents of a user’s cart must be stored somewhere — typically a data store — such that any service replica can access this state when it receives a request as part of a user session. In Figure 2 this is labeled as a Session Store.<br><img alt="Scaling out the service tier with a load balancer" src="https://miro.medium.com/v2/resize:fit:802/1*ZoDFOdsaG-hVdRegLsoR4w.png" referrerpolicy="no-referrer"><br>Figure 2 Scale out Architecture<br>Scale out is attractive as, in theory, you can keep adding new (virtual) hardware and services to handle increased user request loads and keep latencies consistent and low. As soon as you see latencies rising, you deploy another service instance. This requires no code changes and hence is relatively cheap — you just pay for the hardware you deploy.<br>Scale out has another highly attractive feature. If one of the services fails, the requests it is processing will be lost. But as the failed service manages no session state, these requests can be simply reissued by the client and sent to another service instance for processing. This means the application is resilient to failures in the application service software and hardware, thus enhancing the application’s availability. Availability is a key feature of distributed systems and one we will discuss in-depth in a later article too.<br>Unfortunately, as with any engineering solution, simple scaling out has limits. As you add new service instances, the request processing capacity grows, potentially infinitely. At some stage, however, reality will bite and the capability of your single database to provide low latency query responses will diminish. Slow queries will mean longer response times for clients. If requests keep arriving faster than they are being processed, some system components will fail as resources will be exhausted and clients will see exceptions and request timeouts. Essentially your database has become a bottleneck that you must engineer away in order to scale your application further.<br><br>Scaling up by increasing the number of CPUs, memory and disks in a database server can go a long way to increasing a system’s capacity. For example, at the time of writing Google Cloud Platform can provision a SQL database on a db-n1-highmem-96 node, which has 96 vCPUs, 624GB of memory, 30TBs of disk and can support 4000 connections. This will cost somewhere between $6K and $16K per year, which sounds a good deal to me. Scaling up is a very common database scalability strategy.<br>Large databases need constant care and attention from highly skilled database administrators to keep them tuned and running fast. There’s a lot of wizardry in this job — e.g. query tuning, disk partitioning, indexing, on-node caching — and hence database administrators are valuable people that you want to be very nice to. They can make your application services highly responsive indeed.<br>In conjunction with scale up, a highly effective approach is to query the database as infrequently as possible in your services. This can be achieved by employing distributed caching in the service tier. A cache stores recently retrieved and commonly accessed database results in memory so they can be quickly retrieved without placing a burden on the database. For data that is frequently read and changes rarely, your processing logic must be modified to first check a distributed cache, such as a <a data-tooltip-position="top" aria-label="https://redis.io/" rel="noopener" class="external-link" href="https://redis.io/" target="_blank">Redis</a> or <a data-tooltip-position="top" aria-label="https://memcached.org/" rel="noopener" class="external-link" href="https://memcached.org/" target="_blank">memcached</a> store. These cache technologies are essentially distributed Key-Value stores with very simple APIs. This scheme is illustrated in Figure 3. Note that the Session Store from Figure 2 has disappeared. This is because we can use a general-purpose distributed cache to store session identifiers along with application data.<br>Accessing the cache requires a remote call from your service, but if the data you need is in the cache, on a fast network this is far less expensive than querying the database instance. Introducing a caching layer also requires your processing logic to be modified to check for cached data. If what you want is not in the cache — a cache miss — your code must still query the database and load the results into the cache as well as return the results to the caller. You also need to decide when to remove or invalidate cached results — this depends on your application’s tolerance to serving stale results to clients and the volume of data you cache.<br><img alt="Introducing a distributed cache" src="https://miro.medium.com/v2/resize:fit:762/1*7KFWeMMfq814m5pEnp21_Q.png" referrerpolicy="no-referrer"><br>Figure 3 Introducing Distributed Caching<br>A well-designed caching scheme can be absolutely invaluable in scaling a system. Caching works great for data that rarely changes and is accessed frequently, such as inventory, event and contact data. If you can handle a large percentage, like 80% or more, of read requests from your cache, then you effectively buy extra capacity at your databases as they are not involved in handling requests.<br>Still, many systems need to rapidly access many terabytes and larger data stores, which make a single database effectively prohibitive. In these systems, a distributed database is needed.<br><br>There are more distributed database technologies around in 2020 than you probably want to imagine. It’s a complex area, and one we’ll cover extensively in another article. In very general terms, there are two major categories:<br>
 <br>Distributed SQL stores from major vendors such as Oracle and IBM. These enable organizations to scale out their SQL database relatively seamlessly by storing the data across multiple disks that are queried by multiple database engine replicas. These multiple engines logically appear to the application as a single database, hence minimizing code changes.
 <br>Distributed so-called NoSQL stores from a whole array of vendors. These products use a variety of data models and query languages. They distribute data across multiple nodes that run the database engine, each with their own locally attached storage. Again, the location of the data is transparent to the application and typically controlled by the design of the data model through hashing functions on database keys. Leading products in this category are Cassandra, MongoDB and Neo4j.<br>
 <img alt="Figure 4 Scaling the Data Tier using a Distributed Database" src="https://miro.medium.com/v2/resize:fit:922/1*i34jGfA1SXllJoszNSz6Jw.png" referrerpolicy="no-referrer">
-<br>Figure 4 Scaling the Data Tier using a Distributed Database<br>Figure 4 shows how our architecture incorporates a distributed database. As the data volumes grow, a distributed database has features to enable the number of storage nodes to be increased. As nodes are added (or removed), the data managed across all nodes is rebalanced to attempt to ensure the processing and storage capacity of each node is equally utilized.<br>Distributed databases also promote availability. They support replicating each data storage node so if one node fails or cannot be accessed due to network problems, another copy of the data is available. The models utilized for replication and the trade-offs these require (spoiler — consistency) are fodder for another article.<br>If you are utilizing a major cloud provider, there are also two deployment choices for your data tier. You can deploy your own virtual resources and build, configure, and administer your own distributed database servers. Alternatively, you can utilize cloud-hosted databases such as DynamoDB. The latter category simplifies the administrative effort associated with managing, monitoring, and scaling the database, as many of these tasks essentially become the responsibility of the cloud provider you choose. As usual, the no free lunch principle applies.<br><br>Any realistic system that we need to scale will have many different services that interact to process a request. For example, accessing a Web page on the Amazon.com site can require in excess of <a data-tooltip-position="top" aria-label="https://www.allthingsdistributed.com/2019/08/modern-applications-at-aws.html" rel="noopener" class="external-link" href="https://www.allthingsdistributed.com/2019/08/modern-applications-at-aws.html" target="_blank">100 different services being called</a> before an aggregate response is returned to the user.<br>The beauty of the stateless, load-balanced, cached architecture we are elaborating in this article is that we can extend the core design principles and build a multi-tiered, multi-service application. In fulfilling a request, a service can call one or more dependent services, which in turn are replicated and load-balanced. A simple example is shown in Figure 5. There are many nuances in how the services interact, and <a data-tooltip-position="top" aria-label="https://medium.com/@i.gorton/six-rules-of-thumb-for-scaling-software-architectures-a831960414f9" rel="noopener" class="external-link" href="https://medium.com/@i.gorton/six-rules-of-thumb-for-scaling-software-architectures-a831960414f9" target="_blank">how applications ensure rapid responses from dependent services</a>. Again, we’ll cover these in detail in later articles.<br><img alt="Figure 5 Scaling the Processing Capacity across multiple tiers" src="https://miro.medium.com/v2/resize:fit:970/1*5QvIxJtIO5B_bxbyPtmqNg.png" referrerpolicy="no-referrer"><br>Figure 5 Scaling the Processing Capacity across multiple tiers<br>This design also promotes having different, load-balanced services at each tier in the architecture. For example, Figure 6 illustrates two replicated Internet-facing services that both utilized a core service providing database access. Each service is load balanced and employs caching to provide high performance and availability. This design is often used, for example, to provide a service for Web clients and a service for mobile clients, each of which can be scaled independently based on the load they experience. Its commonly called the <a data-tooltip-position="top" aria-label="https://samnewman.io/patterns/architectural/bff/" rel="noopener" class="external-link" href="https://samnewman.io/patterns/architectural/bff/" target="_blank">Backend For Frontend (BFF) pattern</a>.<br><img alt="Figure 6 Scalable Architecture with Multiple Services" src="https://miro.medium.com/v2/resize:fit:1114/1*wGBhGR8D9ZuWutOeYiMJvQ.png" referrerpolicy="no-referrer"><br>Figure 6 Scalable Architecture with Multiple Services<br>In addition, by breaking the application into multiple independent services, we can scale each based on the service demand. If for example, we see an increasing volume of requests from mobile users and decreasing volumes from Web users, we can provision different numbers of instances for each service to satisfy demand. This is a major advantage of refactoring monolithic applications into multiple independent services, which can be separately built, tested, deployed, and scaled.<br><br>Most client application requests expect a response. A user might want to see all auction items for a given product category or see the real estate that is available for sale in a given location. In these examples, the client sends a request and waits until a response is received. The time interval between sending the request and receiving the result is the latency of the request. We can decrease latencies by using caching and precalculated responses, but many requests will still result in database access.<br>A similar scenario exists for requests that update data in an application. If a user updates their delivery address immediately prior to placing an order, the new delivery address must be persisted so that the user can confirm the address before they hit the ‘purchase’ button. This is known as ‘read your own writes’. The latency, in this case, includes the time for the database write, which is confirmed by the response the user receives.<br>Some update requests however can be successfully responded to without fully persisting the data in a database. For example, the skiers and snowboarders amongst you will be familiar with lift ticket scanning systems that check you have a valid pass to ride the lifts that day. They also record which lifts you take, the time you get on, and so on. Nerdy skier/snowboarders can then use the resort’s mobile app to see how many lifts they ride in a day.<br>As a person waits to get on a lift, a scanner device validates the pass using an RFID chip reader. The information about the rider, lift, and time is then sent over the Internet to a data capture service operated by the ski resort. The lift rider doesn’t have to wait for this update to occur, as the latency could slow down the lift loading process. There’s also no expectation from the lift rider that they can instantly use their app to ensure this data has been captured. They just get on the lift, talk smack with their friends, and plan their next run.<br>Service implementations can exploit this type of scenario to reduce latencies and improve responsiveness. The data about the event is sent to the service, which acknowledges receipt and concurrently stores the data in a remote queue for subsequent writing to the database. Writing a message to a queue is much faster than writing to a database, and this enables the request to be successfully acknowledged much more quickly. Another backend service is deployed to read messages from the queue and write the data to the database. When the user checks their lift rides — maybe 3 hours or 3 days later — the data has been persisted successfully.<br>The basic architecture to implement this approach is illustrated in Figure 7.<br><img alt="Figure 7 Increasing Responsiveness with Queueing" src="https://miro.medium.com/v2/resize:fit:1054/1*Te6RjrHDEQ3scq_kVbpwEQ.png" referrerpolicy="no-referrer"><br>Figure 7 Increasing Responsiveness with Queuing<br>Whenever the results of a write operation are not immediately needed, an application can use this approach to improve responsiveness and hence scalability. Many queueing technologies exist that applications can utilize, and we’ll discuss how these operate in later articles. These queueing platforms all provide asynchronous communications. A producer service writes to the queue, which acts as temporary storage, while another consumer service removes messages from the queue and makes the necessary updates to, in our example, a database that stores skier lift ride details.<br>The key is that the data eventually gets persisted. Eventually typically means a few seconds at most, but use cases that employ this design should be resilient to longer delays without impacting the user experience.<br><br>This chapter has provided a whirlwind tour of the major approaches we can utilize to scale out an Internet-facing system as a collection of communicating services and distributed databases. Much detail has been brushed over, and as you all no doubt know, in software systems the devil is in the detail.<br>Another area this chapter has skirted around is the subject of software architecture. We’ve used the term services for distributed components in an architecture that implement application business logic and database access. These services are independently deployed processes that communicate using remote communications mechanisms such as HTTP. In architectural terms, these services are most closely mirrored by those in the Service Oriented Architecture (SOA) pattern, an established architectural approach for building distributed systems. A more modern evolution of this approach revolves around microservices. These tend to be more cohesive, encapsulated services that promote continuous development and deployment.<br>If you’d like a much more in-depth discussion of these, and software architecture issues in general, then Mark Richards’ and Neal Ford’s book is an excellent place to start.<br>Mark Richards and Neal Ford, Fundamentals of Software Architecture: An Engineering Approach 1st Edition, O’Reilly Media, 2020<br>Finally, there’s a class of big data software architectures that address some of the issues that rise to the fore with very large data collections. One of the most prominent is data reprocessing. This occurs when raw data that has already been stored and analyzed needs to be re-analyzed due to code changes. This reprocessing may occur due to software fixes, or the introduction of new algorithms that can derive more insights from the original raw data. There’s a good discussion of the Lambda and Kappa architectures, both of which are prominent in this space, in this article.<br>Jay Krepps, <a data-tooltip-position="top" aria-label="https://www.oreilly.com/radar/questioning-the-lambda-architecture/" rel="noopener" class="external-link" href="https://www.oreilly.com/radar/questioning-the-lambda-architecture/" target="_blank">Questioning the Lambda Architecture</a>,]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/building-scalable-distributed-systems-distributed-system-architecture-blueprint-a-whirlwind-tour.html</link><guid isPermaLink="false">Computer Science/Distributed System/Building Scalable Distributed Systems - Distributed System Architecture Blueprint - A Whirlwind Tour.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:28 GMT</pubDate><enclosure url="https://miro.medium.com/v2/resize:fit:584/1*MTjAf75AZDXNDLO7iWgsxQ.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://miro.medium.com/v2/resize:fit:584/1*MTjAf75AZDXNDLO7iWgsxQ.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[What is Scalability?]]></title><description><![CDATA[ 
+<br>Figure 4 Scaling the Data Tier using a Distributed Database<br>Figure 4 shows how our architecture incorporates a distributed database. As the data volumes grow, a distributed database has features to enable the number of storage nodes to be increased. As nodes are added (or removed), the data managed across all nodes is rebalanced to attempt to ensure the processing and storage capacity of each node is equally utilized.<br>Distributed databases also promote availability. They support replicating each data storage node so if one node fails or cannot be accessed due to network problems, another copy of the data is available. The models utilized for replication and the trade-offs these require (spoiler — consistency) are fodder for another article.<br>If you are utilizing a major cloud provider, there are also two deployment choices for your data tier. You can deploy your own virtual resources and build, configure, and administer your own distributed database servers. Alternatively, you can utilize cloud-hosted databases such as DynamoDB. The latter category simplifies the administrative effort associated with managing, monitoring, and scaling the database, as many of these tasks essentially become the responsibility of the cloud provider you choose. As usual, the no free lunch principle applies.<br><br>Any realistic system that we need to scale will have many different services that interact to process a request. For example, accessing a Web page on the Amazon.com site can require in excess of <a data-tooltip-position="top" aria-label="https://www.allthingsdistributed.com/2019/08/modern-applications-at-aws.html" rel="noopener" class="external-link" href="https://www.allthingsdistributed.com/2019/08/modern-applications-at-aws.html" target="_blank">100 different services being called</a> before an aggregate response is returned to the user.<br>The beauty of the stateless, load-balanced, cached architecture we are elaborating in this article is that we can extend the core design principles and build a multi-tiered, multi-service application. In fulfilling a request, a service can call one or more dependent services, which in turn are replicated and load-balanced. A simple example is shown in Figure 5. There are many nuances in how the services interact, and <a data-tooltip-position="top" aria-label="https://medium.com/@i.gorton/six-rules-of-thumb-for-scaling-software-architectures-a831960414f9" rel="noopener" class="external-link" href="https://medium.com/@i.gorton/six-rules-of-thumb-for-scaling-software-architectures-a831960414f9" target="_blank">how applications ensure rapid responses from dependent services</a>. Again, we’ll cover these in detail in later articles.<br><img alt="Figure 5 Scaling the Processing Capacity across multiple tiers" src="https://miro.medium.com/v2/resize:fit:970/1*5QvIxJtIO5B_bxbyPtmqNg.png" referrerpolicy="no-referrer"><br>Figure 5 Scaling the Processing Capacity across multiple tiers<br>This design also promotes having different, load-balanced services at each tier in the architecture. For example, Figure 6 illustrates two replicated Internet-facing services that both utilized a core service providing database access. Each service is load balanced and employs caching to provide high performance and availability. This design is often used, for example, to provide a service for Web clients and a service for mobile clients, each of which can be scaled independently based on the load they experience. Its commonly called the <a data-tooltip-position="top" aria-label="https://samnewman.io/patterns/architectural/bff/" rel="noopener" class="external-link" href="https://samnewman.io/patterns/architectural/bff/" target="_blank">Backend For Frontend (BFF) pattern</a>.<br><img alt="Figure 6 Scalable Architecture with Multiple Services" src="https://miro.medium.com/v2/resize:fit:1114/1*wGBhGR8D9ZuWutOeYiMJvQ.png" referrerpolicy="no-referrer"><br>Figure 6 Scalable Architecture with Multiple Services<br>In addition, by breaking the application into multiple independent services, we can scale each based on the service demand. If for example, we see an increasing volume of requests from mobile users and decreasing volumes from Web users, we can provision different numbers of instances for each service to satisfy demand. This is a major advantage of refactoring monolithic applications into multiple independent services, which can be separately built, tested, deployed, and scaled.<br><br>Most client application requests expect a response. A user might want to see all auction items for a given product category or see the real estate that is available for sale in a given location. In these examples, the client sends a request and waits until a response is received. The time interval between sending the request and receiving the result is the latency of the request. We can decrease latencies by using caching and precalculated responses, but many requests will still result in database access.<br>A similar scenario exists for requests that update data in an application. If a user updates their delivery address immediately prior to placing an order, the new delivery address must be persisted so that the user can confirm the address before they hit the ‘purchase’ button. This is known as ‘read your own writes’. The latency, in this case, includes the time for the database write, which is confirmed by the response the user receives.<br>Some update requests however can be successfully responded to without fully persisting the data in a database. For example, the skiers and snowboarders amongst you will be familiar with lift ticket scanning systems that check you have a valid pass to ride the lifts that day. They also record which lifts you take, the time you get on, and so on. Nerdy skier/snowboarders can then use the resort’s mobile app to see how many lifts they ride in a day.<br>As a person waits to get on a lift, a scanner device validates the pass using an RFID chip reader. The information about the rider, lift, and time is then sent over the Internet to a data capture service operated by the ski resort. The lift rider doesn’t have to wait for this update to occur, as the latency could slow down the lift loading process. There’s also no expectation from the lift rider that they can instantly use their app to ensure this data has been captured. They just get on the lift, talk smack with their friends, and plan their next run.<br>Service implementations can exploit this type of scenario to reduce latencies and improve responsiveness. The data about the event is sent to the service, which acknowledges receipt and concurrently stores the data in a remote queue for subsequent writing to the database. Writing a message to a queue is much faster than writing to a database, and this enables the request to be successfully acknowledged much more quickly. Another backend service is deployed to read messages from the queue and write the data to the database. When the user checks their lift rides — maybe 3 hours or 3 days later — the data has been persisted successfully.<br>The basic architecture to implement this approach is illustrated in Figure 7.<br><img alt="Figure 7 Increasing Responsiveness with Queueing" src="https://miro.medium.com/v2/resize:fit:1054/1*Te6RjrHDEQ3scq_kVbpwEQ.png" referrerpolicy="no-referrer"><br>Figure 7 Increasing Responsiveness with Queuing<br>Whenever the results of a write operation are not immediately needed, an application can use this approach to improve responsiveness and hence scalability. Many queueing technologies exist that applications can utilize, and we’ll discuss how these operate in later articles. These queueing platforms all provide asynchronous communications. A producer service writes to the queue, which acts as temporary storage, while another consumer service removes messages from the queue and makes the necessary updates to, in our example, a database that stores skier lift ride details.<br>The key is that the data eventually gets persisted. Eventually typically means a few seconds at most, but use cases that employ this design should be resilient to longer delays without impacting the user experience.<br><br>This chapter has provided a whirlwind tour of the major approaches we can utilize to scale out an Internet-facing system as a collection of communicating services and distributed databases. Much detail has been brushed over, and as you all no doubt know, in software systems the devil is in the detail.<br>Another area this chapter has skirted around is the subject of software architecture. We’ve used the term services for distributed components in an architecture that implement application business logic and database access. These services are independently deployed processes that communicate using remote communications mechanisms such as HTTP. In architectural terms, these services are most closely mirrored by those in the Service Oriented Architecture (SOA) pattern, an established architectural approach for building distributed systems. A more modern evolution of this approach revolves around microservices. These tend to be more cohesive, encapsulated services that promote continuous development and deployment.<br>If you’d like a much more in-depth discussion of these, and software architecture issues in general, then Mark Richards’ and Neal Ford’s book is an excellent place to start.<br>Mark Richards and Neal Ford, Fundamentals of Software Architecture: An Engineering Approach 1st Edition, O’Reilly Media, 2020<br>Finally, there’s a class of big data software architectures that address some of the issues that rise to the fore with very large data collections. One of the most prominent is data reprocessing. This occurs when raw data that has already been stored and analyzed needs to be re-analyzed due to code changes. This reprocessing may occur due to software fixes, or the introduction of new algorithms that can derive more insights from the original raw data. There’s a good discussion of the Lambda and Kappa architectures, both of which are prominent in this space, in this article.<br>Jay Krepps, <a data-tooltip-position="top" aria-label="https://www.oreilly.com/radar/questioning-the-lambda-architecture/" rel="noopener" class="external-link" href="https://www.oreilly.com/radar/questioning-the-lambda-architecture/" target="_blank">Questioning the Lambda Architecture</a>,]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/building-scalable-distributed-systems-distributed-system-architecture-blueprint-a-whirlwind-tour.html</link><guid isPermaLink="false">Computer Science/Distributed System/Building Scalable Distributed Systems - Distributed System Architecture Blueprint - A Whirlwind Tour.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:28 GMT</pubDate><enclosure url="https://miro.medium.com/v2/resize:fit:584/1*MTjAf75AZDXNDLO7iWgsxQ.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://miro.medium.com/v2/resize:fit:584/1*MTjAf75AZDXNDLO7iWgsxQ.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[What is Scalability?]]></title><description><![CDATA[ 
  <br>The last 20 years have seen unprecedented growth in the size, complexity, and capacity of software systems. This rate of growth is hardly likely to slow down in the next 20 years — what these future systems will look like is close to unimaginable right now. The one thing we can guarantee is that more and more software systems will need to be built with constant growth — more requests, more data, more analysis — as a primary design driver.<br>Scalable is the term used in software engineering to describe software systems that can accommodate growth. In this first part of the series, we will explore what precisely is meant by the ability to scale — known, not surprisingly, as scalability. We’ll also describe a few examples that put hard numbers on the capabilities and characteristics of contemporary applications and give a brief history of the origins of the massive systems we routinely build today. Finally, we will describe two general principles for achieving scalability that will recur in various forms throughout the rest of this series of articles and examine the indelible link between scalability and cost.<br><br>Intuitively, scalability is a pretty straightforward concept. If we ask Wikipedia for a definition, it tells us “scalability is the property of a system to handle a growing amount of work by adding resources to the system”. We all know how we scale a highway system — we add more traffic lanes so it can handle a greater number of vehicles. Some of my favorite people know how to scale beer production — they add more capacity in terms of the number and size of brewing vessels, the number of staff to perform and manage the brewing process, and the number of kegs they can fill with tasty fresh brews. Think of any physical system — a transit system, an airport, elevators in a building — and how we increase capacity is pretty obvious.<br>Unlike physical systems, software is somewhat amorphous. It is not something you can point at, see, touch, feel, and get a sense of how it behaves internally from external observation. It’s a digital artifact. At its core, the stream of 1’s and 0’s that make up executable code and data are hard for anyone to tell apart. So, what does scalability mean in terms of a software system?<br>Put very simply, and without getting into definition wars, scalability defines a software system’s capability to handle growth in some dimension of its operations. Examples of operational dimensions are:<br>
 <br>the number of simultaneous user or external (e.g. sensor) requests a system can process
 <br>the amount of data a system can effectively process and manage
@@ -5849,7 +6638,7 @@ Rachel Potvin and Josh Levenberg. 2016. Why Google stores billions of lines of c
 <br>
 Ian Gorton (2017). Chapter 2. Hyperscalability — The Changing Face of Software Architecture. 10.1016/B978–0–12–805467–3.00002–8.
 
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/building-scalable-distributed-systems-introduction-to-scalable-systems.html</link><guid isPermaLink="false">Computer Science/Distributed System/Building Scalable Distributed Systems - Introduction to Scalable Systems.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:28 GMT</pubDate><enclosure url="https://miro.medium.com/v2/resize:fit:1062/1*N1__-Yxk_qEcuFqzY8gyZg.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://miro.medium.com/v2/resize:fit:1062/1*N1__-Yxk_qEcuFqzY8gyZg.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[我为什么认为 Actor 不合适 CPU 密集任务]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/building-scalable-distributed-systems-introduction-to-scalable-systems.html</link><guid isPermaLink="false">Computer Science/Distributed System/Building Scalable Distributed Systems - Introduction to Scalable Systems.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:28 GMT</pubDate><enclosure url="https://miro.medium.com/v2/resize:fit:1062/1*N1__-Yxk_qEcuFqzY8gyZg.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://miro.medium.com/v2/resize:fit:1062/1*N1__-Yxk_qEcuFqzY8gyZg.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[我为什么认为 Actor 不合适 CPU 密集任务]]></title><description><![CDATA[ 
  <br>从面向对象来说，面向对象中，将世间万物看作一个个对象，从相同对象中总结（抽象）出一个个类，比如人类，猫类等等，但是面向对象理论在落实的编程语言中时，没有考虑到世界线问题，即世界的时间流转问题，举个例子：<br>课堂上，老师在讲台上讲课（ teacher 对象的 speak 方法正在执行中），下边的学生在说话（student 对象的 speak 也在执行）。从现实生活中看，这个是自然而然的，但是，在计算机世界， 讲课和说话操作都需要在thread 中才能执行。所以，object 和 thread 就有匹配问题了，理论上，你应该为每一个 object 都匹配一个 thread, 毕竟现实中就是这样，老师和学生都有各自的 thread,可以同时执行操作。但是计算机世界中的问题就是不可能为每一个 object 起一个 thread。所以面向对象编程语言在计算机中实现时，线程问题做的就会比较奇怪了。<br>而 Actor  model 实际上是屏蔽了 thread 概念的（不接触thread,也不需要理解thread概念）。 Actor  model 中假设所有的 Actor 之间的运行是并行的，就和现实世界一样的。老师 Actor 和学生的 Actor 的运行底层是不相关的，相关的是老师在 speak（相当于群发消息），学生也在 speak（单发给同桌或者给后座的人），老师听到有人在说话（接收一个消息），然后老师拿粉笔打了说话的学生（单发一个粉笔头给那个学生）。<br>由此可见， Actor 是比面向对象更接近现实的模型。<br>从上一个问题来看， Actor 模型比oo更接近现实世界，但是，落实在计算机中时，就涉及到， Actor 怎么执行的问题。因为计算机中没有那么多的thread, 所以 Actor 在实现时，必然是通过少量的 thread 来执行大量的 Actor 实体。 即在一个 thread 中分时执行多个 Actor 。当然，这是开发 Actor 模型的人需要关注的问题，用 Actor 模型的人可以不关注。<br>所以，这里就引出了这个问题：如果在 Actor 中执行 CPU 密集任务会怎么样？<br>结论就是，CPU 密集任务把 Actor 的底层执行机制给拖垮了，thread 在执行一个 Actor 时，因耗时太长，并占用大量 CPU 资源，导致其他 Actor 无法执行。 Actor 的执行机制出现断档， Actor 世界出现 stop the world。STW 问题对于 Actor 本身不会有啥影响，反正世界都停了，无非就是多等一会儿。但是对于我们这个上帝来说，这个 Actor 世界已经不能流畅运行了。<br>所以，不管是 go, 还是 akka,或者 vert.x，都会提醒你，不要在 Actor 或类 Actor 实例中执行 block 太长的任务。<br>所以，怎么解决这个问题呢？<br>
 答案是：使用异步。<br>
 异步操作就可以把一个 block 变成不 block 的任务，从而在 Actor 世界中实现目标。<br>最后，再考虑一下用 Actor 模型来执行 CPU 密集任务的问题。<br>如果在 Actor 中执行一个 CPU 密集任务，首先会导致其他 Actor 的执行被推迟，其次，系统本身的 Actor （比如 log, monitor 等）也会推迟。如果能接受这个影响，那么用 Actor 来执行 CPU 密集任务也没有问题。<br>另一种方案是，把CPU密集 Actor 放到单独的 executor 中，与其他 Actor 分离，充分利用多线程特性]]></description><link>https://muqiuhan.github.io/wiki/computer-science/distributed-system/我为什么认为-actor-不合适-cpu-密集任务.html</link><guid isPermaLink="false">Computer Science/Distributed System/我为什么认为 Actor 不合适 CPU 密集任务.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Tue, 14 May 2024 14:56:37 GMT</pubDate></item><item><title><![CDATA[Linux中的硬连接和软连接]]></title><description><![CDATA[ 
@@ -5928,7 +6717,7 @@ Copy<br>可以看到，刚才删除的 myfile 文件竟然又出现了！这就�
 <br><br><br>当把原文件myfile删除之后，通过链接是无法访问，通过硬链接还是可以访问的  <br>
 <br>软连接其实保存的是原文件的路径，访问软连接就是通过绝对路径进行访问的。访问不到原文件说明--文件消失了或者文件移动到其他目录下面了  
 <br>把原myfile文件删除之后，但是通过硬链接还是可以访问的
-<br>在这个场景下，文件并没有移动或者不移动之说。文件就是一块物理存储区域的内容。只有当指向存储区的指针全部消失，存储区才会被回收（内容也就没了）。所谓的文件名，只是指向存储区的一个flag。软链接是这个flag的路径，先找到这个flag，再访问存储区。硬链接是新建了一个不同文件名但指向同一个存储区的flag。]]></description><link>https://muqiuhan.github.io/wiki/computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬连接和软连接.html</link><guid isPermaLink="false">Computer Science/Operating System/Linux/Linux中的硬连接和软连接/Linux中的硬连接和软连接.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:38 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://muqiuhan.github.io/wiki/computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Inter-process communication in Linux -- Shared storage]]></title><description><![CDATA[ 
+<br>在这个场景下，文件并没有移动或者不移动之说。文件就是一块物理存储区域的内容。只有当指向存储区的指针全部消失，存储区才会被回收（内容也就没了）。所谓的文件名，只是指向存储区的一个flag。软链接是这个flag的路径，先找到这个flag，再访问存储区。硬链接是新建了一个不同文件名但指向同一个存储区的flag。]]></description><link>https://muqiuhan.github.io/wiki/computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬连接和软连接.html</link><guid isPermaLink="false">Computer Science/Operating System/Linux/Linux中的硬连接和软连接/Linux中的硬连接和软连接.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:38 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Inter-process communication in Linux -- Shared storage]]></title><description><![CDATA[ 
  <br>This is the first article in a series&nbsp;about <a data-tooltip-position="top" aria-label="https://en.wikipedia.org/wiki/Inter-process_communication" rel="noopener" class="external-link" href="https://en.wikipedia.org/wiki/Inter-process_communication" target="_blank">interprocess communication</a> (IPC) in Linux. The series uses code examples in C to clarify the following IPC mechanisms:<br>
 <br>Shared files
 <br>Shared memory (with semaphores)
@@ -7120,7 +7909,7 @@ Copy<br>After rebuilding the C# source code with these modifications and re-runn
 <br>Merge similar sections within the executable
 <br>Set internal alignment within the executable to a small value
 <br>$ link.exe /debug:full /subsystem:console zerosnake.obj /entry:__managed__Main kernel32.lib ucrt.lib /merge:.modules=.rdata /merge:.pdata=.rdata /incremental:no /DYNAMICBASE:NO /filealign:16 /align:16
-Copy<br>Success! 8176 bytes!<br>The game still works, and interestingly, it’s still fully debuggable - feel free to open the EXE in Visual Studio (File -&gt; Open Solution), open one of the C# files that are part of the game, set a breakpoint in it, hit F5 to launch the EXE, and see the breakpoint getting hit. You can disable optimizations in ILC to make the executable even more debuggable - just drop the –Os argument.<br><a data-tooltip-position="top" aria-label="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/11-graph9.png" rel="noopener" class="external-link" href="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/11-graph9.png" target="_blank"></a><img alt="After messing with linker" src="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/11-graph9.png" referrerpolicy="no-referrer"><br>After messing with linker<br><br>The executable still carries some data that is not essential - the ILC compiler just doesn’t expose command line options to disable their generation.<br>One of those data structures that gets generated but we don’t need is GC information for the individual methods. CoreRT has a precise garbage collector that requires each method to describe where references to GC heap are at each instruction of the method body. Since we don’t have a garbage collector in the Snake game, this data is unnecessary. Other runtimes (e.g. Mono) use a conservative garbage collector that doesn’t require this data (it simply assumes any piece of the stack and CPU registers could be a GC reference) - a conservative garbage collector trades GC performance for extra size savings. The precise garbage collector used in CoreRT can operate in conservative mode too, but it hasn’t been hooked up yet. It’s a potential future addition that we could then leverage to make things even smaller.<br>Maybe one day we can make a simplified version of our game fit into a 512 byte boot sector. Until then, happy hacking!]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/csharp/building-a-self-contained-game-in-csharp-under-8-kilobytes.html</link><guid isPermaLink="false">Computer Science/Programming Language/CSharp/Building a self-contained game in CSharp under 8 kilobytes.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:28 GMT</pubDate><enclosure url="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/01-floppies.jpg" length="0" type="image/jpeg"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/01-floppies.jpg&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Isomorphic .NET Support in Extism]]></title><description><![CDATA[ 
+Copy<br>Success! 8176 bytes!<br>The game still works, and interestingly, it’s still fully debuggable - feel free to open the EXE in Visual Studio (File -&gt; Open Solution), open one of the C# files that are part of the game, set a breakpoint in it, hit F5 to launch the EXE, and see the breakpoint getting hit. You can disable optimizations in ILC to make the executable even more debuggable - just drop the –Os argument.<br><a data-tooltip-position="top" aria-label="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/11-graph9.png" rel="noopener" class="external-link" href="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/11-graph9.png" target="_blank"></a><img alt="After messing with linker" src="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/11-graph9.png" referrerpolicy="no-referrer"><br>After messing with linker<br><br>The executable still carries some data that is not essential - the ILC compiler just doesn’t expose command line options to disable their generation.<br>One of those data structures that gets generated but we don’t need is GC information for the individual methods. CoreRT has a precise garbage collector that requires each method to describe where references to GC heap are at each instruction of the method body. Since we don’t have a garbage collector in the Snake game, this data is unnecessary. Other runtimes (e.g. Mono) use a conservative garbage collector that doesn’t require this data (it simply assumes any piece of the stack and CPU registers could be a GC reference) - a conservative garbage collector trades GC performance for extra size savings. The precise garbage collector used in CoreRT can operate in conservative mode too, but it hasn’t been hooked up yet. It’s a potential future addition that we could then leverage to make things even smaller.<br>Maybe one day we can make a simplified version of our game fit into a 512 byte boot sector. Until then, happy hacking!]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/csharp/building-a-self-contained-game-in-csharp-under-8-kilobytes.html</link><guid isPermaLink="false">Computer Science/Programming Language/CSharp/Building a self-contained game in CSharp under 8 kilobytes.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:28 GMT</pubDate><enclosure url="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/01-floppies.jpg" length="0" type="image/jpeg"/><content:encoded>&lt;figure&gt;&lt;img src="https://migeel.sk/blog/2020/01/03/building-a-self-contained-game-in-csharp-under-8-kilobytes/01-floppies.jpg"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Isomorphic .NET Support in Extism]]></title><description><![CDATA[ 
  <br>In the early days of computing, software was pretty much locked into specific hardware setups. Then came operating systems, providing a layer of abstraction over the hardware. However, that still didn’t quite cut it. Businesses wanted to write their apps once and have them work on all sorts of platforms. This demand gave birth to higher-level languages that brought along their own runtimes, making it possible for software to run seamlessly on different operating systems.<br>Today, many organizations manage a multitude of programming languages for distinct tasks. While several runtimes, such as .NET’s Common Language Runtime (“CLR”) and Oracle’s Java Virtual Machine (“JVM”), support multiple languages, they still operate within isolated ecosystems. Each ecosystem has its package managers and libraries, often leading to unnecessary code duplication and duplicated efforts.<br>WebAssembly (Wasm) to the rescue! Wasm allows developers to create applications and libraries in their language of choice, meaning you can build a library in one language and smoothly integrate it with others.<br>Microsoft has long recognized Wasm’s potential and has heavily invested in <a data-tooltip-position="top" aria-label="https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor" rel="noopener" class="external-link" href="https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor" target="_blank">Blazor</a>. Blazor runs .NET code in the browser. This way, C# and F# programmers can reuse their existing skills to write interactive apps for the web. In .NET 8, Microsoft is adding experimental support for WASI too. Which means .NET apps compiled to Wasm can now run on the server, computers, and mobile phones!<br>That’s where Extism steps in. Languages have varying levels of support for running and compiling to Wasm, and capabilities may change depending on what runtime is being used. Extism ensures that your plugins will run consistently across languages and platforms. We’ve <a data-tooltip-position="top" aria-label="https://dylibso.com/blog/why-extism/" rel="noopener" class="external-link" href="https://dylibso.com/blog/why-extism/" target="_blank">previously talked about the added value of Extism</a>, but in a nutshell, Extism offers a set of unified and user-friendly Plugin Development Kits (PDKs) and Software Development Kits (SDKs) that make it easy for you to develop and run plugins in your preferred programming language.<br><br>Extism makes it all the more convenient to build Wasm plugins. For example, consider this scenario: you have a messaging bot platform, and you want to empower your users to create their own bots. Typically, messaging platforms provide webhooks that users can use to write bots. But we want to invert the situation: we run the users code on our own infrastructure! Here’s a glimpse of how it could look when you use the <a data-tooltip-position="top" aria-label="https://github.com/extism/dotnet-pdk" rel="noopener" class="external-link" href="https://github.com/extism/dotnet-pdk" target="_blank">.NET Extism PDK</a>:<br>  static class Plugin
 {
     [UnmanagedCallersOnly(EntryPoint = "bot_name")]
@@ -7394,7 +8183,7 @@ member this.Worst = this.Solutions.[this.Size - 1]
  
 let evaluate (f:Objective) (x:Point) = f x, x
 let valueOf (s:Solution) = fst s
-Copy<br>A Solution is a tuple, a pair associating a Point and the value of the function at that point. The function we are trying to minimize, the Objective, takes in a point, and returns a float. We can then define an Amoeba as an array of Solutions, which is assumed to be sorted. Nothing guarantees that the Solutions are ordered, which bugged me for a while; I was tempted to make that type private or internal, but this would have caused some extra hassle for testing, so I decided not to bother with it. I added a few convenience methods on the Amoeba, to directly extract the Best and Worst solutions, and two utility functions, evaluate, which associates a Point with its value, and its counter-part, valueOf, which extracts the value part of a Solution.<br>The rest of the code is really mechanics; I followed the algorithm notation from the Wikipedia page, rather than the MSDN article, because it was actually a bit easier to transcribe, built the search as a recursion (of course), which iteratively transforms an Amoeba for a given number of iterations. For good measure, I introduced another type, Domain, describing where the Amoeba should begin searching, and voila! We are done. In 91 lines of F#, we got a full implementation.<br><br>What I find nice about the algorithm is its relative simplicity. One nice benefit is that it doesn’t require a derivative. Quite often, search algorithms use a gradient to evaluate the slope and decide what direction to explore. The drawback is that first, computing gradients is not always fun, and second, there might not even be a properly defined gradient in the first place. By contrast, the Amoeba doesn’t require anything – just give it a function, and let it probe. In some respects, the algorithm looks to me like a very simple genetic algorithm, maintaining a population of solutions, breeding new ones and letting a form of natural selection operate.<br>Of course, the price to pay for this simplicity is that it is a heuristic, that is, there is no guarantee that the algorithm will find a good solution. From my limited experimentations with it, even in simple cases, failures were not that unusual. If I get time for this, I think it would be fun to try launching multiple searches, and stopping when, say, the algorithm has found the same Best solution a given number of times.<br>Also, note that in this implementation, 2 cases are not covered: the case where the function is not defined everywhere (some Points might throw an exception), and the case where the function doesn’t have a minimum. I will let the enterprising reader think about how that could be handled!]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/amoeba-optimization-method-using-fsharp.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Amoeba optimization method using FSharp.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:31 GMT</pubDate><enclosure url="https://mathias-brandewinder.github.io//assets/amoeba.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://mathias-brandewinder.github.io//assets/amoeba.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Baby steps with CNTK and FSharp]]></title><description><![CDATA[ 
+Copy<br>A Solution is a tuple, a pair associating a Point and the value of the function at that point. The function we are trying to minimize, the Objective, takes in a point, and returns a float. We can then define an Amoeba as an array of Solutions, which is assumed to be sorted. Nothing guarantees that the Solutions are ordered, which bugged me for a while; I was tempted to make that type private or internal, but this would have caused some extra hassle for testing, so I decided not to bother with it. I added a few convenience methods on the Amoeba, to directly extract the Best and Worst solutions, and two utility functions, evaluate, which associates a Point with its value, and its counter-part, valueOf, which extracts the value part of a Solution.<br>The rest of the code is really mechanics; I followed the algorithm notation from the Wikipedia page, rather than the MSDN article, because it was actually a bit easier to transcribe, built the search as a recursion (of course), which iteratively transforms an Amoeba for a given number of iterations. For good measure, I introduced another type, Domain, describing where the Amoeba should begin searching, and voila! We are done. In 91 lines of F#, we got a full implementation.<br><br>What I find nice about the algorithm is its relative simplicity. One nice benefit is that it doesn’t require a derivative. Quite often, search algorithms use a gradient to evaluate the slope and decide what direction to explore. The drawback is that first, computing gradients is not always fun, and second, there might not even be a properly defined gradient in the first place. By contrast, the Amoeba doesn’t require anything – just give it a function, and let it probe. In some respects, the algorithm looks to me like a very simple genetic algorithm, maintaining a population of solutions, breeding new ones and letting a form of natural selection operate.<br>Of course, the price to pay for this simplicity is that it is a heuristic, that is, there is no guarantee that the algorithm will find a good solution. From my limited experimentations with it, even in simple cases, failures were not that unusual. If I get time for this, I think it would be fun to try launching multiple searches, and stopping when, say, the algorithm has found the same Best solution a given number of times.<br>Also, note that in this implementation, 2 cases are not covered: the case where the function is not defined everywhere (some Points might throw an exception), and the case where the function doesn’t have a minimum. I will let the enterprising reader think about how that could be handled!]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/amoeba-optimization-method-using-fsharp.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Amoeba optimization method using FSharp.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:31 GMT</pubDate><enclosure url="https://mathias-brandewinder.github.io//assets/amoeba.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://mathias-brandewinder.github.io//assets/amoeba.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Baby steps with CNTK and FSharp]]></title><description><![CDATA[ 
  <br>So what have I been up to lately? Obsessing over <a data-tooltip-position="top" aria-label="https://www.microsoft.com/en-us/cognitive-toolkit/" rel="noopener" class="external-link" href="https://www.microsoft.com/en-us/cognitive-toolkit/" target="_blank">CNTK, the Microsoft deep-learning library</a>. Specifically, the team released a <a data-tooltip-position="top" aria-label="https://docs.microsoft.com/en-us/cognitive-toolkit/cntk-library-managed-api" rel="noopener" class="external-link" href="https://docs.microsoft.com/en-us/cognitive-toolkit/cntk-library-managed-api" target="_blank">.NET API</a>, which got me interested in exploring how usable this would be from the F# scripting environment. I started a <a data-tooltip-position="top" aria-label="https://github.com/mathias-brandewinder/CNTK.FSharp" rel="noopener" class="external-link" href="https://github.com/mathias-brandewinder/CNTK.FSharp" target="_blank">repository to try out some ideas already</a>, but, before diving into that in later posts, I figure I could start by a simple introduction, to set some context.<br>First, what problem does CNTK solve?<br>Imagine that you are interested in predicting something, and that you have data available, both inputs you can observe (the features), and the values you are trying to predict (the labels). Imagine now that you have an idea of the type of relationship between the input and the output, something along the lines of:<br>labels ≈ function(features, parameters).<br>To make this more concrete, that function could be quite complex, and involve multiple layers of input transformation into the final output (“deep learning”), or it could be quite simple, for instance a traditional linear regression, something along the lines of:<br>car price ≈ car years * coefficient1 + car engine size * coefficient2 + constant.<br>In this particular case, we have 2 features (car years and car engine size), 1 label (car price), and 3 parameters (coefficient1, coefficient2 and constant) - and we would like to find “good” values for the 3 parameters so that the predicted value is in general close to the correct value.<br>The purpose of CNTK is to:<br>
 <br>let you specify a function connecting input and output,
 <br>let you specify how to read example data to learn from,
@@ -7773,7 +8562,7 @@ Copy<br>The nice thing here is that at that point, all it takes to create and tr
 ]
 
 let fullTree = learnTree (evenSplitter 5,sumOfSquaresCost) redSample features 10
-Copy<br>The results are pretty decent, too:<br><img alt="Actual vs Predicted" src="https://mathias-brandewinder.github.io//assets/2016-08-14-actual-vs-predicted.PNG" referrerpolicy="no-referrer"><br>Out of curiosity, I also performed a crude training vs. testing analysis, to get a feel for potential over-fitting issues.<br><img alt="Over Fitting" src="https://mathias-brandewinder.github.io//assets/2016-08-14-overfitting.PNG" referrerpolicy="no-referrer"><br>The result we observe is typical of trees: as we increase depth, the error on the training sample steadily decreases, indicating that deeper tree fit the data better and better. However, the testing sample tells a different story: for a little while, error on the training and testing samples match fairly closely, but after we reach a certain depth (here, 3), they start diverging. While our tree fit the training sample better and better, that improvement doesn’t generalize to other samples, as we can see on the testing sample; at that point, we are over-fitting. In our particular case, this means that we shouldn’t put much trust in trees deeper than 3.<br><br>At that point, we have a working regression tree algorithm. It’s not perfect; in particular, we largely ignored any performance consideration. Or, stated more bluntly, performance is terrible ;) Still, the result has a couple nice features, the code is fairly simple, and… it works!<br>Trees are quite an interesting topic, which we only covered very superficially here. Still, we will leave it at that for now, and focus back on our initial goal, gradient boosting. All we needed was something a bit better than stumps to iteratively fit residuals. We have that now, with regression tree that allow us to learn a predictor using every feature we have available. In our next installments, we will look at replacing stumps with trees, and see where that leads us.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/basic-regression-tree.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Basic Regression Tree.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:34 GMT</pubDate><enclosure url="https://mathias-brandewinder.github.io//assets/2016-08-14-stump.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://mathias-brandewinder.github.io//assets/2016-08-14-stump.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Elmish.Snabbdom]]></title><description><![CDATA[ 
+Copy<br>The results are pretty decent, too:<br><img alt="Actual vs Predicted" src="https://mathias-brandewinder.github.io//assets/2016-08-14-actual-vs-predicted.PNG" referrerpolicy="no-referrer"><br>Out of curiosity, I also performed a crude training vs. testing analysis, to get a feel for potential over-fitting issues.<br><img alt="Over Fitting" src="https://mathias-brandewinder.github.io//assets/2016-08-14-overfitting.PNG" referrerpolicy="no-referrer"><br>The result we observe is typical of trees: as we increase depth, the error on the training sample steadily decreases, indicating that deeper tree fit the data better and better. However, the testing sample tells a different story: for a little while, error on the training and testing samples match fairly closely, but after we reach a certain depth (here, 3), they start diverging. While our tree fit the training sample better and better, that improvement doesn’t generalize to other samples, as we can see on the testing sample; at that point, we are over-fitting. In our particular case, this means that we shouldn’t put much trust in trees deeper than 3.<br><br>At that point, we have a working regression tree algorithm. It’s not perfect; in particular, we largely ignored any performance consideration. Or, stated more bluntly, performance is terrible ;) Still, the result has a couple nice features, the code is fairly simple, and… it works!<br>Trees are quite an interesting topic, which we only covered very superficially here. Still, we will leave it at that for now, and focus back on our initial goal, gradient boosting. All we needed was something a bit better than stumps to iteratively fit residuals. We have that now, with regression tree that allow us to learn a predictor using every feature we have available. In our next installments, we will look at replacing stumps with trees, and see where that leads us.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/basic-regression-tree.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Basic Regression Tree.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:34 GMT</pubDate><enclosure url="https://mathias-brandewinder.github.io//assets/2016-08-14-stump.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://mathias-brandewinder.github.io//assets/2016-08-14-stump.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Elmish.Snabbdom]]></title><description><![CDATA[ 
  <br>I've been recently playing with <a data-tooltip-position="top" aria-label="https://github.com/alfonsogarciacaro/Feliz.Engine/tree/main/samples/Feliz.Snabbdom" rel="noopener" class="external-link" href="https://github.com/alfonsogarciacaro/Feliz.Engine/tree/main/samples/Feliz.Snabbdom" target="_blank">Feliz.Engine</a>, an attempt to take advantage of the great work done by Zaid Ajaj and contributors with <a data-tooltip-position="top" aria-label="https://zaid-ajaj.github.io/Feliz/" rel="noopener" class="external-link" href="https://zaid-ajaj.github.io/Feliz/" target="_blank">Feliz</a> when writing non-React applications. As part of this I wanted to check how easy was to adapt Feliz.Engine to an alternative Virtual-DOM implementation, and I read good things about <a data-tooltip-position="top" aria-label="https://github.com/snabbdom/snabbdom" rel="noopener" class="external-link" href="https://github.com/snabbdom/snabbdom" target="_blank">Snabbdom</a> so I gave it a go. This started just as an experiment but I've been pleasantly surprised by how simple yet powerful Snabbdom is, and more importantly, how well it fits with the <a data-tooltip-position="top" aria-label="https://elmish.github.io/" rel="noopener" class="external-link" href="https://elmish.github.io/" target="_blank">Elmish architecture</a>, so I want to share with you my findings hoping that you find them useful.<br>
 我最近一直在玩 Feliz.Engine，试图利用 Zaid Ajaj 和 Feliz 贡献者在编写非 React 应用程序时所做的出色工作。作为其中的一部分，我想检查将 Feliz.Engine 适应替代 Virtual-DOM 实现有多容易，并且我阅读了有关 Snabbdom 的好文章，所以我尝试了一下。一开始只是一个实验，但我对 Snabbdom 的简单而强大感到惊喜，更重要的是，它与 Elmish 架构的契合程度，所以我想与您分享我的发现，希望您发现它们有用。<br>There was recently a discussion in Twitter about the <a data-tooltip-position="top" aria-label="https://twitter.com/7sharp9_/status/1365270255170428928" rel="noopener" class="external-link" href="https://twitter.com/7sharp9_/status/1365270255170428928" target="_blank">problems with Fable Elmish</a>. So far, Elmish in Fable apps has always used React as the view engine, including React native for mobile (there are also Elmish implementations for non-Fable platforms like <a data-tooltip-position="top" aria-label="https://github.com/elmish/Elmish.WPF" rel="noopener" class="external-link" href="https://github.com/elmish/Elmish.WPF" target="_blank">WPF</a>, <a data-tooltip-position="top" aria-label="https://fsprojects.github.io/Fabulous/" rel="noopener" class="external-link" href="https://fsprojects.github.io/Fabulous/" target="_blank">Xamarin</a> or <a data-tooltip-position="top" aria-label="https://fsbolero.io/docs/Elmish" rel="noopener" class="external-link" href="https://fsbolero.io/docs/Elmish" target="_blank">Blazor</a>), and there's been always friction between the concept of "component" in Elmish and React. This is a bit of technical discussion and I won't go into detail here, among other reasons because I've never managed to explain the difference in an understandable manner. Probably the easiest is to consider Elm/Elmish don't really have a notion of "component" as Dave Thomas explains. It's true the Fable Elmish community tends to "componentize" apps maybe under the influence of React, which sometimes leads to an excess of boilerplate to wire everything.<br>
 最近 Twitter 上有一场关于《Fable Elmish》问题的讨论。到目前为止，《Fable》应用中的 Elmish 一直使用 React 作为视图引擎，包括适用于移动设备的 React Native（也有针对 WPF、Xamarin 或 Blazor 等非 Fable 平台的 Elmish 实现），并且“ Elmish 和 React 中的组件”。这是一些技术讨论，我不会在这里详细介绍，除其他原因外，因为我从未设法以可理解的方式解释其中的差异。也许最简单的方法是考虑 Elm/Elmish 并没有真正的“组件”概念，正如 Dave Thomas 所解释的那样。确实，Fable Elmish 社区可能在 React 的影响下倾向于“组件化”应用程序，这有时会导致过多的样板文件来连接所有内容。<br>It's possible to write an Elmish/React app with just a single view function, and some apps work well that way. But to take advantage of most of React features, like devtools, memoization or life-cycle events, you do need components, as React understands them. This is why some, myself guilty as charged, have been trying to drive towards more use of React components with Elmish. An important move for this has been the <a data-tooltip-position="top" aria-label="https://zaid-ajaj.github.io/Feliz/#/Hooks/UseElmish" rel="noopener" class="external-link" href="https://zaid-ajaj.github.io/Feliz/#/Hooks/UseElmish" target="_blank"><code></code> React hook</a>useElmish which many Fable devs have successfully adopted. But at this point Elmish gets reduced to manage the internal state of your components and your app gets eventually architected the React-way. This is not a bad thing if you already know React, but this post is about "rediscovering" the power of Elmish as I've been experiencing recently.<br>
@@ -7858,7 +8647,7 @@ Did you notice BodyEv.onMouseDown? This is another nice use-case of <a data-tool
 你注意到 BodyEv.onMouseDown 了吗？这是 Feliz.Engine 抽象类的另一个很好的用例，它通过返回一次性对象来实现 EventEngine 。
 <br>So Snabbdom is great, now what? Does this mean you need to ditch React for Fable apps? Of course not! React is still a great choice, with many useful tools and a gigantic ecosystem. It's true there are frictions with Elmish but thanks to the work of Zaid, Maxime Mangel and many others, together with the ReactComponent plugin in Fable 3 they've become more bearable. So if you already know React quirks and/or rely on some of its tools and libraries you can be sure will still be well supported by Fable. Just if you're mainly interested in Elmish and don't really care for the underlying renderer you may want to give Elmish.Snabbdom a try if you're looking for less complexity. Clone the repo and try out <a data-tooltip-position="top" aria-label="https://github.com/alfonsogarciacaro/Feliz.Engine/tree/main/samples/Feliz.Snabbdom" rel="noopener" class="external-link" href="https://github.com/alfonsogarciacaro/Feliz.Engine/tree/main/samples/Feliz.Snabbdom" target="_blank">this sample</a> to see how Elmish.Snabbdom can work for you.<br>
 所以 Snabbdom 很棒，现在怎么办？这是否意味着您需要放弃 React 而使用 Fable 应用程序？当然不是！ React 仍然是一个不错的选择，拥有许多有用的工具和庞大的生态系统。确实与 Elmish 存在摩擦，但由于 Zaid、Maxime Mangel 和许多其他人的工作，再加上《神鬼寓言 3》中的 ReactComponent 插件，这些摩擦已经变得更容易忍受。因此，如果您已经了解 React 的怪癖和/或依赖它的一些工具和库，您可以肯定 Fable 仍然会提供良好的支持。如果您主要对 Elmish 感兴趣并且并不真正关心底层渲染器，如果您正在寻找较低的复杂性，您可能想尝试一下 Elmish.Snabbdom。克隆存储库并尝试此示例，看看 Elmish.Snabbdom 如何为您工作。<br>And! If you are really into a purer Fable/F# experience and want more control of the DOM, take also a look at the awesome work of David Dawkins with <a data-tooltip-position="top" aria-label="https://davedawkins.github.io/Sutil" rel="noopener" class="external-link" href="https://davedawkins.github.io/Sutil" target="_blank">Sutil</a>!<br>
-和！如果您确实喜欢更纯粹的 Fable/F# 体验并希望更多地控制 DOM，还可以看看 David Dawkins 与 Sutil 的精彩作品！]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/elmish.snabbdom.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Elmish.Snabbdom.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:36 GMT</pubDate><enclosure url="https://fable.io/blog/2021/2021-03-02-Announcing-Elmish-Snabbdom.html#its-just-functions" length="0" type="false"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://fable.io/blog/2021/2021-03-02-Announcing-Elmish-Snabbdom.html#its-just-functions&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[FSharp Native AOT 的 JSON 库问题]]></title><description><![CDATA[ 
+和！如果您确实喜欢更纯粹的 Fable/F# 体验并希望更多地控制 DOM，还可以看看 David Dawkins 与 Sutil 的精彩作品！]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/elmish.snabbdom.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Elmish.Snabbdom.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:36 GMT</pubDate><enclosure url="https://fable.io/blog/2021/2021-03-02-Announcing-Elmish-Snabbdom.html#its-just-functions" length="0" type="false"/><content:encoded>&lt;figure&gt;&lt;img src="https://fable.io/blog/2021/2021-03-02-Announcing-Elmish-Snabbdom.html#its-just-functions"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[FSharp Native AOT 的 JSON 库问题]]></title><description><![CDATA[ 
  <br>
 <br>FSharp.SystemTextJson 不行
 <br>FSharp.Json 不行
@@ -8024,7 +8813,7 @@ Copy<br>📌<br>This pseudocode illustrates F Sharp's use in astronomy, where ha
 let historicalData = // Load and process historical weather data
 Copy<br>🚩<br>**Parallel Processing**: For efficient handling of computationally intensive tasks like weather pattern simulation.<br>let simulateWeatherPattern data = 
     data |&gt; Array.Parallel.map analyzeWeatherData
-Copy<br>😎<br>**Results:**  <br>The implementation of F Sharp led to remarkable improvements:  <br>**Increased Accuracy**: Enhanced data processing capabilities led to a 25% increase in the accuracy of weather predictions.  <br>**Reduced Processing Time**: Parallel processing decreased data analysis times by 40%, enabling faster weather forecasting.  <br>**Scalability**: The new system could scale effectively, handling larger datasets without a significant impact on performance.<br><br><br>**F Sharp** is used for a range of tasks in scientific computing, including data analysis, algorithm development, simulation, and predictive modeling. Its strong typing, functional programming features, and .NET ecosystem support make it well-suited for these applications.<br><br>**F Sharp** efficiently handles large datasets through its immutable data structures, lazy evaluation, and parallel processing capabilities. These features allow for effective management and manipulation of large volumes of data.<br><br>Yes, F Sharp can be effectively used for **machine learning and data science**. It can integrate with .NET libraries like ML.NET, and its concise syntax is suitable for data manipulation and statistical analysis.<br><br>F Sharp is highly **compatible** with other programming languages, especially those in the .NET ecosystem like C# and VB.NET. It can also interoperate with Python and other languages via libraries or APIs.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/fsharp-programming-scientific-models-a-step-by-step-approach.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/FSharp Programming Scientific Models - A Step-By-Step Approach.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:28 GMT</pubDate><enclosure url="https://showme.redstarplugin.com/d/d:lgQImyCk" length="0" type="false"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://showme.redstarplugin.com/d/d:lgQImyCk&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[FSharp Suave 跨域配置]]></title><description><![CDATA[ 
+Copy<br>😎<br>**Results:**  <br>The implementation of F Sharp led to remarkable improvements:  <br>**Increased Accuracy**: Enhanced data processing capabilities led to a 25% increase in the accuracy of weather predictions.  <br>**Reduced Processing Time**: Parallel processing decreased data analysis times by 40%, enabling faster weather forecasting.  <br>**Scalability**: The new system could scale effectively, handling larger datasets without a significant impact on performance.<br><br><br>**F Sharp** is used for a range of tasks in scientific computing, including data analysis, algorithm development, simulation, and predictive modeling. Its strong typing, functional programming features, and .NET ecosystem support make it well-suited for these applications.<br><br>**F Sharp** efficiently handles large datasets through its immutable data structures, lazy evaluation, and parallel processing capabilities. These features allow for effective management and manipulation of large volumes of data.<br><br>Yes, F Sharp can be effectively used for **machine learning and data science**. It can integrate with .NET libraries like ML.NET, and its concise syntax is suitable for data manipulation and statistical analysis.<br><br>F Sharp is highly **compatible** with other programming languages, especially those in the .NET ecosystem like C# and VB.NET. It can also interoperate with Python and other languages via libraries or APIs.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/fsharp-programming-scientific-models-a-step-by-step-approach.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/FSharp Programming Scientific Models - A Step-By-Step Approach.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:28 GMT</pubDate><enclosure url="https://showme.redstarplugin.com/d/d:lgQImyCk" length="0" type="false"/><content:encoded>&lt;figure&gt;&lt;img src="https://showme.redstarplugin.com/d/d:lgQImyCk"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[FSharp Suave 跨域配置]]></title><description><![CDATA[ 
  <br>
 <br><a data-tooltip-position="top" aria-label="https://www.fssnip.net/mL/title/CORS-response-with-Suave" rel="noopener" class="external-link" href="https://www.fssnip.net/mL/title/CORS-response-with-Suave" target="_blank">CORS response with Suave</a>
 <br><a data-tooltip-position="top" aria-label="https://stackoverflow.com/questions/44359375/allow-multiple-headers-with-cors-in-suave" rel="noopener" class="external-link" href="https://stackoverflow.com/questions/44359375/allow-multiple-headers-with-cors-in-suave" target="_blank">Allow multiple headers with CORS in Suave</a>
@@ -8227,7 +9016,7 @@ Copy<br>… which produces the following graphic:<br><img alt="Pythagoras tree" 
   |&gt; toTurtle T
   |&gt; toSvg
   |&gt; save
-Copy<br>… which results in the following picture:<br><img alt="Sierpinski triangle" src="https://mathias-brandewinder.github.io//assets/sierpinski-triangle.png" referrerpolicy="no-referrer"><br>That’s it for tonight! I had a lot of fun coding this (it certainly made the flight less boring), and found the idea of converting code to turtle instructions, with a stack, pretty interesting. Hope you enjoyed it, and if you end up playing with this, share your creations on Twitter and ping me!]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/fun-with-l-systems.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Fun with L-Systems.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:35 GMT</pubDate><enclosure url="https://mathias-brandewinder.github.io//assets/pythagoras-tree.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://mathias-brandewinder.github.io//assets/pythagoras-tree.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Functional Reactive Programming]]></title><description><![CDATA[ 
+Copy<br>… which results in the following picture:<br><img alt="Sierpinski triangle" src="https://mathias-brandewinder.github.io//assets/sierpinski-triangle.png" referrerpolicy="no-referrer"><br>That’s it for tonight! I had a lot of fun coding this (it certainly made the flight less boring), and found the idea of converting code to turtle instructions, with a stack, pretty interesting. Hope you enjoyed it, and if you end up playing with this, share your creations on Twitter and ping me!]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/fun-with-l-systems.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Fun with L-Systems.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:35 GMT</pubDate><enclosure url="https://mathias-brandewinder.github.io//assets/pythagoras-tree.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://mathias-brandewinder.github.io//assets/pythagoras-tree.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Functional Reactive Programming]]></title><description><![CDATA[ 
  <br>Events are everywhere. Almost every program has to handle events, whether it be button clicks in the user interface, listening to sockets in a server, or even a system shutdown notification.<br>And events are the basis of one of the most common OO design patterns: the “Observer” pattern.<br>But as we know, event handling, like concurrency in general, can be tricky to implement. Simple event logic is straightforward, but what about logic like “do something if two events happen in a row but do something different if only one event happens” or “do something if two events happen at roughly the same time”. And how easy is it to combine these requirements in other, more complex ways?<br>Even if you can successfully implement these requirements, the code tends to be spaghetti like and hard to understand, even with the best intentions.<br>Is there an approach that can make event handling easier?<br>We saw in the previous post on message queues that one of the advantages of that approach was that the requests were “serialized” making it conceptually easier to deal with.<br>There is a similar approach that can be used with events. The idea is to turn a series of events into an “event stream”. Event streams then become quite like IEnumerables, and so the obvious next step is to treat them in much the the same way that LINQ handles collections, so that they can be filtered, mapped, split and combined.<br>F# has built in support for this model, as well as for the more traditional approach.<br><br>Let’s start with a simple example to compare the two approaches. We’ll implement the classic event handler approach first.<br>First, we define a utility function that will:<br>
 <br>create a timer
 <br>register a handler for the Elapsed event
@@ -9501,7 +10290,7 @@ elm 文档中的“Elm 架构”
 <br><a data-tooltip-position="top" aria-label="https://github.com/ccorcos/elmish" rel="noopener" class="external-link" href="https://github.com/ccorcos/elmish" target="_blank">Elmish for vanilla JavaScript
 用于原生 JavaScript 的 Elmish</a><br>
 <br>Fable compiler <a data-tooltip-position="top" aria-label="http://fable.io/" rel="noopener" class="external-link" href="http://fable.io/" target="_blank">docs</a>&nbsp;Fable 编译器文档
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/ui-programming-with-elmish-in-fsharp.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/UI programming with Elmish in FSharp.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:32 GMT</pubDate><enclosure url="https://www.compositional-it.com/wp-content/uploads/2019/09/elmish-1.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://www.compositional-it.com/wp-content/uploads/2019/09/elmish-1.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Unlocking FSharp Potential -- Tips, Tricks, and Tactics]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/ui-programming-with-elmish-in-fsharp.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/UI programming with Elmish in FSharp.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:32 GMT</pubDate><enclosure url="https://www.compositional-it.com/wp-content/uploads/2019/09/elmish-1.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://www.compositional-it.com/wp-content/uploads/2019/09/elmish-1.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Unlocking FSharp Potential -- Tips, Tricks, and Tactics]]></title><description><![CDATA[ 
  <br><a rel="noopener" class="external-link" href="https://www.youtube.com/watch?v=8aBmGUNFBQI" target="_blank">https://www.youtube.com/watch?v=8aBmGUNFBQI</a><br><a data-tooltip-position="top" aria-label="https://www.youtube.com/watch?v=8aBmGUNFBQI#t=28.795104190734865" rel="noopener" class="external-link" href="https://www.youtube.com/watch?v=8aBmGUNFBQI#t=28.795104190734865" target="_blank">00:28</a>]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/unlocking-fsharp-potential-tips,-tricks,-and-tactics.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Unlocking FSharp Potential -- Tips, Tricks, and Tactics.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:29 GMT</pubDate></item><item><title><![CDATA[Writing high performance Fsharp code]]></title><description><![CDATA[ 
  <br>While this post is addressed to F# .NET developers, it introduces much wider concepts starting from hardware architecture to overall .NET runtime and JIT compiler optimizations. It shouldn't be a surprise - optimizing the application performance requires us to understand the relationships between our high level code and what actually happens on the hardware.<br>There's a popular opinion that F# code must be slower than equivalent C# code. This opinion is mostly false, however it comes with some rationale. Usually comparison doesn't use equivalent code in both languages, and F# is generally more high level and declarative in nature. "Idiomatic" F# code doesn't always play well with .NET virtual machine. Writing code that is high level, declarative and fast on .NET platform is not an easy task.<br>In the examples below we'll use some common tools that will help us get better insight into nature of F# code:<br>
 <br><a data-tooltip-position="top" aria-label="https://sharplab.io/?ref=bartoszsypytkowski.com" rel="noopener" class="external-link" href="https://sharplab.io/?ref=bartoszsypytkowski.com" target="_blank">Sharplab</a> allows us to easily inspect generated JIT intermediate representation, assembly or even equivalent C# code (which sometimes is approximate, since not all IL idioms are representable in C#) for a given F# snippet. For assembly code usually some extra mangling with params may be necessary for code to be generated as SharpLab sometimes cannot introspect F# core lib code.
@@ -9821,7 +10610,7 @@ val value = "world"
 
 // benchmarked function body
 a |&gt; Atomic.update (fun _ -&gt; value)
-Copy<br>You'd discover that this call allocates - It's a result of passing a function argument (in .NET these are realized as objects), that captures value field. Now, we could try to mark Atomic.update function using [&lt;MethodImpl&gt;] attribute or use inline keyword. If we'd try to benchmark these however, the results would be slightly different:<br><br>You may notice, that using attribute might slightly improve speed, but didn't change anything in terms of allocations around capturing lambda parameter. However using F# inline keyword indeed helped here: a lambda argument has been erased, as its behavior was aggressively printed together with inlined function body.<br><br>It's been a long post, but we just touched a tip of an iceberg here. We're didn't really mention optimizations in the area of I/O operations, different flavors of async code execution or <a data-tooltip-position="top" aria-label="https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.unsafe?view=net-5.0&amp;ref=bartoszsypytkowski.com" rel="noopener" class="external-link" href="https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.unsafe?view=net-5.0&amp;ref=bartoszsypytkowski.com" target="_blank">dropping .NET safety belt</a> in cases when we wish to omit safe checks even when .NET compiler alone could not. There are also many tricky situations in which one small, seemingly insignificant change in code can throw .NET runtime into pit of deoptimized code. If you're curious about these, you can follow <a data-tooltip-position="top" aria-label="https://twitter.com/badamczewski01?ref=bartoszsypytkowski.com" rel="noopener" class="external-link" href="https://twitter.com/badamczewski01?ref=bartoszsypytkowski.com" target="_blank">Bartosz Adamczewski</a> on twitter.<br>Ultimately, while many of these tips and behaviors may stay with us for years to come, remember that compilers are still actively developed and just like some of these optimizations are not applied on older runtimes like .NET Full Framework, new ones (like smarter escape analysis, new devirtualization rules etc.) may turn some of the warnings presented here obsolete and shift the optimization techniques to enable us writing code that's both fast and high-level.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/writing-high-performance-fsharp-code.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Writing high performance Fsharp code.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sat, 11 May 2024 13:31:40 GMT</pubDate><enclosure url="https://www.bartoszsypytkowski.com/content/images/2021/02/class-vs-struct-layout.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://www.bartoszsypytkowski.com/content/images/2021/02/class-vs-struct-layout.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[OCaml News 2023 - 3]]></title><description><![CDATA[ 
+Copy<br>You'd discover that this call allocates - It's a result of passing a function argument (in .NET these are realized as objects), that captures value field. Now, we could try to mark Atomic.update function using [&lt;MethodImpl&gt;] attribute or use inline keyword. If we'd try to benchmark these however, the results would be slightly different:<br><br>You may notice, that using attribute might slightly improve speed, but didn't change anything in terms of allocations around capturing lambda parameter. However using F# inline keyword indeed helped here: a lambda argument has been erased, as its behavior was aggressively printed together with inlined function body.<br><br>It's been a long post, but we just touched a tip of an iceberg here. We're didn't really mention optimizations in the area of I/O operations, different flavors of async code execution or <a data-tooltip-position="top" aria-label="https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.unsafe?view=net-5.0&amp;ref=bartoszsypytkowski.com" rel="noopener" class="external-link" href="https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.unsafe?view=net-5.0&amp;ref=bartoszsypytkowski.com" target="_blank">dropping .NET safety belt</a> in cases when we wish to omit safe checks even when .NET compiler alone could not. There are also many tricky situations in which one small, seemingly insignificant change in code can throw .NET runtime into pit of deoptimized code. If you're curious about these, you can follow <a data-tooltip-position="top" aria-label="https://twitter.com/badamczewski01?ref=bartoszsypytkowski.com" rel="noopener" class="external-link" href="https://twitter.com/badamczewski01?ref=bartoszsypytkowski.com" target="_blank">Bartosz Adamczewski</a> on twitter.<br>Ultimately, while many of these tips and behaviors may stay with us for years to come, remember that compilers are still actively developed and just like some of these optimizations are not applied on older runtimes like .NET Full Framework, new ones (like smarter escape analysis, new devirtualization rules etc.) may turn some of the warnings presented here obsolete and shift the optimization techniques to enable us writing code that's both fast and high-level.]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/fsharp/writing-high-performance-fsharp-code.html</link><guid isPermaLink="false">Computer Science/Programming Language/FSharp/Writing high performance Fsharp code.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sat, 11 May 2024 13:31:40 GMT</pubDate><enclosure url="https://www.bartoszsypytkowski.com/content/images/2021/02/class-vs-struct-layout.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://www.bartoszsypytkowski.com/content/images/2021/02/class-vs-struct-layout.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[OCaml News 2023 - 3]]></title><description><![CDATA[ 
  <br>o-新鲜事儿<br>
 <br>
 <a data-tooltip-position="top" aria-label="https://discuss.ocaml.org/t/ocaml-5-1-0-released/13021" rel="noopener" class="external-link" href="https://discuss.ocaml.org/t/ocaml-5-1-0-released/13021" target="_blank">OCaml 5.1.0 released</a><br>
@@ -10453,7 +11242,7 @@ instance IndexableN Text where  -- Monomorphic instance
 Copy<br>As in the OCaml version, we use an Elt type operator to carry the equality needed for the monomorphic case. This time we used type families to specify the relations explicitly, but we could have used multi-parameter type classes for something more akin to the OCaml functor implementation. See the <a data-tooltip-position="top" aria-label="https://hackage.haskell.org/package/mono-traversable" rel="noopener" class="external-link" href="https://hackage.haskell.org/package/mono-traversable" target="_blank">mono-traversable</a> package for more of this sort of trickery in Haskell.<br><br>
 <br>This is the approach taken by Jane Street's <a data-tooltip-position="top" aria-label="https://github.com/janestreet/base" rel="noopener" class="external-link" href="https://github.com/janestreet/base" target="_blank">base</a>, and is very similar to the Haskell notion of building standard libraries from type-class instances.<a data-tooltip-position="top" aria-label="https://www.craigfe.io/posts/generalised-signatures#fnref-1" rel="noopener" class="external-link" href="https://www.craigfe.io/posts/generalised-signatures#fnref-1" target="_blank">↩</a>
 <br>This example uses the (** @inline *) tag to ensure that Odoc doesn't leak that Indexable1' is implemented in terms of IndexableN.<a data-tooltip-position="top" aria-label="https://www.craigfe.io/posts/generalised-signatures#fnref-2" rel="noopener" class="external-link" href="https://www.craigfe.io/posts/generalised-signatures#fnref-2" target="_blank">↩</a>
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/ocaml/generalised-signature.html</link><guid isPermaLink="false">Computer Science/Programming Language/OCaml/Generalised signature.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:34 GMT</pubDate><enclosure url="https://www.craigfe.io/posts/generalised-signatures/dag-indexable.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://www.craigfe.io/posts/generalised-signatures/dag-indexable.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Interfacing OCaml and PostgreSQL with Caqti]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/ocaml/generalised-signature.html</link><guid isPermaLink="false">Computer Science/Programming Language/OCaml/Generalised signature.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:34 GMT</pubDate><enclosure url="https://www.craigfe.io/posts/generalised-signatures/dag-indexable.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://www.craigfe.io/posts/generalised-signatures/dag-indexable.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Interfacing OCaml and PostgreSQL with Caqti]]></title><description><![CDATA[ 
  <br>
 On dealing with dependencies in your Dune-powered OCaml app and interfacing with the most popular DBMS in town.
 <br>This article is part of Hands-on OCaml, a series of articles that I’m working on that is focusing on doing web app development with OCaml.<br>The project we will be building throughout the series is a To-Do List app, which connects to a PostgreSQL database as its datastore. In the previous article, we have covered initializing and bootstrapping our project with Dune; if you haven’t seen it, check out the link below:<br>This tutorial will build upon the foundation we have laid out in the previous article in the series. While you can of course follow along without actually doing the tutorial, it is recommended to give the article a read first to be sure that we have the required knowledge in place.<br>In this second article of Hands-on OCaml series, we will explore how to manage dependencies in OCaml project; in particular, we will bring in and use a third-party library to deal with DB operations.<br><br>Assuming you followed the previous article, you should have both opam and jbuilder installed. Verify their installation as follows:<br>$ opam --version  
@@ -10532,7 +11321,7 @@ Copy<br>Above is a truncated view of what the TSan report, warning of a data rac
 <br><a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/saturn" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/saturn" target="_blank">Saturn (formerly known as Lockfree):</a> TSan <a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/saturn/issues/39" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/saturn/issues/39" target="_blank">found a benign data race</a>, as well as a data race occuring from the use of <a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/saturn/pull/40" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/saturn/pull/40" target="_blank">semaphores</a>.
 <br><a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/domainslib" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/domainslib" target="_blank">Domainslib:</a> TSan found benign data races in Chan, not just <a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/domainslib/issues/72" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/domainslib/issues/72" target="_blank">once</a> but <a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/domainslib/pull/103" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/domainslib/pull/103" target="_blank">twice</a>.
 <br><a data-tooltip-position="top" aria-label="https://github.com/ocaml/ocaml" rel="noopener" class="external-link" href="https://github.com/ocaml/ocaml" target="_blank">The OCaml runtime system</a> itself: TSan warned about a <a data-tooltip-position="top" aria-label="https://github.com/ocaml/ocaml/issues/11040" rel="noopener" class="external-link" href="https://github.com/ocaml/ocaml/issues/11040" target="_blank">number of race conditions</a> in the OCaml runtime.
-<br>In addition, TSan has been a great help in transitioning the effects-based I/O library <a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/eio" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/eio" target="_blank">Eio</a> and the distributed database <a data-tooltip-position="top" aria-label="https://github.com/mirage/irmin" rel="noopener" class="external-link" href="https://github.com/mirage/irmin" target="_blank">Irmin</a> to Multicore. It allowed teams to detect potential data races and fix them as required.<br><br><br>We want to hear from you – are you using TSan for your OCaml projects? Please get in touch and let us know about your experience, whether you have encountered any problems, and if you have any suggestions for how it could be improved.<br>You can share your thoughts on the <a data-tooltip-position="top" aria-label="https://discuss.ocaml.org" rel="noopener" class="external-link" href="https://discuss.ocaml.org" target="_blank">OCaml Discuss Forum</a> or contact Tarides directly <a data-tooltip-position="top" aria-label="https://tarides.com/contact/" rel="noopener" class="external-link" href="https://tarides.com/contact/" target="_blank">on our website</a>. Don't forget to check out the <a data-tooltip-position="top" aria-label="https://ocaml.org/docs/multicore-transition" rel="noopener" class="external-link" href="https://ocaml.org/docs/multicore-transition" target="_blank">TSan tutorial</a> as well. Happy hacking!]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/ocaml/off-to-the-races-using-threadsanitizer-in-ocaml.html</link><guid isPermaLink="false">Computer Science/Programming Language/OCaml/Off to the Races Using ThreadSanitizer in OCaml.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:30 GMT</pubDate><enclosure url="https://tarides.com/static/0bf64db362ac972b1285ab93f569b53a/c5bb3/vector-clocks.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://tarides.com/static/0bf64db362ac972b1285ab93f569b53a/c5bb3/vector-clocks.png&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Pitfalls of polymorphic ignore]]></title><description><![CDATA[ 
+<br>In addition, TSan has been a great help in transitioning the effects-based I/O library <a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/eio" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/eio" target="_blank">Eio</a> and the distributed database <a data-tooltip-position="top" aria-label="https://github.com/mirage/irmin" rel="noopener" class="external-link" href="https://github.com/mirage/irmin" target="_blank">Irmin</a> to Multicore. It allowed teams to detect potential data races and fix them as required.<br><br><br>We want to hear from you – are you using TSan for your OCaml projects? Please get in touch and let us know about your experience, whether you have encountered any problems, and if you have any suggestions for how it could be improved.<br>You can share your thoughts on the <a data-tooltip-position="top" aria-label="https://discuss.ocaml.org" rel="noopener" class="external-link" href="https://discuss.ocaml.org" target="_blank">OCaml Discuss Forum</a> or contact Tarides directly <a data-tooltip-position="top" aria-label="https://tarides.com/contact/" rel="noopener" class="external-link" href="https://tarides.com/contact/" target="_blank">on our website</a>. Don't forget to check out the <a data-tooltip-position="top" aria-label="https://ocaml.org/docs/multicore-transition" rel="noopener" class="external-link" href="https://ocaml.org/docs/multicore-transition" target="_blank">TSan tutorial</a> as well. Happy hacking!]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/ocaml/off-to-the-races-using-threadsanitizer-in-ocaml.html</link><guid isPermaLink="false">Computer Science/Programming Language/OCaml/Off to the Races Using ThreadSanitizer in OCaml.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:30 GMT</pubDate><enclosure url="https://tarides.com/static/0bf64db362ac972b1285ab93f569b53a/c5bb3/vector-clocks.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://tarides.com/static/0bf64db362ac972b1285ab93f569b53a/c5bb3/vector-clocks.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Pitfalls of polymorphic ignore]]></title><description><![CDATA[ 
  <br>In OCaml, we can ignore the return value of a side-effecting computation by either naming it _ or using Stdlib.ignore. These are commonly used to test functions:<br>let test_eval =
   (* we only care that [eval] doesn't raise an exception *)
   let _ = eval (`Int 5) in
@@ -11192,7 +11981,7 @@ Copy<br>If you're currently looking at some file foo.ml, tuareg-find-alternate-f
 <br>2020-06-10: changed the recommended name of the interface module type from Foo_intf.Foo to Foo_intf.Intf. In the time since I originally wrote this post, I've come to dislike the duplication of the module name using the Jane Street convention: in practice, Foo is often quite long and subjected to later renaming.
 <br><br>
 <br>via reducing the <a data-tooltip-position="top" aria-label="https://en.wikipedia.org/wiki/Cognitive_dimensions_of_notations" rel="noopener" class="external-link" href="https://en.wikipedia.org/wiki/Cognitive_dimensions_of_notations" target="_blank">repetition viscosity</a> of our notation for types.<a data-tooltip-position="top" aria-label="https://www.craigfe.io/posts/the-intf-trick#fnref-1" rel="noopener" class="external-link" href="https://www.craigfe.io/posts/the-intf-trick#fnref-1" target="_blank">↩</a>
-]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/ocaml/the-_intf-trick.html</link><guid isPermaLink="false">Computer Science/Programming Language/OCaml/The _intf trick.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:36 GMT</pubDate><enclosure url="https://www.craigfe.io/posts/the-intf-trick/two_files.svg" length="0" type="image/svg+xml"/><content:encoded>&lt;figure&gt;&lt;img src=&quot;https://www.craigfe.io/posts/the-intf-trick/two_files.svg&quot;&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Transitioning to Multicore with ThreadSanitizer]]></title><description><![CDATA[ 
+]]></description><link>https://muqiuhan.github.io/wiki/computer-science/programming-language/ocaml/the-_intf-trick.html</link><guid isPermaLink="false">Computer Science/Programming Language/OCaml/The _intf trick.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Sun, 07 Jan 2024 11:14:36 GMT</pubDate><enclosure url="https://www.craigfe.io/posts/the-intf-trick/two_files.svg" length="0" type="image/svg+xml"/><content:encoded>&lt;figure&gt;&lt;img src="https://www.craigfe.io/posts/the-intf-trick/two_files.svg"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Transitioning to Multicore with ThreadSanitizer]]></title><description><![CDATA[ 
  <br>The 5.0 release brought Multicore, Domain-based parallelism to the OCaml language. Parallel Domains performing uncoordinated operations on shared mutable memory locations may however cause data races. Such issues will unfortunately not <a data-tooltip-position="top" aria-label="https://blog.janestreet.com/oxidizing-ocaml-parallelism/" rel="noopener" class="external-link" href="https://blog.janestreet.com/oxidizing-ocaml-parallelism/" target="_blank">(yet)</a> be caught by OCaml's strong type system, meaning they may go unnoticed when introducing parallelism into an existing OCaml code base. In this guide, we will therefore study a step-wise workflow that utilises the <a data-tooltip-position="top" aria-label="https://github.com/ocaml-multicore/ocaml-tsan" rel="noopener" class="external-link" href="https://github.com/ocaml-multicore/ocaml-tsan" target="_blank">ThreadSanitizer (TSan)</a> tool to help make your OCaml code 5.x ready.<br>Note: TSan is currently only supported under Linux with AMD/Intel cpus. It furthermore requires at least GCC 11 or Clang 11 and the libunwind library.<br><br>Consider a little bank library with the following signature in bank.mli:<br>type t
 (** a collective type representing a bank *)
 
