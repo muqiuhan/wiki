@@ -1,4 +1,115 @@
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[韩暮秋的个人维基]]></title><description><![CDATA[Obsidian digital garden]]></description><link>https://muqiuhan.github.io/wiki/</link><image><url>https://muqiuhan.github.io/wiki/lib/media/favicon.png</url><title>韩暮秋的个人维基</title><link>https://muqiuhan.github.io/wiki/</link></image><generator>Webpage HTML Export plugin for Obsidian</generator><lastBuildDate>Tue, 18 Feb 2025 02:43:30 GMT</lastBuildDate><atom:link href="https://muqiuhan.github.io/wiki/lib/rss.xml" rel="self" type="application/rss+xml"/><pubDate>Tue, 18 Feb 2025 02:41:25 GMT</pubDate><copyright><![CDATA[韩暮秋]]></copyright><ttl>60</ttl><dc:creator>韩暮秋</dc:creator><item><title><![CDATA[Intro to Databases (for people who don’t know a whole lot about them)]]></title><description><![CDATA[<a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:database" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#database</a> 
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[韩暮秋的个人维基]]></title><description><![CDATA[Obsidian digital garden]]></description><link>https://muqiuhan.github.io/wiki/</link><image><url>https://muqiuhan.github.io/wiki/lib/media/favicon.png</url><title>韩暮秋的个人维基</title><link>https://muqiuhan.github.io/wiki/</link></image><generator>Webpage HTML Export plugin for Obsidian</generator><lastBuildDate>Wed, 19 Feb 2025 01:21:56 GMT</lastBuildDate><atom:link href="https://muqiuhan.github.io/wiki/lib/rss.xml" rel="self" type="application/rss+xml"/><pubDate>Wed, 19 Feb 2025 01:21:55 GMT</pubDate><copyright><![CDATA[韩暮秋]]></copyright><ttl>60</ttl><dc:creator>韩暮秋</dc:creator><item><title><![CDATA[Repository pattern in Typescript]]></title><description><![CDATA[<a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:software-engineering" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#software-engineering</a> <a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:typescript" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#typescript</a> <a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:web" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#web</a> 
+ <br><a href="https://muqiuhan.github.io/wiki?query=tag:software-engineering" class="tag" target="_blank" rel="noopener nofollow">#software-engineering</a> <a href="https://muqiuhan.github.io/wiki?query=tag:typescript" class="tag" target="_blank" rel="noopener nofollow">#typescript</a> <a href="https://muqiuhan.github.io/wiki?query=tag:web" class="tag" target="_blank" rel="noopener nofollow">#web</a> <br>
+The Repository design pattern is a <a data-tooltip-position="top" aria-label="https://www.geeksforgeeks.org/structural-design-patterns/" rel="noopener nofollow" class="external-link" href="https://www.geeksforgeeks.org/structural-design-patterns/" target="_blank">structural pattern</a> that abstracts data access, providing a centralized way to manage data operations. By separating the data layer from business logic, it enhances code maintainability, testability, and flexibility, making it easier to work with various data sources in an application.
+<br>抽象化数据访问层的主要作用是将应用的业务逻辑与对数据库的数据访问等实现细节进行解耦。DB 框架的更改不应该影响到应用程序的核心服务，并且它们应该对业务逻辑代码透明。<br>业务服务应该只依赖于抽象，而不是实现，数据服务同理。<br><br><br>例如，此时有一个书籍存储的微服务，并且有一个“添加新书籍”的操作用例，在此用例中可以通过使用 Book 这个 Repository 来添加新书籍，而 Book 具体使用什么数据库，怎么存并不是业务需要关心的事情。<br><img alt="Pasted image 20250219090610.png" src="https://muqiuhan.github.io/wiki/computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png"><br><br>假设有以下实体类型定义：<br>export class Author {
+  firstName: string;
+  lastName: string;
+}
+
+export class Genre {
+  name: string;
+}
+
+export class Book {
+  title: string;
+  author: Author;
+  genre: Genre;
+  publishDate: Date;
+}
+<br><br>第一步是抽象化出一个通用的 Repository ，其中包含通用的操作：<br>export abstract class IGenericRepository&lt;T&gt; {
+  abstract getAll(): Promise&lt;T[]&gt;;
+
+  abstract get(id: string): Promise&lt;T&gt;;
+
+  abstract create(item: T): Promise&lt;T&gt;;
+
+  abstract update(id: string, item: T);
+}
+<br>
+<br>这里具体有那些函数可以根据需要（业务）自己定义。
+<br>类型参数 T 表示每个实体。
+<br>接着，定义一个数据服务，其中包含使用 IGenericRepositoiry 定义的具体实例对应的 Repository：<br>import { Author, Book, Genre } from '../entities';
+import { IGenericRepository } from './generic-repository.abstract';
+
+export abstract class IDataServices {
+  abstract authors: IGenericRepository&lt;Author&gt;;
+
+  abstract books: IGenericRepository&lt;Book&gt;;
+
+  abstract genres: IGenericRepository&lt;Genre&gt;;
+}
+<br>
+<br>这里有三个 Repository 分别对应不同的实体。
+<br>IGenericRepository 中定义的函数是每个 Repository 公开的通用存储函数。
+<br>以上这些就是对业务中的实体的 Repository 抽象，这样就隔离开了业务和存储逻辑，例如使用 MongoDB，可以实现一个 MongoGenericRepository：<br>import { Model } from 'mongoose';
+import { IGenericRepository } from '../../../core';
+
+export class MongoGenericRepository&lt;T&gt; implements IGenericRepository&lt;T&gt; {
+  private _repository: Model&lt;T&gt;;
+  private _populateOnFind: string[];
+
+  constructor(repository: Model&lt;T&gt;, populateOnFind: string[] = []) {
+    this._repository = repository;
+    this._populateOnFind = populateOnFind;
+  }
+
+  getAll(): Promise&lt;T[]&gt; {
+    return this._repository.find().populate(this._populateOnFind).exec();
+  }
+
+  get(id: any): Promise&lt;T&gt; {
+    return this._repository.findById(id).populate(this._populateOnFind).exec();
+  }
+
+  create(item: T): Promise&lt;T&gt; {
+    return this._repository.create(item);
+  }
+
+  update(id: string, item: T) {
+    return this._repository.findByIdAndUpdate(id, item);
+  }
+}
+<br>然后实现一个 MongoDataServices:<br>import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IDataServices } from '../../../core';
+import { MongoGenericRepository } from './mongo-generic-repository';
+import {
+  Author,
+  AuthorDocument,
+  Book,
+  BookDocument,
+  Genre,
+  GenreDocument,
+} from './model';
+
+@Injectable()
+export class MongoDataServices
+  implements IDataServices, OnApplicationBootstrap
+{
+  authors: MongoGenericRepository&lt;Author&gt;;
+  books: MongoGenericRepository&lt;Book&gt;;
+  genres: MongoGenericRepository&lt;Genre&gt;;
+
+  constructor(
+    @InjectModel(Author.name)
+    private AuthorRepository: Model&lt;AuthorDocument&gt;,
+    @InjectModel(Book.name)
+    private BookRepository: Model&lt;BookDocument&gt;,
+    @InjectModel(Genre.name)
+    private GenreRepository: Model&lt;GenreDocument&gt;,
+  ) {}
+
+  onApplicationBootstrap() {
+    this.authors = new MongoGenericRepository&lt;Author&gt;(this.AuthorRepository);
+    this.books = new MongoGenericRepository&lt;Book&gt;(this.BookRepository, [
+      'author',
+      'genre',
+    ]);
+    this.genres = new MongoGenericRepository&lt;Genre&gt;(this.GenreRepository);
+  }
+}
+<br>以上。]]></description><link>https://muqiuhan.github.io/wiki/computer-science/software-engineering/repository-pattern-in-typescript/repository-pattern-in-typescript.html</link><guid isPermaLink="false">Computer Science/Software Engineering/Repository pattern in Typescript/Repository pattern in Typescript.md</guid><dc:creator><![CDATA[韩暮秋]]></dc:creator><pubDate>Wed, 19 Feb 2025 01:21:13 GMT</pubDate><enclosure url="https://muqiuhan.github.io/wiki/computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png" length="0" type="image/png"/><content:encoded>&lt;figure&gt;&lt;img src="https://muqiuhan.github.io/wiki/computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png"&gt;&lt;/figure&gt;</content:encoded></item><item><title><![CDATA[Intro to Databases (for people who don’t know a whole lot about them)]]></title><description><![CDATA[<a class="tag" href="https://muqiuhan.github.io/wiki/?query=tag:database" style="background-color: rgb(4, 108, 116); color: white; font-weight: 700; border: none; border-radius: 1em; padding: 0.2em 0.5em;">#database</a> 
  <br><a href="https://muqiuhan.github.io/wiki?query=tag:database" class="tag" target="_blank" rel="noopener nofollow">#database</a><br>I was a CS major from an Ivy League university who’s now a software developer at <a data-tooltip-position="top" aria-label="https://www.brandverity.com/" rel="noopener nofollow" class="external-link" href="https://www.brandverity.com/" target="_blank">an awesome company</a> — and I don’t know much about databases.<br>I’m guessing I’m not the only one. It didn’t seem to be a beginner-friendly subject. The specific class wasn’t required. Any time storage systems were mentioned, they were on a higher level, very theoretical. There seems to be a common issue around CS graduates knowing very little about real-world software development (source control? deployment? huh?), and it’s up to us to figure most of this stuff out after the fact.<br>But I’m embracing my lack of knowledge on the subject, and blogging is a cool thing. Here’s hoping for some clarity of thought via writing.<br><br>Besides the fact that it wasn’t super accessible or approachable in college, it’s probably also taken me so long to do any self-learning here because it just seemed so intimidating and mysterious (but this might just be me). I switched from design to CS two years into college with no prior experience, and I was grasping at things that were readily available and that piqued my interest. For whatever reason, databases seemed like a thing that more experienced or “smarter” people were into. “Backend work” was something I veered away from, and the word “database” conjured images of highly technical, complicated systems with jargon I just wouldn’t understand. It was much easier to pretend it was ~magic~ and leave it for others to figure out (for now — it was always my intention to pick it all up eventually).<br><img src="https://miro.medium.com/v2/resize:fit:998/1*66lYXVFX3rJxRu-8Ze3meg.gif" referrerpolicy="no-referrer"><br>Basically how I viewed data storage and retrieval.<br><br>Google defines database as “a structured set of data held in a computer, especially one that is accessible in various ways.” At its most basic, a database is just a way of storing and organizing information. Ideally it is organized in such a way that it can be easily accessed, managed, and updated.<br>I like metaphors, so this simple definition of a database for me is like a toolbox. You’ve got lots of screws, nails, bits, a couple different hammers… A toolbox is a storage system that allows you to easily organize and access all of these things. Whenever you need a tool, you go to the toolbox. Maybe you have labels on the drawers — those will help you find, say, a cordless power drill. But now you need the right battery for the drill. You look in your “battery” drawer, but how do you find the one that fits this particular drill? You can run through all of your batteries using trial and error, but that seems inefficient. You think, ‘Maybe I should store my batteries with their respective drills, link them in some way.’ That might be a viable solution. But if you need all of your batteries (because you’re setting up a nice new charging station maybe?), will you have to access each of your drills to get them? Maybe one battery fits multiple drills? Also, toolboxes are great for storing disjointed tools and pieces, but you wouldn’t want to have to take your car apart and store every piece separately whenever you park it in the garage. In that case, you would want to store your car as a single entry in the database (ahem garage), and access its pieces through it.<br><img src="https://miro.medium.com/v2/resize:fit:1180/1*Xfxl8HoQqqg_KtpEsEcskw.jpeg" referrerpolicy="no-referrer"><br>At least I can easily find the alternator this way, right?<br>This example is contrived, but reveals some issues you’ll have to consider when choosing a database or how to store your data within it.<br><br>If you start directionlessly googling “databases” (like I did), you’ll soon realize there are several different types and lots of terminology surrounding them. So let’s try and clear up any potential language barriers.<br>While I’m sure someone has written books on each of these (some of which I should probably read), I’ll try to keep my definitions relatively simple. These were all terms that I came across while doing this research that I thought could use some quick explanation.<br>
 <br>Query  
 

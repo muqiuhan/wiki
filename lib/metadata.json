@@ -1,6 +1,6 @@
 {
   "vaultName": "韩暮秋的个人维基",
-  "lastExport": 1739846485328,
+  "lastExport": 1739928115622,
   "pluginVersion": "1.8.01",
   "validBodyClasses": "publish css-settings-manager theme-light show-inline-title show-ribbon outliner-plugin-dnd h2-underline",
   "useCustomHeadContent": false,
@@ -195,6 +195,8 @@
     "Computer Science/Programming Language/Typescript/A Deep Dive into the Reflection API in Javascript.md",
     "Computer Science/Programming Language/Typescript/Implement a Dependency Injection Container in TypeScript from Scratch.md",
     "Computer Science/Programming Language/Typescript/TypeScript With Rust Errors, No Try Catch, Heresy..md",
+    "Computer Science/Software Engineering/Repository pattern in Typescript/attachments/Pasted image 20250219090610.png",
+    "Computer Science/Software Engineering/Repository pattern in Typescript/Repository pattern in Typescript.md",
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115123905.png",
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115124216.png",
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/You don’t Need a Book to Know DDD(Domain-Driven Design).md",
@@ -284,20 +286,20 @@
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173212.png",
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173219.png",
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173227.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725171642.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172248.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172328.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172559.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172616.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172412.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172431.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172453.png",
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172512.png",
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725171915.png",
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725171936.png",
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172037.png",
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172059.png",
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172146.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725171642.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725172248.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725172328.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725172559.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725172616.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725172412.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725172431.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725172453.png",
+    "computer-science/distributed-system/raft实现/pasted-image-20240725172512.png",
+    "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171915.png",
+    "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171936.png",
+    "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172037.png",
+    "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172059.png",
+    "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172146.png",
     "computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png",
     "computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png",
     "computer-science/operating-system/understanding-big-and-little-endian-byte-order/attachments/pasted-image-20241220110455.png",
@@ -313,23 +315,37 @@
     "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175321.png",
     "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175449.png",
     "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175517.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190234.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190404.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190441.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190820.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190859.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191028.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191058.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191142.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191255.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191658.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191743.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191936.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193311.png",
+    "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193326.png",
     "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105055.png",
     "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105410.png",
     "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png",
     "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115111951.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112012.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112612.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112039.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112127.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112203.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112230.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112241.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112450.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112544.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115115009.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115115845.png",
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115120819.png"
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112012.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112612.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112039.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112127.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112203.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112230.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112241.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112450.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112544.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115009.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115845.png",
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png"
   ],
   "mainDependencies": [
     "lib/scripts/graph-wasm.wasm",
@@ -1139,85 +1155,85 @@
       "dependencies": []
     },
     "lib/scripts/graph-wasm.wasm": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 23377,
       "exportedPath": "lib/scripts/graph-wasm.wasm",
       "dependencies": []
     },
     "lib/fonts/94f2f163d4b698242fef.otf": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 66800,
       "exportedPath": "lib/fonts/94f2f163d4b698242fef.otf",
       "dependencies": []
     },
     "lib/fonts/72505e6a122c6acd5471.woff2": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 104232,
       "exportedPath": "lib/fonts/72505e6a122c6acd5471.woff2",
       "dependencies": []
     },
     "lib/fonts/2d5198822ab091ce4305.woff2": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 104332,
       "exportedPath": "lib/fonts/2d5198822ab091ce4305.woff2",
       "dependencies": []
     },
     "lib/fonts/c8ba52b05a9ef10f4758.woff2": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 98868,
       "exportedPath": "lib/fonts/c8ba52b05a9ef10f4758.woff2",
       "dependencies": []
     },
     "lib/fonts/cb10ffd7684cd9836a05.woff2": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 106876,
       "exportedPath": "lib/fonts/cb10ffd7684cd9836a05.woff2",
       "dependencies": []
     },
     "lib/fonts/b5f0f109bc88052d4000.woff2": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 105804,
       "exportedPath": "lib/fonts/b5f0f109bc88052d4000.woff2",
       "dependencies": []
     },
     "lib/fonts/cbe0ae49c52c920fd563.woff2": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 106108,
       "exportedPath": "lib/fonts/cbe0ae49c52c920fd563.woff2",
       "dependencies": []
     },
     "lib/fonts/535a6cf662596b3bd6a6.woff2": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 111708,
       "exportedPath": "lib/fonts/535a6cf662596b3bd6a6.woff2",
       "dependencies": []
     },
     "lib/fonts/70cc7ff27245e82ad414.ttf": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 192740,
       "exportedPath": "lib/fonts/70cc7ff27245e82ad414.ttf",
       "dependencies": []
     },
     "lib/fonts/454577c22304619db035.ttf": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 161376,
       "exportedPath": "lib/fonts/454577c22304619db035.ttf",
       "dependencies": []
     },
     "lib/fonts/52ac8f3034507f1d9e53.ttf": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 191568,
       "exportedPath": "lib/fonts/52ac8f3034507f1d9e53.ttf",
       "dependencies": []
     },
     "lib/fonts/05b618077343fbbd92b7.ttf": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 155288,
       "exportedPath": "lib/fonts/05b618077343fbbd92b7.ttf",
       "dependencies": []
     },
     "lib/fonts/4bb6ac751d1c5478ff3a.woff2": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 7876,
       "exportedPath": "lib/fonts/4bb6ac751d1c5478ff3a.woff2",
       "dependencies": []
@@ -1229,85 +1245,85 @@
       "dependencies": []
     },
     "lib/html/file-tree.html": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 239000,
+      "modifiedTime": 1739928115622,
+      "sourceSize": 242937,
       "exportedPath": "lib/html/file-tree.html",
       "dependencies": []
     },
     "lib/scripts/webpage.js": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 47290,
       "exportedPath": "lib/scripts/webpage.js",
       "dependencies": []
     },
     "lib/scripts/graph-view.js": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 15519,
       "exportedPath": "lib/scripts/graph-view.js",
       "dependencies": []
     },
     "lib/scripts/graph-wasm.js": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 14021,
       "exportedPath": "lib/scripts/graph-wasm.js",
       "dependencies": []
     },
     "lib/scripts/graph-render-worker.js": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 5179,
       "exportedPath": "lib/scripts/graph-render-worker.js",
       "dependencies": []
     },
     "lib/scripts/tinycolor.js": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 29832,
       "exportedPath": "lib/scripts/tinycolor.js",
       "dependencies": []
     },
     "lib/scripts/pixi.js": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 449509,
       "exportedPath": "lib/scripts/pixi.js",
       "dependencies": []
     },
     "lib/scripts/minisearch.js": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 29422,
       "exportedPath": "lib/scripts/minisearch.js",
       "dependencies": []
     },
     "lib/media/favicon.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 1105,
       "exportedPath": "lib/media/favicon.png",
       "dependencies": []
     },
     "lib/scripts/graph-data.js": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 13816,
+      "modifiedTime": 1739928115622,
+      "sourceSize": 13964,
       "exportedPath": "lib/scripts/graph-data.js",
       "dependencies": []
     },
     "lib/styles/obsidian.css": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 137228,
       "exportedPath": "lib/styles/obsidian.css",
       "dependencies": []
     },
     "lib/styles/theme.css": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 41426,
       "exportedPath": "lib/styles/theme.css",
       "dependencies": []
     },
     "lib/styles/global-variable-styles.css": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 515,
       "exportedPath": "lib/styles/global-variable-styles.css",
       "dependencies": []
     },
     "lib/styles/main-styles.css": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 23130,
       "exportedPath": "lib/styles/main-styles.css",
       "dependencies": []
@@ -1578,90 +1594,6 @@
       "exportedPath": "computer-science/ui-ux/如何管理用户界面中的危险操作.html",
       "dependencies": []
     },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725171642.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 81578,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725171642.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172248.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 67274,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172248.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172328.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 18938,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172328.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172559.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 70506,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172559.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172616.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 172183,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172616.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172412.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 65652,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172412.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172431.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 96998,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172431.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172453.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 117801,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172453.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172512.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 51327,
-      "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172512.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725171915.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 38120,
-      "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725171915.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725171936.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 59294,
-      "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725171936.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172037.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 77064,
-      "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172037.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172059.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 53159,
-      "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172059.png",
-      "dependencies": []
-    },
-    "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172146.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 74193,
-      "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172146.png",
-      "dependencies": []
-    },
     "computer-science/operating-system/understanding-big-and-little-endian-byte-order/attachments/pasted-image-20241220110455.png": {
       "modifiedTime": 1739846485328,
       "sourceSize": 96278,
@@ -1723,7 +1655,7 @@
       "dependencies": []
     },
     "lib/styles/other-plugins.css": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 1803,
       "exportedPath": "lib/styles/other-plugins.css",
       "dependencies": []
@@ -1968,7 +1900,7 @@
       "dependencies": []
     },
     "lib/media/6155340132a851f6089e.svg": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1739928115622,
       "sourceSize": 315,
       "exportedPath": "lib/media/6155340132a851f6089e.svg",
       "dependencies": []
@@ -2059,84 +1991,6 @@
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115120819.png": {
       "modifiedTime": 1739846485328,
-      "sourceSize": 801225,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115120819.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115111951.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 247514,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115111951.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112012.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 65682,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112012.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112612.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 78684,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112612.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112039.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 8144,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112039.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112127.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 505148,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112127.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112203.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 593561,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112203.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112230.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 419779,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112230.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112241.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 730111,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112241.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112450.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 564689,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112450.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112544.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 370797,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112544.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115115009.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 296633,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115115009.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115115845.png": {
-      "modifiedTime": 1739759277483,
-      "sourceSize": 452653,
-      "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115115845.png",
-      "dependencies": []
-    },
-    "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115120819.png": {
-      "modifiedTime": 1739759277483,
       "sourceSize": 801225,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115120819.png",
       "dependencies": []
@@ -2622,6 +2476,26 @@
       "modifiedTime": 1739846485328,
       "sourceSize": 96822,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193326.png",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/Repository pattern in Typescript/attachments/Pasted image 20250219090610.png": {
+      "modifiedTime": 1739928115622,
+      "sourceSize": 119432,
+      "exportedPath": "computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/Repository pattern in Typescript/Repository pattern in Typescript.md": {
+      "modifiedTime": 1739928115622,
+      "sourceSize": 4608,
+      "exportedPath": "computer-science/software-engineering/repository-pattern-in-typescript/repository-pattern-in-typescript.html",
+      "dependencies": [
+        "computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png"
+      ]
+    },
+    "computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png": {
+      "modifiedTime": 1739928115622,
+      "sourceSize": 119432,
+      "exportedPath": "computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png",
       "dependencies": []
     }
   }
