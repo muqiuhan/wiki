@@ -1,11 +1,12 @@
 {
   "vaultName": "韩暮秋的个人维基",
-  "lastExport": 1739928115622,
+  "lastExport": 1742891075923,
   "pluginVersion": "1.8.01",
-  "validBodyClasses": "publish css-settings-manager theme-light show-inline-title show-ribbon outliner-plugin-dnd h2-underline",
+  "validBodyClasses": "publish css-settings-manager theme-light show-inline-title show-ribbon outliner-plugin-dnd custom-accent ribbon-default special-h6 float-center",
   "useCustomHeadContent": false,
   "useCustomFavicon": false,
   "files": [
+    "Computer Science/AI/LLM4Decompile Decompiling Binary Code with Large Language Models.md",
     "Computer Science/Database System/Intro to Databases (for people who don’t know a whole lot about them).md",
     "Computer Science/Database System/Prisma 关系型数据库的 Self-relations.md",
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191713.png",
@@ -98,6 +99,7 @@
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/Google 的 monorepo 实践与 trunk based development.md",
     "Computer Science/Other/Obsidian custom font to Android iOS devices.md",
     "Computer Science/Other/Obsidian Vault 的 .obsidian 目录中的各文件作用.md",
+    "Computer Science/Other/一个分支模型的构想.excalidraw.md",
     "Computer Science/Other/多线程的一点小想法.md",
     "Computer Science/Other/寻找并删除 Git 记录中的大文件.md",
     "Computer Science/Programming Language/C++/C++ 20 实现 string split.md",
@@ -136,11 +138,6 @@
     "Computer Science/Programming Language/FSharp/UI programming with Elmish in FSharp.md",
     "Computer Science/Programming Language/FSharp/Why algebraic effects matter in FSharp.md",
     "Computer Science/Programming Language/FSharp/Writing high performance Fsharp code.md",
-    "Computer Science/Programming Language/JVM/Scala/F-bounded polymorphism in Scala.md",
-    "Computer Science/Programming Language/JVM/Scala/Inference of machine learning models using scala.md",
-    "Computer Science/Programming Language/JVM/Scala/Refinement types in Scala 3.md",
-    "Computer Science/Programming Language/JVM/Scala/scala 中 Any、AnyRef、Object、AnyVal 关系以及主要特点分析.md",
-    "Computer Science/Programming Language/JVM/Scala/Setup a server to perform efficient inference of neural network models.md",
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111190234.png",
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111190404.png",
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111190441.png",
@@ -191,18 +188,45 @@
     "Computer Science/Programming Language/Rust/Rust 虚表布局规则介绍.md",
     "Computer Science/Programming Language/Rust/Rust 闭包 lifetime may not live long enough 问题.md",
     "Computer Science/Programming Language/Rust/有关 Axum 中 WebSocket 的使用.md",
+    "Computer Science/Programming Language/Scala/F-bounded polymorphism in Scala.md",
+    "Computer Science/Programming Language/Scala/Inference of machine learning models using scala.md",
+    "Computer Science/Programming Language/Scala/Refinement types in Scala 3.md",
+    "Computer Science/Programming Language/Scala/Scala 3 (Capture Checking).md",
+    "Computer Science/Programming Language/Scala/scala 中 Any、AnyRef、Object、AnyVal 关系以及主要特点分析.md",
+    "Computer Science/Programming Language/Scala/Setup a server to perform efficient inference of neural network models.md",
+    "Computer Science/Programming Language/Type Theory/学习路线.md",
     "Computer Science/Programming Language/Typescript/50 TypeScript Fck Ups 50 Subtle Mistakes to Screw Your Code and How to Avoid (Azat Mardan).md",
     "Computer Science/Programming Language/Typescript/A Deep Dive into the Reflection API in Javascript.md",
     "Computer Science/Programming Language/Typescript/Implement a Dependency Injection Container in TypeScript from Scratch.md",
     "Computer Science/Programming Language/Typescript/TypeScript With Rust Errors, No Try Catch, Heresy..md",
+    "Computer Science/Software Engineering/Domain-Driven Hexagon/领域驱动的六边形.md",
     "Computer Science/Software Engineering/Repository pattern in Typescript/attachments/Pasted image 20250219090610.png",
     "Computer Science/Software Engineering/Repository pattern in Typescript/Repository pattern in Typescript.md",
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115123905.png",
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115124216.png",
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/You don’t Need a Book to Know DDD(Domain-Driven Design).md",
+    "Computer Science/Software Engineering/码如云 DDD 教程/第一章：DDD入门.md",
+    "Computer Science/Software Engineering/码如云 DDD 教程/第二章：DDD 概念大白话.md",
+    "Computer Science/Software Engineering/软件设计的哲学/attachments/Pasted image 20250302104715.png",
+    "Computer Science/Software Engineering/软件设计的哲学/attachments/Pasted image 20250302105848.png",
+    "Computer Science/Software Engineering/软件设计的哲学/第一章：导言 （一切皆因复杂性）.md",
+    "Computer Science/Software Engineering/软件设计的哲学/第七章：不同的层级，不同的抽象.md",
+    "Computer Science/Software Engineering/软件设计的哲学/第三章：仅仅是能工作的代码是不够的.md",
+    "Computer Science/Software Engineering/软件设计的哲学/第九章：在一起更好还是分开更好？.md",
+    "Computer Science/Software Engineering/软件设计的哲学/第二章：复杂性的本质.md",
+    "Computer Science/Software Engineering/软件设计的哲学/第五章：信息隐藏和泄漏.md",
+    "Computer Science/Software Engineering/软件设计的哲学/第八章：下沉复杂性.md",
+    "Computer Science/Software Engineering/软件设计的哲学/第六章：通用的模块是更深的.md",
+    "Computer Science/Software Engineering/软件设计的哲学/第四章：模块应该是深的.md",
     "Computer Science/Software Engineering/Exploring Event Sourcing and Related Patterns in OCaml.md",
+    "Computer Science/Software Engineering/NestJS 创建实体时如何优雅处理 DTO 与 Entity 字段差异.md",
+    "Computer Science/Software Engineering/从“聚合根”开始的领域驱动设计.md",
     "Computer Science/Software Engineering/从事件风暴看领域驱动设计.md",
+    "Computer Science/Software Engineering/使用 Transactional outbox 解决聚合根持久化和事件发布的数据不一致问题.md",
+    "Computer Science/Software Engineering/领域驱动设计中的“聚合根”.md",
+    "Computer Science/Software Engineering/领域驱动设计中聚合根持久化和事件发布可能导致数据不一致问题.md",
     "Computer Science/UI UX/如何管理用户界面中的危险操作.md",
+    "Computer Science/UI UX/实时搜索中的防抖函数.md",
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115111951.png",
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112012.png",
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112039.png",
@@ -230,6 +254,8 @@
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115115845.png",
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115120819.png",
     "Computer Science/Web/Svelte/Svelte 核心原理/Svelte 的编译器和运行时.md",
+    "Computer Science/Web/Svelte/Svelte(Kit) 中的路由保护.md",
+    "Computer Science/Web/IndexedDB Data Persistence in Web Browsers.md",
     "Computer Science/Web/Turborepo 简述.md",
     "Computer Science/Web/前端设计架构概述.md",
     "lib/scripts/graph-wasm.wasm",
@@ -247,6 +273,28 @@
     "lib/fonts/05b618077343fbbd92b7.ttf",
     "lib/fonts/4bb6ac751d1c5478ff3a.woff2",
     "lib/media/6155340132a851f6089e.svg",
+    "lib/fonts/mathjax_zero.woff",
+    "lib/fonts/mathjax_main-regular.woff",
+    "lib/fonts/mathjax_main-bold.woff",
+    "lib/fonts/mathjax_math-italic.woff",
+    "lib/fonts/mathjax_main-italic.woff",
+    "lib/fonts/mathjax_math-bolditalic.woff",
+    "lib/fonts/mathjax_size1-regular.woff",
+    "lib/fonts/mathjax_size2-regular.woff",
+    "lib/fonts/mathjax_size3-regular.woff",
+    "lib/fonts/mathjax_size4-regular.woff",
+    "lib/fonts/mathjax_ams-regular.woff",
+    "lib/fonts/mathjax_calligraphic-regular.woff",
+    "lib/fonts/mathjax_calligraphic-bold.woff",
+    "lib/fonts/mathjax_fraktur-regular.woff",
+    "lib/fonts/mathjax_fraktur-bold.woff",
+    "lib/fonts/mathjax_sansserif-regular.woff",
+    "lib/fonts/mathjax_sansserif-bold.woff",
+    "lib/fonts/mathjax_sansserif-italic.woff",
+    "lib/fonts/mathjax_script-regular.woff",
+    "lib/fonts/mathjax_typewriter-regular.woff",
+    "lib/fonts/mathjax_vector-regular.woff",
+    "lib/fonts/mathjax_vector-bold.woff",
     "lib/html/file-tree.html",
     "lib/scripts/webpage.js",
     "lib/scripts/graph-view.js",
@@ -261,6 +309,7 @@
     "lib/styles/other-plugins.css",
     "lib/styles/theme.css",
     "lib/styles/global-variable-styles.css",
+    "lib/styles/supported-plugins.css",
     "lib/styles/main-styles.css",
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191713.png",
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191805.png",
@@ -331,6 +380,7 @@
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193326.png",
     "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105055.png",
     "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105410.png",
+    "computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png",
     "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png",
     "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png",
     "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png",
@@ -363,6 +413,28 @@
     "lib/fonts/05b618077343fbbd92b7.ttf",
     "lib/fonts/4bb6ac751d1c5478ff3a.woff2",
     "lib/media/6155340132a851f6089e.svg",
+    "lib/fonts/mathjax_zero.woff",
+    "lib/fonts/mathjax_main-regular.woff",
+    "lib/fonts/mathjax_main-bold.woff",
+    "lib/fonts/mathjax_math-italic.woff",
+    "lib/fonts/mathjax_main-italic.woff",
+    "lib/fonts/mathjax_math-bolditalic.woff",
+    "lib/fonts/mathjax_size1-regular.woff",
+    "lib/fonts/mathjax_size2-regular.woff",
+    "lib/fonts/mathjax_size3-regular.woff",
+    "lib/fonts/mathjax_size4-regular.woff",
+    "lib/fonts/mathjax_ams-regular.woff",
+    "lib/fonts/mathjax_calligraphic-regular.woff",
+    "lib/fonts/mathjax_calligraphic-bold.woff",
+    "lib/fonts/mathjax_fraktur-regular.woff",
+    "lib/fonts/mathjax_fraktur-bold.woff",
+    "lib/fonts/mathjax_sansserif-regular.woff",
+    "lib/fonts/mathjax_sansserif-bold.woff",
+    "lib/fonts/mathjax_sansserif-italic.woff",
+    "lib/fonts/mathjax_script-regular.woff",
+    "lib/fonts/mathjax_typewriter-regular.woff",
+    "lib/fonts/mathjax_vector-regular.woff",
+    "lib/fonts/mathjax_vector-bold.woff",
     "lib/html/file-tree.html",
     "lib/scripts/webpage.js",
     "lib/scripts/graph-view.js",
@@ -377,11 +449,12 @@
     "lib/styles/other-plugins.css",
     "lib/styles/theme.css",
     "lib/styles/global-variable-styles.css",
+    "lib/styles/supported-plugins.css",
     "lib/styles/main-styles.css"
   ],
   "fileInfo": {
     "Computer Science/Distributed System/Raft 原始论文中英/In Search of an Understandable Consensus Algorithm(Extended Version).md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 151190,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/in-search-of-an-understandable-consensus-algorithm(extended-version).html",
       "dependencies": [
@@ -404,115 +477,115 @@
       ]
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725172940.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 70316,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172940.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725172955.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 436607,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172955.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173009.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 77841,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173009.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173021.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 54120,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173021.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173038.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 78612,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173038.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173049.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 117801,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173049.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173101.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 147595,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173101.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173109.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 54617,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173109.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173120.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 72638,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173120.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173130.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 87912,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173130.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173140.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 70506,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173140.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173149.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 172183,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173149.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173202.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 55256,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173202.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173212.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 65229,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173212.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173219.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 67353,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173219.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/Pasted image 20240725173227.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 148405,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173227.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/thumbPasted image 20240725172940.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 29957,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/thumbpasted-image-20240725172940.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft 原始论文中英/thumbPasted image 20240725173202.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 21568,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/thumbpasted-image-20240725173202.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Raft实现 - 一致性算法介绍.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 50492,
       "exportedPath": "computer-science/distributed-system/raft实现/raft实现-一致性算法介绍.html",
       "dependencies": [
@@ -522,7 +595,7 @@
       ]
     },
     "Computer Science/Distributed System/Raft实现/Raft实现 - 实现日志压缩.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 40306,
       "exportedPath": "computer-science/distributed-system/raft实现/raft实现-实现日志压缩.html",
       "dependencies": [
@@ -531,7 +604,7 @@
       ]
     },
     "Computer Science/Distributed System/Raft实现/Raft实现 - 实现日志复制.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 51278,
       "exportedPath": "computer-science/distributed-system/raft实现/raft实现-实现日志复制.html",
       "dependencies": [
@@ -542,7 +615,7 @@
       ]
     },
     "Computer Science/Distributed System/RPC框架的实现/自己动手实现rpc框架(一) 实现点对点的rpc通信.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 39732,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/自己动手实现rpc框架(一)-实现点对点的rpc通信.html",
       "dependencies": [
@@ -553,7 +626,7 @@
       ]
     },
     "Computer Science/Distributed System/RPC框架的实现/自己动手实现rpc框架(二) 实现集群间rpc通信.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 29904,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/自己动手实现rpc框架(二)-实现集群间rpc通信.html",
       "dependencies": [
@@ -561,13 +634,13 @@
       ]
     },
     "Computer Science/Distributed System/分布式任务调度框架/Pasted image 20240507114701.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 12004,
       "exportedPath": "computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/分布式任务调度框架/分布式任务调度框架.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 36810,
       "exportedPath": "computer-science/distributed-system/分布式任务调度框架/分布式任务调度框架.html",
       "dependencies": [
@@ -575,37 +648,37 @@
       ]
     },
     "Computer Science/Distributed System/Active Standby 双机热备.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 2976,
       "exportedPath": "computer-science/distributed-system/active-standby-双机热备.html",
       "dependencies": []
     },
     "Computer Science/Distributed System/Building Scalable Distributed Systems - Distributed System Architecture Blueprint - A Whirlwind Tour.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 23170,
       "exportedPath": "computer-science/distributed-system/building-scalable-distributed-systems-distributed-system-architecture-blueprint-a-whirlwind-tour.html",
       "dependencies": []
     },
     "Computer Science/Distributed System/Building Scalable Distributed Systems - Introduction to Scalable Systems.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 29378,
       "exportedPath": "computer-science/distributed-system/building-scalable-distributed-systems-introduction-to-scalable-systems.html",
       "dependencies": []
     },
     "Computer Science/Distributed System/对分布式系统的错误认知.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 6583,
       "exportedPath": "computer-science/distributed-system/对分布式系统的错误认知.html",
       "dependencies": []
     },
     "Computer Science/Distributed System/我为什么认为 Actor 不合适 CPU 密集任务.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 3425,
       "exportedPath": "computer-science/distributed-system/我为什么认为-actor-不合适-cpu-密集任务.html",
       "dependencies": []
     },
     "Computer Science/Operating System/Linux/Linux中的硬连接和软连接/Linux中的硬连接和软连接.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 9319,
       "exportedPath": "computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬连接和软连接.html",
       "dependencies": [
@@ -613,373 +686,373 @@
       ]
     },
     "Computer Science/Operating System/Linux/Linux中的硬连接和软连接/Linux中的硬链接和软链接.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 51740,
       "exportedPath": "computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png",
       "dependencies": []
     },
     "Computer Science/Operating System/Linux/Inter-process communication in Linux -- Shared storage.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 26396,
       "exportedPath": "computer-science/operating-system/linux/inter-process-communication-in-linux-shared-storage.html",
       "dependencies": []
     },
     "Computer Science/Operating System/Linux/Linux OOM 的配置.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 4046,
       "exportedPath": "computer-science/operating-system/linux/linux-oom-的配置.html",
       "dependencies": []
     },
     "Computer Science/Operating System/Linux/udevd Operation and Configuration.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 4671,
       "exportedPath": "computer-science/operating-system/linux/udevd-operation-and-configuration.html",
       "dependencies": []
     },
     "Computer Science/Operating System/FreeBSD 允许非 Root 用户使用 80 端口.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 576,
       "exportedPath": "computer-science/operating-system/freebsd-允许非-root-用户使用-80-端口.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/C++/C++ 20 实现 string split.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1444,
       "exportedPath": "computer-science/programming-language/c++/c++-20-实现-string-split.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/C++/C++ vector 的 push_back 和 emplace_back.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 2574,
       "exportedPath": "computer-science/programming-language/c++/c++-vector-的-push_back-和-emplace_back.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/C++/C++ 的 Trait.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 2523,
       "exportedPath": "computer-science/programming-language/c++/c++-的-trait.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Clojure/My fading frustration with ClojureScript.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 11351,
       "exportedPath": "computer-science/programming-language/clojure/my-fading-frustration-with-clojurescript.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/CSharp/Building a self-contained game in CSharp under 8 kilobytes.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 48200,
       "exportedPath": "computer-science/programming-language/csharp/building-a-self-contained-game-in-csharp-under-8-kilobytes.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/CSharp/Isomorphic .NET Support in Extism.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 8782,
       "exportedPath": "computer-science/programming-language/csharp/isomorphic-.net-support-in-extism.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/10 Tips for Productive FSharp Scripting.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 14838,
       "exportedPath": "computer-science/programming-language/fsharp/10-tips-for-productive-fsharp-scripting.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Amoeba optimization method using FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 8297,
       "exportedPath": "computer-science/programming-language/fsharp/amoeba-optimization-method-using-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Baby steps with CNTK and FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 21352,
       "exportedPath": "computer-science/programming-language/fsharp/baby-steps-with-cntk-and-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Basic Regression Tree.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 16804,
       "exportedPath": "computer-science/programming-language/fsharp/basic-regression-tree.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Building custom fibers library in FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 33649,
       "exportedPath": "computer-science/programming-language/fsharp/building-custom-fibers-library-in-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Dealing with complex dependency injection in FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 16917,
       "exportedPath": "computer-science/programming-language/fsharp/dealing-with-complex-dependency-injection-in-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Effects and Handlers in FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 3758,
       "exportedPath": "computer-science/programming-language/fsharp/effects-and-handlers-in-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Elmish.Snabbdom.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 18517,
       "exportedPath": "computer-science/programming-language/fsharp/elmish.snabbdom.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSharp Native AOT 的 JSON 库问题.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 244,
       "exportedPath": "computer-science/programming-language/fsharp/fsharp-native-aot-的-json-库问题.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSharp Programming Scientific Models - A Step-By-Step Approach.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 32424,
       "exportedPath": "computer-science/programming-language/fsharp/fsharp-programming-scientific-models-a-step-by-step-approach.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSharp Suave 跨域配置.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 795,
       "exportedPath": "computer-science/programming-language/fsharp/fsharp-suave-跨域配置.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Fun with L-Systems.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 9059,
       "exportedPath": "computer-science/programming-language/fsharp/fun-with-l-systems.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Functional Reactive Programming.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 15059,
       "exportedPath": "computer-science/programming-language/fsharp/functional-reactive-programming.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Implementing Coroutines (async await) using continuations.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 27536,
       "exportedPath": "computer-science/programming-language/fsharp/implementing-coroutines-(async-await)-using-continuations.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/K-Means clustering in FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 15652,
       "exportedPath": "computer-science/programming-language/fsharp/k-means-clustering-in-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Learning from mistakes - Winnow algorithm in FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 10692,
       "exportedPath": "computer-science/programming-language/fsharp/learning-from-mistakes-winnow-algorithm-in-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Messages and Agents.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 15198,
       "exportedPath": "computer-science/programming-language/fsharp/messages-and-agents.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Tips for working with Elmish.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 18472,
       "exportedPath": "computer-science/programming-language/fsharp/tips-for-working-with-elmish.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/UI programming with Elmish in FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 18601,
       "exportedPath": "computer-science/programming-language/fsharp/ui-programming-with-elmish-in-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Why algebraic effects matter in FSharp.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 6545,
       "exportedPath": "computer-science/programming-language/fsharp/why-algebraic-effects-matter-in-fsharp.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Writing high performance Fsharp code.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 55331,
       "exportedPath": "computer-science/programming-language/fsharp/writing-high-performance-fsharp-code.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/OCaml News/OCaml News 2023 - 3.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 5092,
       "exportedPath": "computer-science/programming-language/ocaml/ocaml-news/ocaml-news-2023-3.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/OCaml News/OCaml News 2024 - 1.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 4871,
       "exportedPath": "computer-science/programming-language/ocaml/ocaml-news/ocaml-news-2024-1.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/OCaml News/OCaml News 2024 - 2.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 5464,
       "exportedPath": "computer-science/programming-language/ocaml/ocaml-news/ocaml-news-2024-2.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/OCaml News/OCaml News 2024 - 6.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 6367,
       "exportedPath": "computer-science/programming-language/ocaml/ocaml-news/ocaml-news-2024-6.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/A hack to implement efficient TLS (thread-local-storage).md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 7345,
       "exportedPath": "computer-science/programming-language/ocaml/a-hack-to-implement-efficient-tls-(thread-local-storage).html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Advanced C binding using ocaml-ctypes and dune.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 24793,
       "exportedPath": "computer-science/programming-language/ocaml/advanced-c-binding-using-ocaml-ctypes-and-dune.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Generalised signature.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 14745,
       "exportedPath": "computer-science/programming-language/ocaml/generalised-signature.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Interfacing OCaml and PostgreSQL with Caqti.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 2725,
       "exportedPath": "computer-science/programming-language/ocaml/interfacing-ocaml-and-postgresql-with-caqti.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Off to the Races Using ThreadSanitizer in OCaml.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 15691,
       "exportedPath": "computer-science/programming-language/ocaml/off-to-the-races-using-threadsanitizer-in-ocaml.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Pitfalls of polymorphic ignore.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1199,
       "exportedPath": "computer-science/programming-language/ocaml/pitfalls-of-polymorphic-ignore.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Polymorphic type constraints.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 12866,
       "exportedPath": "computer-science/programming-language/ocaml/polymorphic-type-constraints.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Polymorphic Variants.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 42503,
       "exportedPath": "computer-science/programming-language/ocaml/polymorphic-variants.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Rethinking OCaml abstract signatures.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 23879,
       "exportedPath": "computer-science/programming-language/ocaml/rethinking-ocaml-abstract-signatures.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Scopes and effect handlers.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 16653,
       "exportedPath": "computer-science/programming-language/ocaml/scopes-and-effect-handlers.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Tail recursion modulo cons.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 3269,
       "exportedPath": "computer-science/programming-language/ocaml/tail-recursion-modulo-cons.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Testing manpages.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1453,
       "exportedPath": "computer-science/programming-language/ocaml/testing-manpages.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/The _intf trick.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 8308,
       "exportedPath": "computer-science/programming-language/ocaml/the-_intf-trick.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Transitioning to Multicore with ThreadSanitizer.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 14356,
       "exportedPath": "computer-science/programming-language/ocaml/transitioning-to-multicore-with-threadsanitizer.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rescript/Rescript @genType 生成的 TypeScript 代码中的 import 的问题.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1296,
       "exportedPath": "computer-science/programming-language/rescript/rescript-@gentype-生成的-typescript-代码中的-import-的问题.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/Rust NewType 模式.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 2294,
       "exportedPath": "computer-science/programming-language/rust/rust-newtype-模式.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/Rust Partial 语义.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 2652,
       "exportedPath": "computer-science/programming-language/rust/rust-partial-语义.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/Rust trait 实现函数重载.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 3207,
       "exportedPath": "computer-science/programming-language/rust/rust-trait-实现函数重载.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/Rust 虚表布局规则介绍.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 9705,
       "exportedPath": "computer-science/programming-language/rust/rust-虚表布局规则介绍.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/Rust 闭包 lifetime may not live long enough 问题.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 2145,
       "exportedPath": "computer-science/programming-language/rust/rust-闭包-lifetime-may-not-live-long-enough-问题.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/有关 Axum 中 WebSocket 的使用.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 9031,
       "exportedPath": "computer-science/programming-language/rust/有关-axum-中-websocket-的使用.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Typescript/50 TypeScript Fck Ups 50 Subtle Mistakes to Screw Your Code and How to Avoid (Azat Mardan).md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1685,
       "exportedPath": "computer-science/programming-language/typescript/50-typescript-fck-ups-50-subtle-mistakes-to-screw-your-code-and-how-to-avoid-(azat-mardan).html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Typescript/A Deep Dive into the Reflection API in Javascript.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 9035,
       "exportedPath": "computer-science/programming-language/typescript/a-deep-dive-into-the-reflection-api-in-javascript.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Typescript/Implement a Dependency Injection Container in TypeScript from Scratch.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 6148,
       "exportedPath": "computer-science/programming-language/typescript/implement-a-dependency-injection-container-in-typescript-from-scratch.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Typescript/TypeScript With Rust Errors, No Try Catch, Heresy..md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 4724,
       "exportedPath": "computer-science/programming-language/typescript/typescript-with-rust-errors,-no-try-catch,-heresy..html",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Svelte 的编译器和运行时.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 24915,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/svelte-的编译器和运行时.html",
       "dependencies": [
@@ -999,7 +1072,7 @@
       ]
     },
     "Computer Science/Web/Turborepo 简述.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 23098,
       "exportedPath": "computer-science/web/turborepo-简述.html",
       "dependencies": []
@@ -1017,103 +1090,103 @@
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172940.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 70316,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172940.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172955.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 436607,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725172955.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173009.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 77841,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173009.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173021.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 54120,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173021.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173038.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 78612,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173038.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173049.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 117801,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173049.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173101.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 147595,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173101.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173109.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 54617,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173109.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173120.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 72638,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173120.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173130.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 87912,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173130.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173140.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 70506,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173140.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173149.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 172183,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173149.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173202.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 55256,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173202.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173212.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 65229,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173212.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173219.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 67353,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173219.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173227.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 148405,
       "exportedPath": "computer-science/distributed-system/raft-原始论文中英/pasted-image-20240725173227.png",
       "dependencies": []
     },
     "computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 12004,
       "exportedPath": "computer-science/distributed-system/分布式任务调度框架/pasted-image-20240507114701.png",
       "dependencies": []
@@ -1149,91 +1222,91 @@
       "dependencies": []
     },
     "computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 51740,
       "exportedPath": "computer-science/operating-system/linux/linux中的硬连接和软连接/linux中的硬链接和软链接.png",
       "dependencies": []
     },
     "lib/scripts/graph-wasm.wasm": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 23377,
       "exportedPath": "lib/scripts/graph-wasm.wasm",
       "dependencies": []
     },
     "lib/fonts/94f2f163d4b698242fef.otf": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 66800,
       "exportedPath": "lib/fonts/94f2f163d4b698242fef.otf",
       "dependencies": []
     },
     "lib/fonts/72505e6a122c6acd5471.woff2": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 104232,
       "exportedPath": "lib/fonts/72505e6a122c6acd5471.woff2",
       "dependencies": []
     },
     "lib/fonts/2d5198822ab091ce4305.woff2": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 104332,
       "exportedPath": "lib/fonts/2d5198822ab091ce4305.woff2",
       "dependencies": []
     },
     "lib/fonts/c8ba52b05a9ef10f4758.woff2": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 98868,
       "exportedPath": "lib/fonts/c8ba52b05a9ef10f4758.woff2",
       "dependencies": []
     },
     "lib/fonts/cb10ffd7684cd9836a05.woff2": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 106876,
       "exportedPath": "lib/fonts/cb10ffd7684cd9836a05.woff2",
       "dependencies": []
     },
     "lib/fonts/b5f0f109bc88052d4000.woff2": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 105804,
       "exportedPath": "lib/fonts/b5f0f109bc88052d4000.woff2",
       "dependencies": []
     },
     "lib/fonts/cbe0ae49c52c920fd563.woff2": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 106108,
       "exportedPath": "lib/fonts/cbe0ae49c52c920fd563.woff2",
       "dependencies": []
     },
     "lib/fonts/535a6cf662596b3bd6a6.woff2": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 111708,
       "exportedPath": "lib/fonts/535a6cf662596b3bd6a6.woff2",
       "dependencies": []
     },
     "lib/fonts/70cc7ff27245e82ad414.ttf": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 192740,
       "exportedPath": "lib/fonts/70cc7ff27245e82ad414.ttf",
       "dependencies": []
     },
     "lib/fonts/454577c22304619db035.ttf": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 161376,
       "exportedPath": "lib/fonts/454577c22304619db035.ttf",
       "dependencies": []
     },
     "lib/fonts/52ac8f3034507f1d9e53.ttf": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 191568,
       "exportedPath": "lib/fonts/52ac8f3034507f1d9e53.ttf",
       "dependencies": []
     },
     "lib/fonts/05b618077343fbbd92b7.ttf": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 155288,
       "exportedPath": "lib/fonts/05b618077343fbbd92b7.ttf",
       "dependencies": []
     },
     "lib/fonts/4bb6ac751d1c5478ff3a.woff2": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 7876,
       "exportedPath": "lib/fonts/4bb6ac751d1c5478ff3a.woff2",
       "dependencies": []
@@ -1245,193 +1318,193 @@
       "dependencies": []
     },
     "lib/html/file-tree.html": {
-      "modifiedTime": 1739928115622,
-      "sourceSize": 242937,
+      "modifiedTime": 1742891075923,
+      "sourceSize": 269044,
       "exportedPath": "lib/html/file-tree.html",
       "dependencies": []
     },
     "lib/scripts/webpage.js": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 47290,
       "exportedPath": "lib/scripts/webpage.js",
       "dependencies": []
     },
     "lib/scripts/graph-view.js": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 15519,
       "exportedPath": "lib/scripts/graph-view.js",
       "dependencies": []
     },
     "lib/scripts/graph-wasm.js": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 14021,
       "exportedPath": "lib/scripts/graph-wasm.js",
       "dependencies": []
     },
     "lib/scripts/graph-render-worker.js": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 5179,
       "exportedPath": "lib/scripts/graph-render-worker.js",
       "dependencies": []
     },
     "lib/scripts/tinycolor.js": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 29832,
       "exportedPath": "lib/scripts/tinycolor.js",
       "dependencies": []
     },
     "lib/scripts/pixi.js": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 449509,
       "exportedPath": "lib/scripts/pixi.js",
       "dependencies": []
     },
     "lib/scripts/minisearch.js": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 29422,
       "exportedPath": "lib/scripts/minisearch.js",
       "dependencies": []
     },
     "lib/media/favicon.png": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1105,
       "exportedPath": "lib/media/favicon.png",
       "dependencies": []
     },
     "lib/scripts/graph-data.js": {
-      "modifiedTime": 1739928115622,
-      "sourceSize": 13964,
+      "modifiedTime": 1742891075923,
+      "sourceSize": 16156,
       "exportedPath": "lib/scripts/graph-data.js",
       "dependencies": []
     },
     "lib/styles/obsidian.css": {
-      "modifiedTime": 1739928115622,
-      "sourceSize": 137228,
+      "modifiedTime": 1742891075923,
+      "sourceSize": 137466,
       "exportedPath": "lib/styles/obsidian.css",
       "dependencies": []
     },
     "lib/styles/theme.css": {
-      "modifiedTime": 1739928115622,
-      "sourceSize": 41426,
+      "modifiedTime": 1742891075923,
+      "sourceSize": 1030030,
       "exportedPath": "lib/styles/theme.css",
       "dependencies": []
     },
     "lib/styles/global-variable-styles.css": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 515,
       "exportedPath": "lib/styles/global-variable-styles.css",
       "dependencies": []
     },
     "lib/styles/main-styles.css": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 23130,
       "exportedPath": "lib/styles/main-styles.css",
       "dependencies": []
     },
     "Computer Science/Database System/Intro to Databases (for people who don’t know a whole lot about them).md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 18963,
       "exportedPath": "computer-science/database-system/intro-to-databases-(for-people-who-don’t-know-a-whole-lot-about-them).html",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725171642.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 81578,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725171642.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725172248.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 67274,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172248.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725172328.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 18938,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172328.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725172412.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 65652,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172412.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725172431.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 96998,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172431.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725172453.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 117801,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172453.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725172512.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 51327,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172512.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725172559.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 70506,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172559.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/attachments/Pasted image 20240725172616.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 172183,
       "exportedPath": "computer-science/distributed-system/raft实现/attachments/pasted-image-20240725172616.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/attachments/Pasted image 20240725171915.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 38120,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725171915.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/attachments/Pasted image 20240725171936.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 59294,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725171936.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/attachments/Pasted image 20240725172037.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 77064,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172037.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/attachments/Pasted image 20240725172059.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 53159,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172059.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/attachments/Pasted image 20240725172146.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 74193,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/attachments/pasted-image-20240725172146.png",
       "dependencies": []
     },
     "Computer Science/Operating System/Linux/systemctl freeze.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 304,
       "exportedPath": "computer-science/operating-system/linux/systemctl-freeze.html",
       "dependencies": []
     },
     "Computer Science/Operating System/Understanding Big and Little Endian Byte Order/attachments/Pasted image 20241220110455.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 96278,
       "exportedPath": "computer-science/operating-system/understanding-big-and-little-endian-byte-order/attachments/pasted-image-20241220110455.png",
       "dependencies": []
     },
     "Computer Science/Operating System/Understanding Big and Little Endian Byte Order/Understanding Big and Little Endian Byte Order.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 16881,
       "exportedPath": "computer-science/operating-system/understanding-big-and-little-endian-byte-order/understanding-big-and-little-endian-byte-order.html",
       "dependencies": [
@@ -1439,55 +1512,55 @@
       ]
     },
     "Computer Science/Operating System/多线程的一点小想法.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1457,
       "exportedPath": "computer-science/operating-system/多线程的一点小想法.html",
       "dependencies": []
     },
     "Computer Science/Other/Obsidian Vault 的 .obsidian 目录中的各文件作用.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 4307,
       "exportedPath": "computer-science/other/obsidian-vault-的-.obsidian-目录中的各文件作用.html",
       "dependencies": []
     },
     "Computer Science/Other/寻找并删除 Git 记录中的大文件.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 8962,
       "exportedPath": "computer-science/other/寻找并删除-git-记录中的大文件.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSM - Functional State Machines/attachments/Pasted image 20240912175130.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 86341,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175130.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSM - Functional State Machines/attachments/Pasted image 20240912175307.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 98564,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175307.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSM - Functional State Machines/attachments/Pasted image 20240912175321.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 128628,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175321.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSM - Functional State Machines/attachments/Pasted image 20240912175449.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 101006,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175449.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSM - Functional State Machines/attachments/Pasted image 20240912175517.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 49358,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175517.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSM - Functional State Machines/FSM - Functional State Machines.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 40370,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/fsm-functional-state-machines.html",
       "dependencies": [
@@ -1499,61 +1572,61 @@
       ]
     },
     "Computer Science/Programming Language/FSharp/Signaling in WebRTC with Ably and Fable.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 17343,
       "exportedPath": "computer-science/programming-language/fsharp/signaling-in-webrtc-with-ably-and-fable.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/OCaml News/OCaml News 2024 - 7.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 11153,
       "exportedPath": "computer-science/programming-language/ocaml/ocaml-news/ocaml-news-2024-7.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Folding in Parallel.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 26353,
       "exportedPath": "computer-science/programming-language/ocaml/folding-in-parallel.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/OCaml Lwt or Async.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 893,
       "exportedPath": "computer-science/programming-language/ocaml/ocaml-lwt-or-async.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/OCaml Preprocessors (PPX) 概述.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 2371,
       "exportedPath": "computer-science/programming-language/ocaml/ocaml-preprocessors-(ppx)-概述.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Typed Design Patterns for the Functional Era.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 3337,
       "exportedPath": "computer-science/programming-language/ocaml/typed-design-patterns-for-the-functional-era.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/OCaml/Typing the Y combinator in OCaml..md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 801,
       "exportedPath": "computer-science/programming-language/ocaml/typing-the-y-combinator-in-ocaml..html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/How to build a plugin system in Rust/attachments/Pasted image 20241220105055.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 107971,
       "exportedPath": "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105055.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/How to build a plugin system in Rust/attachments/Pasted image 20241220105410.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 348020,
       "exportedPath": "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105410.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/How to build a plugin system in Rust/How to build a plugin system in Rust.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 36184,
       "exportedPath": "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/how-to-build-a-plugin-system-in-rust.html",
       "dependencies": [
@@ -1562,19 +1635,19 @@
       ]
     },
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115123905.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 86420,
       "exportedPath": "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png",
       "dependencies": []
     },
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/Pasted image 20241115124216.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 155920,
       "exportedPath": "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png",
       "dependencies": []
     },
     "Computer Science/Software Engineering/You don’t Need a Book to Know DDD(Domain-Driven Design)/You don’t Need a Book to Know DDD(Domain-Driven Design).md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 8315,
       "exportedPath": "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/you-don’t-need-a-book-to-know-ddd(domain-driven-design).html",
       "dependencies": [
@@ -1583,133 +1656,133 @@
       ]
     },
     "Computer Science/Software Engineering/从事件风暴看领域驱动设计.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 2708,
+      "modifiedTime": 1742891075923,
+      "sourceSize": 2704,
       "exportedPath": "computer-science/software-engineering/从事件风暴看领域驱动设计.html",
       "dependencies": []
     },
     "Computer Science/UI UX/如何管理用户界面中的危险操作.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 6853,
+      "modifiedTime": 1742891075923,
+      "sourceSize": 6867,
       "exportedPath": "computer-science/ui-ux/如何管理用户界面中的危险操作.html",
       "dependencies": []
     },
     "computer-science/operating-system/understanding-big-and-little-endian-byte-order/attachments/pasted-image-20241220110455.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 96278,
       "exportedPath": "computer-science/operating-system/understanding-big-and-little-endian-byte-order/attachments/pasted-image-20241220110455.png",
       "dependencies": []
     },
     "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175130.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 86341,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175130.png",
       "dependencies": []
     },
     "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175307.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 98564,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175307.png",
       "dependencies": []
     },
     "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175321.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 128628,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175321.png",
       "dependencies": []
     },
     "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175449.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 101006,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175449.png",
       "dependencies": []
     },
     "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175517.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 49358,
       "exportedPath": "computer-science/programming-language/fsharp/fsm-functional-state-machines/attachments/pasted-image-20240912175517.png",
       "dependencies": []
     },
     "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105055.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 107971,
       "exportedPath": "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105055.png",
       "dependencies": []
     },
     "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105410.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 348020,
       "exportedPath": "computer-science/programming-language/rust/how-to-build-a-plugin-system-in-rust/attachments/pasted-image-20241220105410.png",
       "dependencies": []
     },
     "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 86420,
       "exportedPath": "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115123905.png",
       "dependencies": []
     },
     "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 155920,
       "exportedPath": "computer-science/software-engineering/you-don’t-need-a-book-to-know-ddd(domain-driven-design)/pasted-image-20241115124216.png",
       "dependencies": []
     },
     "lib/styles/other-plugins.css": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1803,
       "exportedPath": "lib/styles/other-plugins.css",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191713.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 120694,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191713.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191805.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 190820,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191805.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191816.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 394553,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191816.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191831.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 211914,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191831.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191842.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 358719,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191842.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191851.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 328248,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191851.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191904.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 93181,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191904.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/attachments/Pasted image 20241224191930.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 93181,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191930.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Flink 在风控场景实时特征落地实战/Flink 在风控场景实时特征落地实战.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 19875,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/flink-在风控场景实时特征落地实战.html",
       "dependencies": [
@@ -1724,49 +1797,49 @@
       ]
     },
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/attachments/Pasted image 20250102153026.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 29008,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153026.png",
       "dependencies": []
     },
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/attachments/Pasted image 20250102153707.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 42721,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153707.png",
       "dependencies": []
     },
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/attachments/Pasted image 20250102153716.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 53718,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153716.png",
       "dependencies": []
     },
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/attachments/Pasted image 20250102153837.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 16527,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153837.png",
       "dependencies": []
     },
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/attachments/Pasted image 20250102155121.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 13922,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102155121.png",
       "dependencies": []
     },
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/attachments/Pasted image 20250102162058.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 17713,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102162058.png",
       "dependencies": []
     },
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/attachments/Pasted image 20250102162554.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 30384,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102162554.png",
       "dependencies": []
     },
     "Computer Science/Other/Google 的 monorepo 实践与 trunk based development/Google 的 monorepo 实践与 trunk based development.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 12437,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/google-的-monorepo-实践与-trunk-based-development.html",
       "dependencies": [
@@ -1780,439 +1853,409 @@
       ]
     },
     "Computer Science/Other/Obsidian custom font to Android iOS devices.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1046,
       "exportedPath": "computer-science/other/obsidian-custom-font-to-android-ios-devices.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/FSharp BenchmarkDotNet.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1245,
       "exportedPath": "computer-science/programming-language/fsharp/fsharp-benchmarkdotnet.html",
       "dependencies": []
     },
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191713.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 120694,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191713.png",
       "dependencies": []
     },
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191805.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 190820,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191805.png",
       "dependencies": []
     },
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191816.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 394553,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191816.png",
       "dependencies": []
     },
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191831.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 211914,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191831.png",
       "dependencies": []
     },
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191842.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 358719,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191842.png",
       "dependencies": []
     },
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191851.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 328248,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191851.png",
       "dependencies": []
     },
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191904.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 93181,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191904.png",
       "dependencies": []
     },
     "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191930.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 93181,
       "exportedPath": "computer-science/distributed-system/flink-在风控场景实时特征落地实战/attachments/pasted-image-20241224191930.png",
       "dependencies": []
     },
     "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153026.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 29008,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153026.png",
       "dependencies": []
     },
     "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153707.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 42721,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153707.png",
       "dependencies": []
     },
     "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153716.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 53718,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153716.png",
       "dependencies": []
     },
     "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153837.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 16527,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102153837.png",
       "dependencies": []
     },
     "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102155121.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 13922,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102155121.png",
       "dependencies": []
     },
     "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102162058.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 17713,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102162058.png",
       "dependencies": []
     },
     "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102162554.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 30384,
       "exportedPath": "computer-science/other/google-的-monorepo-实践与-trunk-based-development/attachments/pasted-image-20250102162554.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/FSharp/Applied Meta-Programming In FSharp With Myriad And Falanx.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 90,
       "exportedPath": "computer-science/programming-language/fsharp/applied-meta-programming-in-fsharp-with-myriad-and-falanx.html",
       "dependencies": []
     },
     "Computer Science/Software Engineering/Exploring Event Sourcing and Related Patterns in OCaml.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 3897,
       "exportedPath": "computer-science/software-engineering/exploring-event-sourcing-and-related-patterns-in-ocaml.html",
       "dependencies": []
     },
     "Computer Science/Web/前端设计架构概述.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 545,
       "exportedPath": "computer-science/web/前端设计架构概述.html",
       "dependencies": []
     },
     "lib/media/6155340132a851f6089e.svg": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 315,
       "exportedPath": "lib/media/6155340132a851f6089e.svg",
       "dependencies": []
     },
     "Computer Science/Operating System/Linux/Linux 内存管理/Linux 内存管理.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 2002,
+      "modifiedTime": 1742891075923,
+      "sourceSize": 3257,
       "exportedPath": "computer-science/operating-system/linux/linux-内存管理/linux-内存管理.html",
       "dependencies": []
     },
     "Computer Science/Programming Language/Rust/Rust 无锁线程池异步运行时的实现.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 914,
       "exportedPath": "computer-science/programming-language/rust/rust-无锁线程池异步运行时的实现.html",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115111951.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 247514,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115111951.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112012.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 65682,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112012.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112039.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 8144,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112039.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112127.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 505148,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112127.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112203.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 593561,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112203.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112230.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 419779,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112230.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112241.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 730111,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112241.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112450.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 564689,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112450.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112544.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 370797,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112544.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115112612.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 78684,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115112612.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115115009.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 296633,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115115009.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115115845.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 452653,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115115845.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/attachments/Pasted image 20241115120819.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 801225,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/attachments/pasted-image-20241115120819.png",
       "dependencies": []
     },
     "Computer Science/Database System/Prisma 关系型数据库的 Self-relations.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 6225,
+      "modifiedTime": 1742891075923,
+      "sourceSize": 6254,
       "exportedPath": "computer-science/database-system/prisma-关系型数据库的-self-relations.html",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725171642.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 81578,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725171642.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725172248.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 67274,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172248.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725172328.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 18938,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172328.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725172412.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 65652,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172412.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725172431.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 96998,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172431.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725172453.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 117801,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172453.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725172512.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 51327,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172512.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725172559.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 70506,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172559.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/Raft实现/Pasted image 20240725172616.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 172183,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172616.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/Pasted image 20240725171915.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 38120,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171915.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/Pasted image 20240725171936.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 59294,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171936.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/Pasted image 20240725172037.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 77064,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172037.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/Pasted image 20240725172059.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 53159,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172059.png",
       "dependencies": []
     },
     "Computer Science/Distributed System/RPC框架的实现/Pasted image 20240725172146.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 74193,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172146.png",
       "dependencies": []
     },
     "Computer Science/Operating System/Linux/Linux 网络调优.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 6158,
       "exportedPath": "computer-science/operating-system/linux/linux-网络调优.html",
       "dependencies": []
     },
     "Computer Science/Other/多线程的一点小想法.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 1452,
       "exportedPath": "computer-science/other/多线程的一点小想法.html",
       "dependencies": []
     },
-    "Computer Science/Programming Language/JVM/Scala/F-bounded polymorphism in Scala.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 21020,
-      "exportedPath": "computer-science/programming-language/jvm/scala/f-bounded-polymorphism-in-scala.html",
-      "dependencies": []
-    },
-    "Computer Science/Programming Language/JVM/Scala/Inference of machine learning models using scala.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 3341,
-      "exportedPath": "computer-science/programming-language/jvm/scala/inference-of-machine-learning-models-using-scala.html",
-      "dependencies": []
-    },
-    "Computer Science/Programming Language/JVM/Scala/Refinement types in Scala 3.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 14847,
-      "exportedPath": "computer-science/programming-language/jvm/scala/refinement-types-in-scala-3.html",
-      "dependencies": []
-    },
-    "Computer Science/Programming Language/JVM/Scala/scala 中 Any、AnyRef、Object、AnyVal 关系以及主要特点分析.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 2494,
-      "exportedPath": "computer-science/programming-language/jvm/scala/scala-中-any、anyref、object、anyval-关系以及主要特点分析.html",
-      "dependencies": []
-    },
-    "Computer Science/Programming Language/JVM/Scala/Setup a server to perform efficient inference of neural network models.md": {
-      "modifiedTime": 1739846485328,
-      "sourceSize": 10417,
-      "exportedPath": "computer-science/programming-language/jvm/scala/setup-a-server-to-perform-efficient-inference-of-neural-network-models.html",
-      "dependencies": []
-    },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111190234.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 7160,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190234.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111190404.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 26852,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190404.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111190441.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 25767,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190441.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111190820.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 27789,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190820.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111190859.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 24739,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190859.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111191028.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 20583,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191028.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111191058.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 35603,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191058.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111191142.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 32197,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191142.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111191255.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 34939,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191255.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111191658.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 26117,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191658.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111191743.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 23303,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191743.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111191936.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 21073,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191936.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111193311.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 64316,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193311.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/attachments/Pasted image 20250111193326.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 96822,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193326.png",
       "dependencies": []
     },
     "Computer Science/Programming Language/JVM/Understanding JVM Garbage Collector Performance/Understanding JVM Garbage Collector Performance.md": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 28807,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/understanding-jvm-garbage-collector-performance.html",
       "dependencies": [
@@ -2233,259 +2276,259 @@
       ]
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115111951.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 247514,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112012.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 65682,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112012.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112039.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 8144,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112039.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112127.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 505148,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112127.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112203.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 593561,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112203.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112230.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 419779,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112230.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112241.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 730111,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112241.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112450.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 564689,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112450.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112544.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 370797,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112544.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115112612.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 78684,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112612.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115115009.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 296633,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115009.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115115845.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 452653,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115845.png",
       "dependencies": []
     },
     "Computer Science/Web/Svelte/Svelte 核心原理/Pasted image 20241115120819.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 801225,
       "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725171642.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 81578,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725171642.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725172248.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 67274,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172248.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725172328.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 18938,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172328.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725172559.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 70506,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172559.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725172616.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 172183,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172616.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725172412.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 65652,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172412.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725172431.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 96998,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172431.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725172453.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 117801,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172453.png",
       "dependencies": []
     },
     "computer-science/distributed-system/raft实现/pasted-image-20240725172512.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 51327,
       "exportedPath": "computer-science/distributed-system/raft实现/pasted-image-20240725172512.png",
       "dependencies": []
     },
     "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171915.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 38120,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171915.png",
       "dependencies": []
     },
     "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171936.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 59294,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725171936.png",
       "dependencies": []
     },
     "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172037.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 77064,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172037.png",
       "dependencies": []
     },
     "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172059.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 53159,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172059.png",
       "dependencies": []
     },
     "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172146.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 74193,
       "exportedPath": "computer-science/distributed-system/rpc框架的实现/pasted-image-20240725172146.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190234.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 7160,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190234.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190404.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 26852,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190404.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190441.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 25767,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190441.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190820.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 27789,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190820.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190859.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 24739,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111190859.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191028.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 20583,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191028.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191058.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 35603,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191058.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191142.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 32197,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191142.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191255.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 34939,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191255.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191658.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 26117,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191658.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191743.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 23303,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191743.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191936.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 21073,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111191936.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193311.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 64316,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193311.png",
       "dependencies": []
     },
     "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193326.png": {
-      "modifiedTime": 1739846485328,
+      "modifiedTime": 1742891075923,
       "sourceSize": 96822,
       "exportedPath": "computer-science/programming-language/jvm/understanding-jvm-garbage-collector-performance/attachments/pasted-image-20250111193326.png",
       "dependencies": []
     },
     "Computer Science/Software Engineering/Repository pattern in Typescript/attachments/Pasted image 20250219090610.png": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 119432,
       "exportedPath": "computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png",
       "dependencies": []
     },
     "Computer Science/Software Engineering/Repository pattern in Typescript/Repository pattern in Typescript.md": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 4608,
       "exportedPath": "computer-science/software-engineering/repository-pattern-in-typescript/repository-pattern-in-typescript.html",
       "dependencies": [
@@ -2493,9 +2536,427 @@
       ]
     },
     "computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png": {
-      "modifiedTime": 1739928115622,
+      "modifiedTime": 1742891075923,
       "sourceSize": 119432,
       "exportedPath": "computer-science/software-engineering/repository-pattern-in-typescript/attachments/pasted-image-20250219090610.png",
+      "dependencies": []
+    },
+    "Computer Science/AI/LLM4Decompile Decompiling Binary Code with Large Language Models.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 4628,
+      "exportedPath": "computer-science/ai/llm4decompile-decompiling-binary-code-with-large-language-models.html",
+      "dependencies": []
+    },
+    "Computer Science/Other/一个分支模型的构想.excalidraw.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 35129,
+      "exportedPath": "computer-science/other/一个分支模型的构想.excalidraw.html",
+      "dependencies": []
+    },
+    "Computer Science/Programming Language/Scala/F-bounded polymorphism in Scala.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 21020,
+      "exportedPath": "computer-science/programming-language/scala/f-bounded-polymorphism-in-scala.html",
+      "dependencies": []
+    },
+    "Computer Science/Programming Language/Scala/Inference of machine learning models using scala.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 3341,
+      "exportedPath": "computer-science/programming-language/scala/inference-of-machine-learning-models-using-scala.html",
+      "dependencies": []
+    },
+    "Computer Science/Programming Language/Scala/Refinement types in Scala 3.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 14847,
+      "exportedPath": "computer-science/programming-language/scala/refinement-types-in-scala-3.html",
+      "dependencies": []
+    },
+    "Computer Science/Programming Language/Scala/Scala 3 (Capture Checking).md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 20797,
+      "exportedPath": "computer-science/programming-language/scala/scala-3-(capture-checking).html",
+      "dependencies": []
+    },
+    "Computer Science/Programming Language/Scala/scala 中 Any、AnyRef、Object、AnyVal 关系以及主要特点分析.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 2494,
+      "exportedPath": "computer-science/programming-language/scala/scala-中-any、anyref、object、anyval-关系以及主要特点分析.html",
+      "dependencies": []
+    },
+    "Computer Science/Programming Language/Scala/Setup a server to perform efficient inference of neural network models.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 10417,
+      "exportedPath": "computer-science/programming-language/scala/setup-a-server-to-perform-efficient-inference-of-neural-network-models.html",
+      "dependencies": []
+    },
+    "Computer Science/Programming Language/Type Theory/学习路线.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 4930,
+      "exportedPath": "computer-science/programming-language/type-theory/学习路线.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/Domain-Driven Hexagon/领域驱动的六边形.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 11,
+      "exportedPath": "computer-science/software-engineering/domain-driven-hexagon/领域驱动的六边形.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/码如云 DDD 教程/第一章：DDD入门.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 13795,
+      "exportedPath": "computer-science/software-engineering/码如云-ddd-教程/第一章：ddd入门.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/码如云 DDD 教程/第二章：DDD 概念大白话.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 13652,
+      "exportedPath": "computer-science/software-engineering/码如云-ddd-教程/第二章：ddd-概念大白话.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/attachments/Pasted image 20250302104715.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 10520,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/attachments/pasted-image-20250302104715.png",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/attachments/Pasted image 20250302105848.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 15955,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/attachments/pasted-image-20250302105848.png",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第一章：导言 （一切皆因复杂性）.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 1042,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第一章：导言-（一切皆因复杂性）.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第七章：不同的层级，不同的抽象.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 6919,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第七章：不同的层级，不同的抽象.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第三章：仅仅是能工作的代码是不够的.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 3667,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第三章：仅仅是能工作的代码是不够的.html",
+      "dependencies": [
+        "computer-science/software-engineering/软件设计的哲学/attachments/pasted-image-20250302104715.png"
+      ]
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第九章：在一起更好还是分开更好？.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 42,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第九章：在一起更好还是分开更好？.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第二章：复杂性的本质.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 5226,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第二章：复杂性的本质.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第五章：信息隐藏和泄漏.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 5578,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第五章：信息隐藏和泄漏.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第八章：下沉复杂性.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 4269,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第八章：下沉复杂性.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第六章：通用的模块是更深的.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 4481,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第六章：通用的模块是更深的.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/软件设计的哲学/第四章：模块应该是深的.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 4826,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/第四章：模块应该是深的.html",
+      "dependencies": [
+        "computer-science/software-engineering/软件设计的哲学/attachments/pasted-image-20250302105848.png"
+      ]
+    },
+    "Computer Science/Software Engineering/NestJS 创建实体时如何优雅处理 DTO 与 Entity 字段差异.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 4300,
+      "exportedPath": "computer-science/software-engineering/nestjs-创建实体时如何优雅处理-dto-与-entity-字段差异.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/从“聚合根”开始的领域驱动设计.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 3432,
+      "exportedPath": "computer-science/software-engineering/从“聚合根”开始的领域驱动设计.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/使用 Transactional outbox 解决聚合根持久化和事件发布的数据不一致问题.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 44,
+      "exportedPath": "computer-science/software-engineering/使用-transactional-outbox-解决聚合根持久化和事件发布的数据不一致问题.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/领域驱动设计中的“聚合根”.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 3432,
+      "exportedPath": "computer-science/software-engineering/领域驱动设计中的“聚合根”.html",
+      "dependencies": []
+    },
+    "Computer Science/Software Engineering/领域驱动设计中聚合根持久化和事件发布可能导致数据不一致问题.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 8637,
+      "exportedPath": "computer-science/software-engineering/领域驱动设计中聚合根持久化和事件发布可能导致数据不一致问题.html",
+      "dependencies": []
+    },
+    "Computer Science/UI UX/实时搜索中的防抖函数.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 2467,
+      "exportedPath": "computer-science/ui-ux/实时搜索中的防抖函数.html",
+      "dependencies": []
+    },
+    "Computer Science/Web/Svelte/Svelte(Kit) 中的路由保护.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 2010,
+      "exportedPath": "computer-science/web/svelte/svelte(kit)-中的路由保护.html",
+      "dependencies": []
+    },
+    "Computer Science/Web/IndexedDB Data Persistence in Web Browsers.md": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 621,
+      "exportedPath": "computer-science/web/indexeddb-data-persistence-in-web-browsers.html",
+      "dependencies": []
+    },
+    "computer-science/software-engineering/软件设计的哲学/attachments/pasted-image-20250302104715.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 10520,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/attachments/pasted-image-20250302104715.png",
+      "dependencies": []
+    },
+    "computer-science/software-engineering/软件设计的哲学/attachments/pasted-image-20250302105848.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 15955,
+      "exportedPath": "computer-science/software-engineering/软件设计的哲学/attachments/pasted-image-20250302105848.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 247514,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115111951.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112012.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 65682,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112012.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112612.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 78684,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112612.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112039.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 8144,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112039.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112127.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 505148,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112127.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112203.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 593561,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112203.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112230.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 419779,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112230.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112241.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 730111,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112241.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112450.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 564689,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112450.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112544.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 370797,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115112544.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115009.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 296633,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115009.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115845.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 452653,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115115845.png",
+      "dependencies": []
+    },
+    "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 801225,
+      "exportedPath": "computer-science/web/svelte/svelte-核心原理/pasted-image-20241115120819.png",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_zero.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 1368,
+      "exportedPath": "lib/fonts/mathjax_zero.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_main-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 34160,
+      "exportedPath": "lib/fonts/mathjax_main-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_main-bold.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 34464,
+      "exportedPath": "lib/fonts/mathjax_main-bold.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_math-italic.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 19360,
+      "exportedPath": "lib/fonts/mathjax_math-italic.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_main-italic.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 20832,
+      "exportedPath": "lib/fonts/mathjax_main-italic.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_math-bolditalic.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 19776,
+      "exportedPath": "lib/fonts/mathjax_math-bolditalic.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_size1-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 5792,
+      "exportedPath": "lib/fonts/mathjax_size1-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_size2-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 5464,
+      "exportedPath": "lib/fonts/mathjax_size2-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_size3-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 3244,
+      "exportedPath": "lib/fonts/mathjax_size3-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_size4-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 5148,
+      "exportedPath": "lib/fonts/mathjax_size4-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_ams-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 40808,
+      "exportedPath": "lib/fonts/mathjax_ams-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_calligraphic-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 9600,
+      "exportedPath": "lib/fonts/mathjax_calligraphic-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_calligraphic-bold.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 9908,
+      "exportedPath": "lib/fonts/mathjax_calligraphic-bold.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_fraktur-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 21480,
+      "exportedPath": "lib/fonts/mathjax_fraktur-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_fraktur-bold.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 22340,
+      "exportedPath": "lib/fonts/mathjax_fraktur-bold.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_sansserif-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 12660,
+      "exportedPath": "lib/fonts/mathjax_sansserif-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_sansserif-bold.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 15944,
+      "exportedPath": "lib/fonts/mathjax_sansserif-bold.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_sansserif-italic.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 14628,
+      "exportedPath": "lib/fonts/mathjax_sansserif-italic.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_script-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 11852,
+      "exportedPath": "lib/fonts/mathjax_script-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_typewriter-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 17604,
+      "exportedPath": "lib/fonts/mathjax_typewriter-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_vector-regular.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 1136,
+      "exportedPath": "lib/fonts/mathjax_vector-regular.woff",
+      "dependencies": []
+    },
+    "lib/fonts/mathjax_vector-bold.woff": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 1116,
+      "exportedPath": "lib/fonts/mathjax_vector-bold.woff",
+      "dependencies": []
+    },
+    "lib/styles/supported-plugins.css": {
+      "modifiedTime": 1742891075923,
+      "sourceSize": 48,
+      "exportedPath": "lib/styles/supported-plugins.css",
       "dependencies": []
     }
   }
